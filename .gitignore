@@ -9,3 +9,4 @@ captures/
 dist/
 build/
 *.tsbuildinfo
+.claude/

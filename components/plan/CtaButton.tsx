@@ -1,5 +1,6 @@
 'use client';
 import { trackInitiateCheckout } from '@/lib/pixel';
+import { ArrowRightIcon } from '@/components/icons';
 
 interface Props {
   href: string;
@@ -12,9 +13,11 @@ export function CtaButton({ href, avatar, children }: Props) {
     <a
       href={href}
       onClick={() => trackInitiateCheckout(avatar)}
-      className="block w-full h-16 rounded-full font-extrabold text-white text-lg bg-brand-gradient shadow-brand-red active:scale-[0.99] transition-transform leading-[64px] text-center"
+      className="flex items-center justify-center gap-2 w-full h-16 rounded-full text-white text-lg bg-brand-gradient shadow-brand-red transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2"
+      style={{ fontWeight: 700 }}
     >
-      {children}
+      <span>{children}</span>
+      <ArrowRightIcon width={20} height={20} />
     </a>
   );
 }

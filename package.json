@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "capture": "node scripts/capture-quiz.mjs"
+    "capture": "node scripts/capture-quiz.mjs",
+    "gen-placeholders": "node scripts/generate-placeholders.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",

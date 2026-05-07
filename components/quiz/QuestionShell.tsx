@@ -1,5 +1,6 @@
 'use client';
 import { ProgressBar } from './ProgressBar';
+import { ChevronLeftIcon } from '@/components/icons';
 
 interface Props {
   progress: number; // 0..1
@@ -13,20 +14,23 @@ export function QuestionShell({ progress, onBack, children, headline, subheadlin
   return (
     <div className="min-h-dvh flex flex-col">
       <header className="sticky top-0 z-10 bg-[var(--color-brand-bg)]">
-        <div className="flex items-center justify-between px-4 h-12">
+        <div className="flex items-center justify-between px-3 h-14">
           <button
             type="button"
             onClick={onBack}
             disabled={!onBack}
-            className="text-2xl text-[var(--color-text-muted)] disabled:opacity-30 active:scale-95 transition-transform"
+            className="size-10 grid place-items-center rounded-full text-[var(--color-text-body)] disabled:opacity-30 hover:bg-[var(--color-surface-100)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)]"
             aria-label="Назад"
           >
-            ←
+            <ChevronLeftIcon width={22} height={22} />
           </button>
-          <span className="text-xs uppercase tracking-widest font-bold text-[var(--color-text-muted)]">
-            Dr.Fit
+          <span
+            className="text-[13px] uppercase font-bold text-[var(--color-text-headline)]"
+            style={{ letterSpacing: '0.18em' }}
+          >
+            DR.FIT
           </span>
-          <span className="w-6" />
+          <span className="size-10" aria-hidden />
         </div>
         <ProgressBar value={progress} />
       </header>

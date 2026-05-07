@@ -8,6 +8,7 @@ import { GuaranteeBlock } from '@/components/plan/GuaranteeBlock';
 import { CtaButton } from '@/components/plan/CtaButton';
 import { BmiProjection } from '@/components/plan/BmiProjection';
 import { TestimonialsBlock } from '@/components/plan/TestimonialsBlock';
+import { CheckIcon, LockIcon } from '@/components/icons';
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -90,7 +91,7 @@ export default async function PlanPage({ searchParams }: PageProps) {
               'Достъп до app.dr-fit.co',
             ].map((t) => (
               <li key={t} className="flex items-start gap-3">
-                <span className="text-[var(--color-success-600)] font-bold">✓</span>
+                <CheckIcon width={16} height={16} className="text-[var(--color-success-600)] mt-1 shrink-0" />
                 <span className="text-[var(--color-text-strong)]">{t}</span>
               </li>
             ))}
@@ -111,12 +112,21 @@ export default async function PlanPage({ searchParams }: PageProps) {
 
         <div className="mt-8">
           <CtaButton href={checkoutUrl} avatar={avatarId}>
-            Започни моите 90 дни →
+            Започни моите 90 дни
           </CtaButton>
-          <p className="text-center text-xs text-[var(--color-text-muted)] mt-3">
-            🔒 Сигурно плащане през Stripe · без auto-renewal
+          <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--color-text-muted)]">
+            <LockIcon width={12} height={12} aria-hidden />
+            <span>Сигурно плащане през Stripe, без auto-renewal</span>
           </p>
         </div>
+
+        <footer className="mt-16 pt-6 border-t border-[var(--color-line)] text-xs text-[var(--color-text-muted)] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span style={{ fontFamily: 'var(--font-mono)' }}>© 2026 Thunder Digital</span>
+          <span className="flex gap-4">
+            <a href="/privacy" className="hover:text-[var(--color-text-body)] transition-colors">Privacy</a>
+            <a href="/impressum" className="hover:text-[var(--color-text-body)] transition-colors">Impressum</a>
+          </span>
+        </footer>
       </main>
     </>
   );

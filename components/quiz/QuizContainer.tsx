@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
-import { STEPS, getStep, resolveOptions, TOTAL_STEPS } from '@/lib/questions';
+import { STEPS, getStep, resolveOptions, resolveCardVariant, TOTAL_STEPS } from '@/lib/questions';
 import {
   classifyAvatar,
   type Gender,
@@ -141,20 +140,25 @@ export function QuizContainer() {
 
   let content: React.ReactNode = null;
   if (step.type === 'single-select') {
+    const opts = resolveOptions(step, gender ?? undefined);
     content = (
       <SingleSelect
-        options={resolveOptions(step, gender ?? undefined)}
+        options={opts}
         selected={state.answers[step.id] as string | undefined}
+        variant={resolveCardVariant(step, opts.length)}
         onPick={onSingle}
       />
     );
   } else if (step.type === 'multi-select') {
+    const opts = resolveOptions(step, gender ?? undefined);
     const selected = (state.answers[step.id] as string[] | undefined) ?? [];
     content = (
       <MultiSelect
-        options={resolveOptions(step, gender ?? undefined)}
+        options={opts}
         selected={selected}
         minSelect={step.minSelect ?? 1}
+        maxSelect={step.maxSelect}
+        variant={resolveCardVariant(step, opts.length)}
         onToggle={(v) => dispatch({ type: 'multi-toggle', stepId: step.id, value: v })}
         onContinue={onContinue}
       />
@@ -207,18 +211,9 @@ export function QuizContainer() {
       headline={step.type === 'interstitial' ? undefined : step.headline}
       subheadline={step.type === 'interstitial' ? undefined : step.subheadline}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step.id}
-          initial={{ opacity: 0, x: 16 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -16 }}
-          transition={{ duration: 0.22 }}
-          className="flex flex-col flex-1"
-        >
-          {content}
-        </motion.div>
-      </AnimatePresence>
+      <div key={step.id} className="flex flex-col flex-1">
+        {content}
+      </div>
     </QuestionShell>
   );
 }

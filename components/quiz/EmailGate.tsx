@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { LockIcon } from '@/components/icons';
 
 interface FieldSpec {
   name: string;
@@ -54,8 +55,9 @@ export function EmailGate({ fields, ctaLabel, onSubmit }: Props) {
         </label>
       ))}
 
-      <p className="text-xs text-[var(--color-text-muted)]">
-        🔒 Без спам. Можеш да се отпишеш с един клик.
+      <p className="text-xs text-[var(--color-text-muted)] flex items-center gap-1.5">
+        <LockIcon width={12} height={12} aria-hidden />
+        <span>Без спам. Можеш да се отпишеш с един клик.</span>
       </p>
 
       {error && <p className="text-sm text-[var(--color-brand-red)]">{error}</p>}

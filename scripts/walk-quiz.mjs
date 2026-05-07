@@ -22,7 +22,9 @@ async function snap(label) {
 }
 
 try {
-  await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+  await page.goto('http://localhost:3010/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => { try { localStorage.clear(); } catch {} });
+  await page.reload({ waitUntil: 'networkidle' });
   await snap('s01-gender');
 
   // Step 1: Мъж

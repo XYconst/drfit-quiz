@@ -1,5 +1,6 @@
 import type { AvatarId } from '@/lib/avatars';
 import { pickTestimonials, type Testimonial } from '@/lib/testimonials';
+import { StarIcon } from '@/components/icons';
 
 interface Props {
   avatar: AvatarId;
@@ -9,7 +10,7 @@ function Stars() {
   return (
     <span aria-label="5 от 5" className="inline-flex gap-0.5 text-[var(--color-brand-red)]">
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} aria-hidden>★</span>
+        <StarIcon key={i} width={14} height={14} aria-hidden />
       ))}
     </span>
   );

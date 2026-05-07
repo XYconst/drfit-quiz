@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { CheckIcon, XIcon } from '@/components/icons';
 
 interface Row {
   left: string;
@@ -113,7 +114,7 @@ export function ComparisonBlock({ blockers, pastAttempts, rows: rowsOverride }: 
         <ul className="space-y-2">
           {rows.map((r, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-[var(--color-text-body)]">
-              <span className="text-[var(--color-brand-red)] font-bold leading-none mt-0.5">✕</span>
+              <XIcon width={14} height={14} className="text-[var(--color-brand-red)] mt-1 shrink-0" />
               <span>{r.left}</span>
             </li>
           ))}
@@ -124,7 +125,7 @@ export function ComparisonBlock({ blockers, pastAttempts, rows: rowsOverride }: 
         <ul className="space-y-2">
           {rows.map((r, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-[var(--color-text-strong)]">
-              <span className="text-[var(--color-success-600)] font-bold leading-none mt-0.5">✓</span>
+              <CheckIcon width={14} height={14} className="text-[var(--color-success-600)] mt-1 shrink-0" />
               <span>{r.right}</span>
             </li>
           ))}

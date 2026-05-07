@@ -1,59 +1,75 @@
 'use client';
-import type { OptionSpec } from '@/lib/questions';
-import { motion } from 'framer-motion';
+import type { OptionSpec, CardVariant } from '@/lib/questions';
+import { OptionCard } from './OptionCard';
+import { ArrowRightIcon } from '@/components/icons';
 
 interface Props {
   options: OptionSpec[];
   selected: string[];
   minSelect: number;
+  maxSelect?: number;
+  variant: CardVariant;
   onToggle: (value: string) => void;
   onContinue: () => void;
 }
 
-export function MultiSelect({ options, selected, minSelect, onToggle, onContinue }: Props) {
+function gridClass(variant: CardVariant): string {
+  if (variant === 'wide') return 'grid grid-cols-1 gap-3 mb-6';
+  return 'grid grid-cols-2 gap-3 mb-6';
+}
+
+export function MultiSelect({
+  options,
+  selected,
+  minSelect,
+  maxSelect,
+  variant,
+  onToggle,
+  onContinue,
+}: Props) {
   const canContinue = selected.length >= minSelect;
+  const atCap = typeof maxSelect === 'number' && selected.length >= maxSelect;
+  const cls = gridClass(variant);
+
   return (
     <>
-      <ul className="flex flex-wrap gap-2 mb-6">
+      <div className={cls}>
         {options.map((opt, i) => {
           const isOn = selected.includes(opt.value);
+          const disabled = atCap && !isOn;
           return (
-            <motion.li
+            <OptionCard
               key={opt.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.03 }}
-            >
-              <button
-                type="button"
-                onClick={() => onToggle(opt.value)}
-                aria-pressed={isOn}
-                className={[
-                  'rounded-full px-4 py-2.5 text-sm font-medium border transition-all active:scale-95',
-                  isOn
-                    ? 'bg-[var(--color-brand-red)] border-[var(--color-brand-red)] text-white'
-                    : 'bg-white border-[var(--color-line)] text-[var(--color-text-strong)]',
-                ].join(' ')}
-              >
-                {opt.label}
-              </button>
-            </motion.li>
+              imageUrl={opt.imageUrl ?? ''}
+              imageAlt={opt.label}
+              label={opt.label}
+              sub={opt.sub}
+              selected={isOn}
+              disabled={disabled}
+              onClick={() => onToggle(opt.value)}
+              variant={variant}
+              role="checkbox"
+              index={i}
+            />
           );
         })}
-      </ul>
+      </div>
       <div className="mt-auto pt-4 sticky bottom-0 bg-[var(--color-brand-bg)]">
         <button
           type="button"
           onClick={onContinue}
           disabled={!canContinue}
           className={[
-            'w-full h-14 rounded-full font-bold text-white transition-all',
+            'w-full h-14 rounded-full font-bold text-white transition-colors',
+            'flex items-center justify-center gap-2',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2',
             canContinue
-              ? 'bg-brand-gradient shadow-brand-red active:scale-[0.99]'
+              ? 'bg-brand-gradient shadow-brand-red cursor-pointer'
               : 'bg-[var(--color-surface-200)] text-[var(--color-text-muted)] cursor-not-allowed',
           ].join(' ')}
         >
-          Продължи →
+          <span>Продължи</span>
+          <ArrowRightIcon width={18} height={18} />
         </button>
         {!canContinue && (
           <p className="text-center text-xs text-[var(--color-text-muted)] mt-2">
