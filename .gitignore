@@ -1,0 +1,10 @@
+node_modules/
+captures/
+.env
+.env.*
+.DS_Store
+*.log
+.next/
+.vercel/
+dist/
+build/
