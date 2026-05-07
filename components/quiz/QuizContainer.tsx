@@ -111,11 +111,19 @@ export function QuizContainer() {
     const stress = state.answers.stress as string | undefined;
     const diet = state.answers.dietStyle as string | undefined;
     const past = state.answers.pastAttempts as string[] | undefined;
+    const blockers = state.answers.blockers as string[] | undefined;
+    const targetDate = state.answers.targetDate as { date?: string; label?: string } | undefined;
     const params = new URLSearchParams({ avatar, kg: String(kg) });
     if (sleep) params.set('sleep', sleep);
     if (stress) params.set('stress', stress);
     if (diet) params.set('diet', diet);
     if (past && past.length) params.set('past', past.join(','));
+    if (blockers && blockers.length) params.set('blockers', blockers.join(','));
+    if (m.height) params.set('h', String(m.height));
+    if (m.weight) params.set('w', String(m.weight));
+    if (m.targetWeight) params.set('tw', String(m.targetWeight));
+    const td = targetDate?.label || targetDate?.date;
+    if (td) params.set('td', td);
     router.push(`/plan?${params.toString()}`);
   };
 

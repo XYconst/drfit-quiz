@@ -9,7 +9,9 @@
 
   /* Dark + neutral surfaces */
   --color-brand-dark: #192126;
+  --color-graphite: #2B3138;
   --color-brand-bg: #FAFAFA;
+  --color-paper-warm: #F8F4EE;
   --color-surface-100: #F4F4F4;
   --color-surface-200: #E5E5E5;
   --color-line: #DEDEDF;
@@ -31,9 +33,10 @@
   --color-amber-border: #FED7AA;
   --color-amber-text: #92400E;
 
-  /* Fonts */
-  --font-sans: "Gilroy", "DM Sans", system-ui, -apple-system, sans-serif;
-  --font-display: "Playfair Display", Georgia, serif;
+  /* Fonts — runtime variables resolved by next/font in app/layout.tsx */
+  --font-sans: var(--font-sans-runtime), "Gilroy", "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-display-runtime), "Playfair Display", Georgia, serif;
+  --font-mono: var(--font-mono-runtime), ui-monospace, "Geist Mono", "JetBrains Mono", monospace;
 }
 
 @layer base {

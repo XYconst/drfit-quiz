@@ -6,6 +6,8 @@ import { NumberedSection } from '@/components/plan/NumberedSection';
 import { ComparisonBlock } from '@/components/plan/ComparisonBlock';
 import { GuaranteeBlock } from '@/components/plan/GuaranteeBlock';
 import { CtaButton } from '@/components/plan/CtaButton';
+import { BmiProjection } from '@/components/plan/BmiProjection';
+import { TestimonialsBlock } from '@/components/plan/TestimonialsBlock';
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -23,6 +25,13 @@ export default async function PlanPage({ searchParams }: PageProps) {
   const checkoutUrl = buildCheckoutUrl(avatarId);
   const personalize = parsePersonalizeParams(sp);
   const section01 = personalizedSection01Bullets(personalize);
+  const heightCm = Number(sp.h) || 0;
+  const currentKg = Number(sp.w) || 0;
+  const targetKg = Number(sp.tw) || 0;
+  const targetDate = sp.td;
+  const showProjection = heightCm > 0 && currentKg > 0 && targetKg > 0;
+  const blockers = sp.blockers ? sp.blockers.split(',').map((s) => s.trim()).filter(Boolean) : [];
+  const pastAttempts = sp.past ? sp.past.split(',').map((s) => s.trim()).filter(Boolean) : [];
 
   return (
     <>
@@ -32,18 +41,33 @@ export default async function PlanPage({ searchParams }: PageProps) {
         {/* Hero */}
         <section className="py-6">
           <span className="eyebrow">Твоят план</span>
-          <h1 className="mt-3 text-3xl font-extrabold leading-tight">
+          <h1
+            className="mt-3 text-3xl leading-[1.05] tracking-[-0.02em]"
+            style={{ fontFamily: 'var(--font-display)', fontWeight: 700 }}
+          >
             {avatar.resultHeadlineBg(kg)}
           </h1>
           <p className="mt-3 text-base text-[var(--color-text-body)]">{avatar.resultSubBg}</p>
 
-          <div className="mt-6 rounded-2xl bg-white border border-[var(--color-line)] p-5">
-            <p className="text-sm text-[var(--color-text-muted)]">Прогноза за теб</p>
-            <p className="mt-2 text-2xl font-extrabold text-[var(--color-text-headline)]">
-              {kg ? `${kg} кг за 90 дни` : '90-дневна трансформация'}
-            </p>
-            <p className="mt-1 text-xs text-[var(--color-text-muted)]">*Индивидуални резултати според следване на плана</p>
-          </div>
+          {showProjection ? (
+            <div className="mt-6">
+              <BmiProjection
+                heightCm={heightCm}
+                currentKg={currentKg}
+                targetKg={targetKg}
+                targetDate={targetDate}
+                avatar={avatarId}
+              />
+            </div>
+          ) : (
+            <div className="mt-6 rounded-2xl bg-white border border-[var(--color-line)] p-5">
+              <p className="text-sm text-[var(--color-text-muted)]">Прогноза за теб</p>
+              <p className="mt-2 text-2xl font-extrabold text-[var(--color-text-headline)]">
+                {kg ? `${kg} кг за 90 дни` : '90-дневна трансформация'}
+              </p>
+              <p className="mt-1 text-xs text-[var(--color-text-muted)]">*Индивидуални резултати според следване на плана</p>
+            </div>
+          )}
         </section>
 
         <NumberedSection number="01" title="Защо стандартните програми не работят за теб">
@@ -74,26 +98,15 @@ export default async function PlanPage({ searchParams }: PageProps) {
         </NumberedSection>
 
         <NumberedSection number="03" title="Без план срещу С Dr.Fit план">
-          <ComparisonBlock
-            without={[
-              'Йо-йо ефект, сваляш и качваш',
-              'Налучкваш сам/-а',
-              'Без подкрепа',
-              'Скъпа фитнес зала',
-              'Не виждаш резултати',
-            ]}
-            withDrFit={[
-              'Стабилно сваляне без връщане',
-              'Точен план за теб',
-              'Чат с треньор всеки ден',
-              'От телефона ти',
-              'Първи резултати в 30 дни',
-            ]}
-          />
+          <ComparisonBlock blockers={blockers} pastAttempts={pastAttempts} />
         </NumberedSection>
 
         <NumberedSection number="04" title="Гаранция: плащаш 0 EUR">
           <GuaranteeBlock />
+        </NumberedSection>
+
+        <NumberedSection number="05" title="Истории като твоята">
+          <TestimonialsBlock avatar={avatarId} />
         </NumberedSection>
 
         <div className="mt-8">

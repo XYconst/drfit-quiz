@@ -1,12 +1,28 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Manrope, Playfair_Display, Geist_Mono } from 'next/font/google';
 import { META_PIXEL_ID } from '@/lib/pixel';
 import './globals.css';
 
-// Inter has full Cyrillic support (BG requirement). Used as Gilroy fallback.
-const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-sans-runtime', display: 'swap' });
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-display-runtime', display: 'swap' });
+const manrope = Manrope({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-sans-runtime',
+  display: 'swap',
+  weight: ['400', '500', '700', '800'],
+});
+const playfair = Playfair_Display({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-display-runtime',
+  display: 'swap',
+  style: ['normal', 'italic'],
+  weight: ['400', '700'],
+});
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono-runtime',
+  display: 'swap',
+  weight: ['400', '500', '600'],
+});
 
 export const metadata: Metadata = {
   title: 'Dr.Fit: Твоят 90-дневен план',
@@ -23,7 +39,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bg" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="bg" className={`${manrope.variable} ${playfair.variable} ${geistMono.variable}`}>
       <body className="min-h-screen bg-brand-bg">
         {children}
 
