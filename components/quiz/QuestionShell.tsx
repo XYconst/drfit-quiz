@@ -36,14 +36,31 @@ export function QuestionShell({ progress, onBack, children, headline, subheadlin
         <ProgressBar value={progress} />
       </header>
 
-      <main className="flex-1 px-5 py-6 max-w-md w-full mx-auto flex flex-col">
+      <main className="flex-1 px-5 pt-4 pb-8 max-w-md w-full mx-auto flex flex-col">
         {headline && (
-          <h1 className="text-2xl font-extrabold text-[var(--color-text-headline)] mb-2 leading-tight">
+          <h1
+            className="font-extrabold text-[var(--color-text-headline)] text-center mb-3"
+            style={{
+              fontSize: 'clamp(1.75rem, 6.5vw, 2.625rem)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+              textWrap: 'balance',
+            }}
+          >
             {headline}
           </h1>
         )}
         {subheadline && (
-          <p className="text-base text-[var(--color-text-body)] mb-6">{subheadline}</p>
+          <p
+            className="text-[var(--color-text-body)] text-center mb-8"
+            style={{
+              fontSize: 'clamp(1rem, 3.4vw, 1.125rem)',
+              lineHeight: 1.45,
+              textWrap: 'pretty',
+            }}
+          >
+            {subheadline}
+          </p>
         )}
         <div className="flex-1 flex flex-col">{children}</div>
       </main>

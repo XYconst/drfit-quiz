@@ -11,18 +11,32 @@ export type StepType =
   | 'body-area'
   | 'interstitial'
   | 'calculating'
+  | 'projection'
   | 'email-gate';
 
+/** Mid-loading micro-question shown as an overlay during the calculating step. */
+export interface MidQuestionSpec {
+  id: string;
+  /** 0..1, the loading-progress threshold at which to pause and show this question. */
+  atProgress: number;
+  headline: string;
+  options: Array<{ id: string; label: string; value: string }>;
+}
+
 /** Card layout variants for OptionCard. See components/quiz/OptionCard.tsx. */
-export type CardVariant = 'portrait' | 'square' | 'wide';
+export type CardVariant = 'portrait' | 'square' | 'wide' | 'icon-row';
 
 export interface OptionSpec {
   id: string;
   label: string;
-  /** Optional secondary descriptor used by the wide variant. */
+  /** Optional secondary descriptor used by the wide and icon-row variants. */
   sub?: string;
   value: string; // persisted into answers map
   imageUrl?: string;
+  /** Lucide icon name from ICON_REGISTRY. Required when the parent step uses cardVariant: 'icon-row'. */
+  icon?: string;
+  /** Color-coded icon-badge tone for icon-row variant. Use to differentiate emotionally-loaded choices. */
+  tone?: 'default' | 'red' | 'amber' | 'dark';
 }
 
 export interface NumericInputSpec {
@@ -49,7 +63,10 @@ export interface StepSpec {
   inputs?: NumericInputSpec[];
   durationMs?: number;
   milestonesBg?: string[];
+  midQuestions?: MidQuestionSpec[];
   bodyBg?: string;
+  /** Italic reassurance line shown above the CTA on transitional / projection screens. */
+  reassureBg?: string;
   ctaBg?: string;
   fields?: Array<{ name: string; type: 'email' | 'tel'; label: string; placeholder?: string; required: boolean }>;
   /** If true, only render when gender matches. */
@@ -76,17 +93,17 @@ export const STEPS: StepSpec[] = [
     id: 'goal',
     type: 'single-select',
     headline: 'Каква е твоята цел?',
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     optionsByGender: {
       male: [
-        { id: 'lose-major', label: 'Искам да сваля сериозно тегло (15+ кг)', value: 'lose-major', imageUrl: img('goal', 'm-lose-major') },
-        { id: 'tone-recomp', label: 'Искам да сваля малко и да изградя мускули', value: 'tone-recomp', imageUrl: img('goal', 'm-tone-recomp') },
-        { id: 'gain-mass', label: 'Искам да кача чиста мускулна маса', value: 'gain-mass', imageUrl: img('goal', 'm-gain-mass') },
+        { id: 'lose-major', label: 'Сваля сериозно тегло', sub: '15+ кг за 90 дни', value: 'lose-major', icon: 'trending-down', tone: 'red' },
+        { id: 'tone-recomp', label: 'Свали + изгради мускули', sub: 'Преоформяне на тялото', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
+        { id: 'gain-mass', label: 'Качи чиста маса', sub: 'Програма за хардгейнъри', value: 'gain-mass', icon: 'trending-up', tone: 'dark' },
       ],
       female: [
-        { id: 'lose-major', label: 'Искам да сваля сериозно тегло (15+ кг)', value: 'lose-major', imageUrl: img('goal', 'f-lose-major') },
-        { id: 'tone-recomp', label: 'Искам да сваля малко и да се стегна', value: 'tone-recomp', imageUrl: img('goal', 'f-tone-recomp') },
-        { id: 'tone-only', label: 'Искам само да се стегна и да дефинирам формите', value: 'tone-only', imageUrl: img('goal', 'f-tone-only') },
+        { id: 'lose-major', label: 'Сваля сериозно тегло', sub: '15+ кг за 90 дни', value: 'lose-major', icon: 'trending-down', tone: 'red' },
+        { id: 'tone-recomp', label: 'Свали малко + се стегни', sub: 'Лек дефицит + тонизиране', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
+        { id: 'tone-only', label: 'Само се стегни и дефинирай', sub: 'Без сваляне на тегло', value: 'tone-only', icon: 'sparkles', tone: 'dark' },
       ],
     },
   },
@@ -118,8 +135,7 @@ export const STEPS: StepSpec[] = [
       { id: '18-29', label: '18-29', value: '18-29', imageUrl: img('age', '18-29') },
       { id: '30-39', label: '30-39', value: '30-39', imageUrl: img('age', '30-39') },
       { id: '40-49', label: '40-49', value: '40-49', imageUrl: img('age', '40-49') },
-      { id: '50-59', label: '50-59', value: '50-59', imageUrl: img('age', '50-59') },
-      { id: '60+', label: '60+', value: '60+', imageUrl: img('age', '60-plus') },
+      { id: '50+', label: '50+', value: '50+', imageUrl: img('age', '50-59') },
     ],
   },
   {
@@ -135,6 +151,7 @@ export const STEPS: StepSpec[] = [
         { id: 'belly', label: 'Корем', value: 'belly', imageUrl: img('problemAreas', 'm-belly') },
         { id: 'love-handles', label: 'Любовни дръжки', value: 'love-handles', imageUrl: img('problemAreas', 'm-love-handles') },
         { id: 'chest', label: 'Гърди', value: 'chest', imageUrl: img('problemAreas', 'm-chest') },
+        { id: 'back', label: 'Гръб', value: 'back', imageUrl: img('problemAreas', 'm-back') },
         { id: 'arms', label: 'Ръце', value: 'arms', imageUrl: img('problemAreas', 'm-arms') },
         { id: 'whole-body', label: 'Цялото тяло', value: 'whole-body', imageUrl: img('problemAreas', 'm-whole-body') },
       ],
@@ -153,12 +170,12 @@ export const STEPS: StepSpec[] = [
     id: 'activity',
     type: 'single-select',
     headline: 'Колко активен/-на си през седмицата?',
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'sedentary', label: 'Почти не се движа', value: 'sedentary', imageUrl: img('activity', 'sedentary') },
-      { id: 'light', label: 'Лек активен/-на', sub: 'Рядко тренировки', value: 'light', imageUrl: img('activity', 'light') },
-      { id: 'moderate', label: 'Умерено', sub: '2-3 тренировки седмично', value: 'moderate', imageUrl: img('activity', 'moderate') },
-      { id: 'high', label: 'Много активен/-на', sub: '4+ тренировки седмично', value: 'high', imageUrl: img('activity', 'high') },
+      { id: 'sedentary', label: 'Почти не се движа', sub: 'Седяща работа, без спорт', value: 'sedentary', icon: 'armchair' },
+      { id: 'light', label: 'Лек активен/-на', sub: 'Рядко тренировки', value: 'light', icon: 'footprints' },
+      { id: 'moderate', label: 'Умерено', sub: '2-3 тренировки седмично', value: 'moderate', icon: 'dumbbell' },
+      { id: 'high', label: 'Много активен/-на', sub: '4+ тренировки седмично', value: 'high', icon: 'mountain' },
     ],
   },
   {
@@ -166,11 +183,11 @@ export const STEPS: StepSpec[] = [
     id: 'jobMovement',
     type: 'single-select',
     headline: 'Какво описва твоя ден?',
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'desk', label: 'Седяща работа, 8+ часа на стол', value: 'desk', imageUrl: img('jobMovement', 'desk') },
-      { id: 'standing', label: 'Прав/-а през повечето време', value: 'standing', imageUrl: img('jobMovement', 'standing') },
-      { id: 'physical', label: 'Физическа работа', value: 'physical', imageUrl: img('jobMovement', 'physical') },
+      { id: 'desk', label: 'Седяща работа, 8+ часа на стол', sub: 'Малко движение през деня', value: 'desk', icon: 'monitor' },
+      { id: 'standing', label: 'Прав/-а през повечето време', sub: 'Без редовни тренировки', value: 'standing', icon: 'person-standing' },
+      { id: 'physical', label: 'Физическа работа', sub: 'Активен ден', value: 'physical', icon: 'hard-hat' },
     ],
   },
   {
@@ -178,13 +195,13 @@ export const STEPS: StepSpec[] = [
     id: 'sleep',
     type: 'single-select',
     headline: 'Как спиш?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'lt5', label: 'Под 5 часа', value: 'lt5', imageUrl: img('sleep', 'lt5') },
-      { id: '5-6', label: '5-6 часа', value: '5-6', imageUrl: img('sleep', '5-6') },
-      { id: '6-7', label: '6-7 часа', value: '6-7', imageUrl: img('sleep', '6-7') },
-      { id: '7-8', label: '7-8 часа', value: '7-8', imageUrl: img('sleep', '7-8') },
-      { id: '8plus', label: 'Над 8 часа', value: '8plus', imageUrl: img('sleep', '8plus') },
+      { id: 'lt5', label: 'Под 5 часа', sub: 'Хронично недоспиване', value: 'lt5', icon: 'bed' },
+      { id: '5-6', label: '5-6 часа', sub: 'Под минимума', value: '5-6', icon: 'cloud' },
+      { id: '6-7', label: '6-7 часа', sub: 'На границата', value: '6-7', icon: 'moon' },
+      { id: '7-8', label: '7-8 часа', sub: 'Здравословно', value: '7-8', icon: 'moon-star' },
+      { id: '8plus', label: 'Над 8 часа', sub: 'Дълъг сън', value: '8plus', icon: 'sunrise' },
     ],
   },
   {
@@ -192,12 +209,12 @@ export const STEPS: StepSpec[] = [
     id: 'stress',
     type: 'single-select',
     headline: 'Колко стрес имаш?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'low', label: 'Нисък', value: 'low', imageUrl: img('stress', 'low') },
-      { id: 'medium', label: 'Среден', sub: 'Има моменти', value: 'medium', imageUrl: img('stress', 'medium') },
-      { id: 'high', label: 'Висок', sub: 'Често съм напрегнат/-а', value: 'high', imageUrl: img('stress', 'high') },
-      { id: 'burnout', label: 'Изгарящ', sub: 'Не мога да се отпусна', value: 'burnout', imageUrl: img('stress', 'burnout') },
+      { id: 'low', label: 'Нисък', sub: 'Спокоен/-йна съм', value: 'low', icon: 'smile' },
+      { id: 'medium', label: 'Среден', sub: 'Има моменти', value: 'medium', icon: 'meh' },
+      { id: 'high', label: 'Висок', sub: 'Често съм напрегнат/-а', value: 'high', icon: 'frown' },
+      { id: 'burnout', label: 'Изгарящ', sub: 'Не мога да се отпусна', value: 'burnout', icon: 'cloud-lightning' },
     ],
   },
   {
@@ -205,12 +222,12 @@ export const STEPS: StepSpec[] = [
     id: 'water',
     type: 'single-select',
     headline: 'Колко вода пиеш на ден?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'lt1l', label: 'Под 1 литър', value: 'lt1l', imageUrl: img('water', 'lt1l') },
-      { id: '1-2l', label: '1-2 литра', value: '1-2l', imageUrl: img('water', '1-2l') },
-      { id: '2-3l', label: '2-3 литра', value: '2-3l', imageUrl: img('water', '2-3l') },
-      { id: '3plus', label: 'Над 3 литра', value: '3plus', imageUrl: img('water', '3plus') },
+      { id: 'lt1l', label: 'Под 1 литър', sub: 'Често забравяш', value: 'lt1l', icon: 'glass-water' },
+      { id: '1-2l', label: '1-2 литра', sub: 'Стандартно', value: '1-2l', icon: 'cup-soda' },
+      { id: '2-3l', label: '2-3 литра', sub: 'Стабилен прием', value: '2-3l', icon: 'droplet' },
+      { id: '3plus', label: 'Над 3 литра', sub: 'Активен/-на си', value: '3plus', icon: 'waves' },
     ],
   },
   {
@@ -218,13 +235,13 @@ export const STEPS: StepSpec[] = [
     id: 'dietStyle',
     type: 'single-select',
     headline: 'Как се храниш сега?',
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'free', label: 'Ям каквото ми се яде', value: 'free', imageUrl: img('dietStyle', 'free') },
-      { id: 'mindful', label: 'Опитвам се да внимавам', value: 'mindful', imageUrl: img('dietStyle', 'mindful') },
-      { id: 'planned', label: 'Следвам конкретен план', value: 'planned', imageUrl: img('dietStyle', 'planned') },
-      { id: 'yoyo', label: 'Карам йо-йо диети', value: 'yoyo', imageUrl: img('dietStyle', 'yoyo') },
-      { id: 'none', label: 'Нямам никаква система', value: 'none', imageUrl: img('dietStyle', 'none') },
+      { id: 'free', label: 'Ям каквото ми се яде', sub: 'Без правила', value: 'free', icon: 'sandwich' },
+      { id: 'mindful', label: 'Опитвам се да внимавам', sub: 'Гледам по-чисто, без строг план', value: 'mindful', icon: 'leaf' },
+      { id: 'planned', label: 'Следвам конкретен план', sub: 'Имам ясна структура', value: 'planned', icon: 'target' },
+      { id: 'yoyo', label: 'Опитвам, но не издържам', sub: 'Тръгвам силно, после спирам', value: 'yoyo', icon: 'circle-pause' },
+      { id: 'none', label: 'Нямам никаква система', sub: 'Храня се хаотично', value: 'none', icon: 'shuffle' },
     ],
   },
   {
@@ -233,14 +250,14 @@ export const STEPS: StepSpec[] = [
     type: 'multi-select',
     headline: 'Какво си пробвал/-а досега?',
     minSelect: 1,
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'gym', label: 'Фитнес зала', value: 'gym', imageUrl: img('pastAttempts', 'gym') },
-      { id: 'diets', label: 'Диети', value: 'diets', imageUrl: img('pastAttempts', 'diets') },
-      { id: 'youtube', label: 'YouTube програми', value: 'youtube', imageUrl: img('pastAttempts', 'youtube') },
-      { id: 'supplements', label: 'Хранителни добавки', value: 'supplements', imageUrl: img('pastAttempts', 'supplements') },
-      { id: 'pt', label: 'Личен треньор', value: 'pt', imageUrl: img('pastAttempts', 'pt') },
-      { id: 'nothing', label: 'Нищо още', value: 'nothing', imageUrl: img('pastAttempts', 'nothing') },
+      { id: 'gym', label: 'Фитнес зала', sub: 'Карта или абонамент', value: 'gym', icon: 'dumbbell' },
+      { id: 'diets', label: 'Диети', sub: 'Кето, IF, нискокалорично', value: 'diets', icon: 'carrot' },
+      { id: 'youtube', label: 'YouTube програми', sub: 'Безплатни тренировки', value: 'youtube', icon: 'play' },
+      { id: 'supplements', label: 'Хранителни добавки', sub: 'Протеин, креатин, витамини', value: 'supplements', icon: 'pill' },
+      { id: 'pt', label: 'Личен треньор', sub: 'Платена индивидуална работа', value: 'pt', icon: 'user' },
+      { id: 'nothing', label: 'Нищо още', sub: 'Започвам отначало', value: 'nothing', icon: 'circle-slash' },
     ],
   },
   {
@@ -256,12 +273,12 @@ export const STEPS: StepSpec[] = [
     id: 'mealTiming',
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'morning', label: 'Сутрин', sub: 'Закуската е най-голяма', value: 'morning', imageUrl: img('mealTiming', 'morning') },
-      { id: 'lunch', label: 'На обяд', value: 'lunch', imageUrl: img('mealTiming', 'lunch') },
-      { id: 'evening', label: 'Вечер', sub: 'Често пропускам закуска', value: 'evening', imageUrl: img('mealTiming', 'evening') },
-      { id: 'graze', label: 'Хапвам по малко цял ден', value: 'graze', imageUrl: img('mealTiming', 'graze') },
+      { id: 'morning', label: 'Сутрин', sub: 'Закуската е най-голяма', value: 'morning', icon: 'sun' },
+      { id: 'lunch', label: 'На обяд', sub: 'Балансирано в средата', value: 'lunch', icon: 'utensils' },
+      { id: 'evening', label: 'Вечер', sub: 'Често пропускам закуска', value: 'evening', icon: 'sunset' },
+      { id: 'graze', label: 'Хапвам по малко цял ден', sub: 'Без ясна структура', value: 'graze', icon: 'wheat' },
     ],
   },
   {
@@ -269,12 +286,12 @@ export const STEPS: StepSpec[] = [
     id: 'energy',
     type: 'single-select',
     headline: 'Как е енергията ти?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'stable', label: 'Стабилна', sub: 'Издържам докрай', value: 'stable', imageUrl: img('energy', 'stable') },
-      { id: 'afternoon-crash', label: 'Падам следобед', value: 'afternoon-crash', imageUrl: img('energy', 'afternoon-crash') },
-      { id: 'always-tired', label: 'Уморен/-а съм почти винаги', value: 'always-tired', imageUrl: img('energy', 'always-tired') },
-      { id: 'caffeine', label: 'Държа се с кафе', value: 'caffeine', imageUrl: img('energy', 'caffeine') },
+      { id: 'stable', label: 'Стабилна', sub: 'Издържам докрай', value: 'stable', icon: 'gauge' },
+      { id: 'afternoon-crash', label: 'Падам следобед', sub: 'Имам ясен спад', value: 'afternoon-crash', icon: 'battery-medium' },
+      { id: 'always-tired', label: 'Уморен/-а съм почти винаги', sub: 'Хронична умора', value: 'always-tired', icon: 'battery-low' },
+      { id: 'caffeine', label: 'Държа се с кафе', sub: 'Без него не мога', value: 'caffeine', icon: 'coffee' },
     ],
   },
   {
@@ -282,12 +299,12 @@ export const STEPS: StepSpec[] = [
     id: 'cravings',
     type: 'single-select',
     headline: 'След ядене ти се иска още?',
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'sweet', label: 'Сладко', value: 'sweet', imageUrl: img('cravings', 'sweet') },
-      { id: 'salty', label: 'Солено', value: 'salty', imageUrl: img('cravings', 'salty') },
-      { id: 'both', label: 'И двете', value: 'both', imageUrl: img('cravings', 'both') },
-      { id: 'none', label: 'Не, наситен/-а съм', value: 'none', imageUrl: img('cravings', 'none') },
+      { id: 'sweet', label: 'Сладко', sub: 'Десерт или плод', value: 'sweet', icon: 'cake' },
+      { id: 'salty', label: 'Солено', sub: 'Нещо хрупкаво', value: 'salty', icon: 'pizza' },
+      { id: 'both', label: 'И двете', sub: 'В различни моменти', value: 'both', icon: 'cookie' },
+      { id: 'none', label: 'Не, наситен/-а съм', sub: 'Спирам без усилие', value: 'none', icon: 'apple' },
     ],
   },
   {
@@ -297,10 +314,10 @@ export const STEPS: StepSpec[] = [
     headline: 'Подуваш ли се след хранене?',
     cardVariant: 'square',
     options: [
-      { id: 'often', label: 'Често', value: 'often', imageUrl: img('bloating', 'often') },
-      { id: 'sometimes', label: 'Понякога', value: 'sometimes', imageUrl: img('bloating', 'sometimes') },
-      { id: 'rarely', label: 'Рядко', value: 'rarely', imageUrl: img('bloating', 'rarely') },
-      { id: 'never', label: 'Никога', value: 'never', imageUrl: img('bloating', 'never') },
+      { id: 'often', label: 'Често', sub: 'Почти всеки ден', value: 'often', imageUrl: img('bloating', 'often') },
+      { id: 'sometimes', label: 'Понякога', sub: 'След тежки храни', value: 'sometimes', imageUrl: img('bloating', 'sometimes') },
+      { id: 'rarely', label: 'Рядко', sub: 'Изключения са', value: 'rarely', imageUrl: img('bloating', 'rarely') },
+      { id: 'never', label: 'Никога', sub: 'Нямам проблем', value: 'never', imageUrl: img('bloating', 'never') },
     ],
   },
   {
@@ -308,11 +325,11 @@ export const STEPS: StepSpec[] = [
     id: 'bodyTemp',
     type: 'single-select',
     headline: 'Как си с температурата?',
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'cold', label: 'Често ми е студено', sub: 'Особено ръце и крака', value: 'cold', imageUrl: img('bodyTemp', 'cold') },
-      { id: 'normal', label: 'Нормално', value: 'normal', imageUrl: img('bodyTemp', 'normal') },
-      { id: 'hot', label: 'Често ми е топло', sub: 'Потя се лесно', value: 'hot', imageUrl: img('bodyTemp', 'hot') },
+      { id: 'cold', label: 'Често ми е студено', sub: 'Особено ръце и крака', value: 'cold', icon: 'thermometer-snowflake' },
+      { id: 'normal', label: 'Нормално', sub: 'Без отклонения', value: 'normal', icon: 'thermometer' },
+      { id: 'hot', label: 'Често ми е топло', sub: 'Потя се лесно', value: 'hot', icon: 'thermometer-sun' },
     ],
   },
   {
@@ -320,7 +337,7 @@ export const STEPS: StepSpec[] = [
     id: 'pastBest',
     type: 'single-select',
     headline: 'Колко тегло си свалял/-а в най-добрата си форма?',
-    cardVariant: 'wide',
+    cardVariant: 'square',
     options: [
       { id: 'lt5', label: 'Под 5 кг', value: 'lt5', imageUrl: img('pastBest', 'lt5') },
       { id: '5-10', label: '5-10 кг', value: '5-10', imageUrl: img('pastBest', '5-10') },
@@ -343,14 +360,14 @@ export const STEPS: StepSpec[] = [
     type: 'multi-select',
     headline: 'Защо искаш да се промениш точно сега?',
     minSelect: 1,
-    cardVariant: 'square',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'health', label: 'За здраве', value: 'health', imageUrl: img('motivation', 'health') },
-      { id: 'partner', label: 'За партньора/-ката', value: 'partner', imageUrl: img('motivation', 'partner') },
-      { id: 'photos', label: 'За да се харесвам на снимки', value: 'photos', imageUrl: img('motivation', 'photos') },
-      { id: 'kids', label: 'За децата', value: 'kids', imageUrl: img('motivation', 'kids') },
-      { id: 'event', label: 'Имам конкретно събитие', value: 'event', imageUrl: img('motivation', 'event') },
-      { id: 'fed-up', label: 'Стига вече', value: 'fed-up', imageUrl: img('motivation', 'fed-up') },
+      { id: 'health', label: 'За здраве', sub: 'Дълъг и активен живот', value: 'health', icon: 'heart' },
+      { id: 'partner', label: 'За половинката си', sub: 'Иска ми се да впечатля', value: 'partner', icon: 'users' },
+      { id: 'photos', label: 'За да се харесвам на снимки', sub: 'Да съм уверен/-а', value: 'photos', icon: 'camera' },
+      { id: 'kids', label: 'За децата', sub: 'Да съм пример', value: 'kids', icon: 'baby' },
+      { id: 'event', label: 'Имам конкретно събитие', sub: 'Сватба, ваканция, рожден ден', value: 'event', icon: 'calendar' },
+      { id: 'fed-up', label: 'Стига вече', sub: 'Готов/-а съм за промяна', value: 'fed-up', icon: 'flag' },
     ],
   },
   {
@@ -365,15 +382,15 @@ export const STEPS: StepSpec[] = [
     type: 'multi-select',
     headline: 'Какво те спира досега?',
     minSelect: 1,
-    cardVariant: 'wide',
+    cardVariant: 'icon-row',
     options: [
-      { id: 'no-time', label: 'Нямам време', value: 'no-time', imageUrl: img('blockers', 'no-time') },
-      { id: 'no-plan', label: 'Нямам план', value: 'no-plan', imageUrl: img('blockers', 'no-plan') },
-      { id: 'no-support', label: 'Нямам подкрепа', value: 'no-support', imageUrl: img('blockers', 'no-support') },
-      { id: 'expensive', label: 'Скъпо ми е', value: 'expensive', imageUrl: img('blockers', 'expensive') },
-      { id: 'lost', label: 'Не знам откъде да започна', value: 'lost', imageUrl: img('blockers', 'lost') },
-      { id: 'fear', label: 'Страх ме е, че няма да издържа', value: 'fear', imageUrl: img('blockers', 'fear') },
-      { id: 'failed', label: 'Пробвал/-а съм и не върви', value: 'failed', imageUrl: img('blockers', 'failed') },
+      { id: 'no-time', label: 'Нямам време', sub: 'Дните минават бързо', value: 'no-time', icon: 'clock' },
+      { id: 'no-plan', label: 'Нямам план', sub: 'Без ясна структура', value: 'no-plan', icon: 'route' },
+      { id: 'no-support', label: 'Нямам подкрепа', sub: 'Сам/сама съм в това', value: 'no-support', icon: 'users' },
+      { id: 'expensive', label: 'Скъпо ми е', sub: 'Бюджетът е стегнат', value: 'expensive', icon: 'coins' },
+      { id: 'lost', label: 'Не знам откъде да започна', sub: 'Прекалено много информация', value: 'lost', icon: 'compass' },
+      { id: 'fear', label: 'Страх ме е, че няма да издържа', sub: 'Притеснява ме провал', value: 'fear', icon: 'shield-alert' },
+      { id: 'failed', label: 'Пробвал/-а съм и не върви', sub: 'Не получавам резултат', value: 'failed', icon: 'trending-down' },
     ],
   },
   {
@@ -389,19 +406,50 @@ export const STEPS: StepSpec[] = [
   },
   {
     step: 25,
+    id: 'projection-preview',
+    type: 'projection',
+    headline: 'Така изглежда твоят път',
+    subheadline: 'Готови сме с плана. Един последен поглед, преди да се захванем.',
+    reassureBg: 'Планът ти е готов след минута.',
+    ctaBg: 'Виж моя план',
+  },
+  {
+    step: 26,
     id: 'calculating',
     type: 'calculating',
     headline: 'Анализираме твоя метаболитен профил',
-    durationMs: 9000,
+    durationMs: 12000,
     milestonesBg: [
       'Изчисляваме BMI и метаболитна възраст',
       'Сравняваме с 10 000+ подобни профила',
       'Подбираме оптималната тренировъчна програма',
       'Готово',
     ],
+    midQuestions: [
+      {
+        id: 'workoutTime',
+        atProgress: 0.3,
+        headline: 'Кога предпочиташ да тренираш?',
+        options: [
+          { id: 'morning', label: 'Сутрин', value: 'morning' },
+          { id: 'midday', label: 'Обед', value: 'midday' },
+          { id: 'evening', label: 'Вечер', value: 'evening' },
+        ],
+      },
+      {
+        id: 'equipment',
+        atProgress: 0.65,
+        headline: 'С какво оборудване разполагаш?',
+        options: [
+          { id: 'home', label: 'Само у дома', value: 'home' },
+          { id: 'gym', label: 'Зала', value: 'gym' },
+          { id: 'both', label: 'И двете', value: 'both' },
+        ],
+      },
+    ],
   },
   {
-    step: 26,
+    step: 27,
     id: 'email',
     type: 'email-gate',
     headline: 'Твоят 90-дневен план е готов',

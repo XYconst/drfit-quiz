@@ -61,7 +61,7 @@ export const AVATARS: Record<AvatarId, AvatarProfile> = {
     labelEn: 'Skinny Man',
     hookBg: 'Качи чиста маса за 90 дни',
     resultHeadlineBg: (kg) => `Готов си да качиш ${kg ?? '5-10'} кг чиста мускулна маса за 90 дни`,
-    resultSubBg: 'Контролирана анаболна програма за хардгейнъри.',
+    resultSubBg: 'Контролирана програма за качване на чиста маса.',
     programAngle: 'lean-gain',
   },
 };
@@ -77,16 +77,13 @@ export function classifyAvatar(
 ): AvatarOrBlocked {
   if (gender === 'male') {
     if (goal === 'lose-major') {
-      return bodyType === 'overweight' ? '01' : 'blocked';
+      return bodyType === 'overweight' ? '01' : '03';
     }
-    if (goal === 'tone-recomp') return '03';
     if (goal === 'gain-mass') {
-      return bodyType === 'skinny' || bodyType === 'skinny-fat' ? '05' : 'blocked';
+      return bodyType === 'overweight' ? '01' : '05';
     }
-    return 'blocked';
+    return '03';
   }
-  // female
   if (goal === 'lose-major' && bodyType === 'overweight') return '02';
-  // Skinny F + any goal → Avatar 04 (no separate skinny-F bucket)
   return '04';
 }

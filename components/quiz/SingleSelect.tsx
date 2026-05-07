@@ -2,6 +2,8 @@
 import { motion } from 'framer-motion';
 import type { OptionSpec, CardVariant } from '@/lib/questions';
 import { OptionCard } from './OptionCard';
+import { OptionRow } from './OptionRow';
+import { resolveIcon } from '@/components/icons';
 
 interface Props {
   options: OptionSpec[];
@@ -11,8 +13,11 @@ interface Props {
 }
 
 function gridClass(variant: CardVariant): string {
+  if (variant === 'icon-row') return 'flex flex-col gap-3';
   if (variant === 'wide') return 'grid grid-cols-1 gap-3';
-  return 'grid grid-cols-2 gap-3';
+  // 2-col grids: when the option count is odd, the trailing single card centers
+  // itself at the same width as a regular column.
+  return 'grid grid-cols-2 gap-3 [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:w-[calc(50%-0.375rem)] [&>:last-child:nth-child(odd)]:justify-self-center';
 }
 
 const container = {
@@ -35,15 +40,26 @@ export function SingleSelect({ options, selected, variant, onPick }: Props) {
     >
       {options.map((opt) => (
         <motion.div key={opt.id} variants={item}>
-          <OptionCard
-            imageUrl={opt.imageUrl ?? ''}
-            imageAlt={opt.label}
-            label={opt.label}
-            sub={opt.sub}
-            selected={selected === opt.value}
-            onClick={() => onPick(opt.value, opt.id)}
-            variant={variant}
-          />
+          {variant === 'icon-row' ? (
+            <OptionRow
+              icon={resolveIcon(opt.icon)}
+              label={opt.label}
+              sub={opt.sub}
+              tone={opt.tone}
+              selected={selected === opt.value}
+              onClick={() => onPick(opt.value, opt.id)}
+            />
+          ) : (
+            <OptionCard
+              imageUrl={opt.imageUrl ?? ''}
+              imageAlt={opt.label}
+              label={opt.label}
+              sub={opt.sub}
+              selected={selected === opt.value}
+              onClick={() => onPick(opt.value, opt.id)}
+              variant={variant}
+            />
+          )}
         </motion.div>
       ))}
     </motion.div>

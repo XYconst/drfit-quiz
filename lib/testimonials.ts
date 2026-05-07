@@ -124,3 +124,40 @@ export function pickTestimonials(avatar: AvatarId): Testimonial[] {
   }
   return picked;
 }
+
+/**
+ * Pick a SINGLE testimonial that best matches the user's gender and kg trajectory
+ * (loss vs gain) for the projection-preview screen. Picks the testimonial whose
+ * `kgChange` is in the same direction and closest in magnitude to the user's
+ * desired delta. Falls back to gender-only match, then to the first entry.
+ *
+ * @param gender 'male' | 'female'
+ * @param kgDelta signed: positive = user wants to lose, negative = user wants to gain
+ *                (mirrors weight - targetWeight from quiz answers)
+ */
+export function pickProjectionTestimonial(
+  gender: TestimonialGender,
+  kgDelta: number,
+): Testimonial | null {
+  if (TESTIMONIALS.length === 0) return null;
+  const sameGender = TESTIMONIALS.filter((t) => t.gender === gender);
+  if (sameGender.length === 0) return TESTIMONIALS[0];
+
+  // Direction match: user kgDelta > 0 means losing → testimonial.kgChange < 0.
+  // user kgDelta < 0 means gaining → testimonial.kgChange > 0.
+  const wantsLoss = kgDelta > 0;
+  const directionMatch = sameGender.filter((t) => (wantsLoss ? t.kgChange < 0 : t.kgChange > 0));
+
+  const pool = directionMatch.length > 0 ? directionMatch : sameGender;
+  const targetMagnitude = Math.abs(kgDelta);
+  let best = pool[0];
+  let bestDistance = Math.abs(Math.abs(best.kgChange) - targetMagnitude);
+  for (const t of pool) {
+    const d = Math.abs(Math.abs(t.kgChange) - targetMagnitude);
+    if (d < bestDistance) {
+      best = t;
+      bestDistance = d;
+    }
+  }
+  return best;
+}

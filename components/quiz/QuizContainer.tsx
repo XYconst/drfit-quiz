@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { STEPS, getStep, resolveOptions, resolveCardVariant, TOTAL_STEPS } from '@/lib/questions';
@@ -11,6 +11,8 @@ import {
   type AvatarOrBlocked,
 } from '@/lib/avatars';
 import { trackQuizStep, trackLead } from '@/lib/pixel';
+import { genderize } from '@/lib/genderize';
+import type { OptionSpec } from '@/lib/questions';
 import { QuestionShell } from './QuestionShell';
 import { SingleSelect } from './SingleSelect';
 import { MultiSelect } from './MultiSelect';
@@ -19,6 +21,10 @@ import { EmailGate } from './EmailGate';
 import { CalculatingScreen } from './CalculatingScreen';
 import { InterstitialCard } from './InterstitialCard';
 import { DateStep } from './DateStep';
+import { GoalSelect } from './GoalSelect';
+import { ProjectionPreview } from './ProjectionPreview';
+import { ConfirmDialog } from './ConfirmDialog';
+import { RotateCcwIcon } from '@/components/icons';
 
 const STORAGE_KEY = 'drfit_quiz_state_v1';
 
@@ -55,6 +61,7 @@ function reducer(state: State, action: Action): State {
 export function QuizContainer() {
   const router = useRouter();
   const [state, dispatch] = useReducer(reducer, { currentStep: 1, answers: {} });
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // hydrate from localStorage
   useEffect(() => {
@@ -80,11 +87,6 @@ export function QuizContainer() {
     trackQuizStep(state.currentStep, avatar && avatar !== 'blocked' ? avatar : undefined);
   }, [state.currentStep, avatar]);
 
-  // blocked redirect
-  useEffect(() => {
-    if (avatar === 'blocked') router.push('/blocked');
-  }, [avatar, router]);
-
   const step = getStep(state.currentStep);
   if (!step) return null;
 
@@ -94,6 +96,12 @@ export function QuizContainer() {
   };
 
   const onContinue = () => dispatch({ type: 'next' });
+
+  const confirmResetFresh = () => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch {/* ignore */}
+    dispatch({ type: 'hydrate', state: { currentStep: 1, answers: {} } });
+    setShowResetConfirm(false);
+  };
 
   const onEmailSubmit = async (values: Record<string, string>) => {
     dispatch({ type: 'answer', stepId: step.id, value: values });
@@ -131,17 +139,36 @@ export function QuizContainer() {
   if (step.type === 'calculating') {
     return (
       <CalculatingScreen
-        headline={step.headline ?? ''}
-        milestones={step.milestonesBg ?? []}
+        headline={genderize(step.headline ?? '', gender)}
+        milestones={(step.milestonesBg ?? []).map((m) => genderize(m, gender))}
         durationMs={step.durationMs ?? 8000}
         onDone={onContinue}
+        midQuestions={step.midQuestions}
+        onMidAnswer={(stepId, value) => dispatch({ type: 'answer', stepId, value })}
+        stepLabel={`${state.currentStep} / ${TOTAL_STEPS}`}
       />
     );
   }
 
+  const genderizeOpts = (opts: OptionSpec[]): OptionSpec[] =>
+    opts.map((o) => ({
+      ...o,
+      label: genderize(o.label, gender),
+      sub: o.sub ? genderize(o.sub, gender) : o.sub,
+    }));
+
   let content: React.ReactNode = null;
-  if (step.type === 'single-select') {
-    const opts = resolveOptions(step, gender ?? undefined);
+  if (step.type === 'single-select' && step.id === 'goal') {
+    const opts = genderizeOpts(resolveOptions(step, gender ?? undefined));
+    content = (
+      <GoalSelect
+        options={opts}
+        selected={state.answers[step.id] as string | undefined}
+        onPick={onSingle}
+      />
+    );
+  } else if (step.type === 'single-select') {
+    const opts = genderizeOpts(resolveOptions(step, gender ?? undefined));
     content = (
       <SingleSelect
         options={opts}
@@ -151,7 +178,7 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'multi-select') {
-    const opts = resolveOptions(step, gender ?? undefined);
+    const opts = genderizeOpts(resolveOptions(step, gender ?? undefined));
     const selected = (state.answers[step.id] as string[] | undefined) ?? [];
     content = (
       <MultiSelect
@@ -186,11 +213,34 @@ export function QuizContainer() {
         }}
       />
     );
+  } else if (step.type === 'projection') {
+    const m = (state.answers.metrics ?? {}) as Record<string, number>;
+    const heightCm = m.height ?? 170;
+    const currentKg = m.weight ?? 80;
+    const targetKg = m.targetWeight ?? 70;
+    const kgDelta = currentKg - targetKg;
+    const td = state.answers.targetDate as { date?: string; label?: string } | undefined;
+    const targetDateLabel = td?.label || td?.date;
+    content = (
+      <ProjectionPreview
+        headline={genderize(step.headline, gender)}
+        subheadline={genderize(step.subheadline, gender)}
+        reassure={step.reassureBg}
+        ctaLabel={step.ctaBg ?? 'Виж моя план'}
+        heightCm={heightCm}
+        currentKg={currentKg}
+        targetKg={targetKg}
+        kgDelta={kgDelta}
+        targetDateLabel={targetDateLabel}
+        gender={gender ?? 'male'}
+        onContinue={onContinue}
+      />
+    );
   } else if (step.type === 'interstitial') {
     content = (
       <InterstitialCard
-        headline={step.headline ?? ''}
-        body={step.bodyBg ?? ''}
+        headline={genderize(step.headline ?? '', gender)}
+        body={genderize(step.bodyBg ?? '', gender)}
         ctaLabel={step.ctaBg ?? 'Продължи'}
         onContinue={onContinue}
       />
@@ -209,9 +259,23 @@ export function QuizContainer() {
     <MotionConfig reducedMotion="user">
       <QuestionShell
         progress={state.currentStep / TOTAL_STEPS}
-        onBack={state.currentStep > 1 ? () => dispatch({ type: 'prev' }) : undefined}
-        headline={step.type === 'interstitial' ? undefined : step.headline}
-        subheadline={step.type === 'interstitial' ? undefined : step.subheadline}
+        onBack={
+          step.type === 'email-gate'
+            ? () => setShowResetConfirm(true)
+            : state.currentStep > 1
+              ? () => dispatch({ type: 'prev' })
+              : undefined
+        }
+        headline={
+          step.type === 'interstitial' || step.type === 'projection'
+            ? undefined
+            : genderize(step.headline, gender)
+        }
+        subheadline={
+          step.type === 'interstitial' || step.type === 'projection'
+            ? undefined
+            : genderize(step.subheadline, gender)
+        }
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -229,6 +293,17 @@ export function QuizContainer() {
           </motion.div>
         </AnimatePresence>
       </QuestionShell>
+
+      <ConfirmDialog
+        open={showResetConfirm}
+        title="Започни отначало?"
+        body="Всички твои отговори ще бъдат изтрити и ще се върнеш на първата стъпка."
+        confirmLabel="Започни отначало"
+        cancelLabel="Отказ"
+        onConfirm={confirmResetFresh}
+        onCancel={() => setShowResetConfirm(false)}
+        icon={<RotateCcwIcon width={26} height={26} />}
+      />
     </MotionConfig>
   );
 }

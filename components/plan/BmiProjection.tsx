@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import type { AvatarId } from '@/lib/avatars';
+import { denseProjection, milestoneProjection, buildCurvePath } from '@/lib/projection';
 
 interface Props {
   heightCm: number;
@@ -34,11 +35,11 @@ const CATEGORY_LABELS_BG: Record<BmiCategory, string> = {
 
 // Avatar-aware copy per category. Avatar 05 (gain mass) gets a different "under" line.
 function categoryCopyBg(cat: BmiCategory, avatar: AvatarId): string {
-  if (cat === 'under' && avatar === '05') return 'Под нормата. Целта е чиста анаболна маса, не дефицит.';
-  if (cat === 'under') return 'Под нормата. Целта е чиста маса, не дефицит.';
-  if (cat === 'normal') return 'В нормата. Стегни се без екстремен дефицит.';
-  if (cat === 'over') return 'Над нормата. Започваме с инсулин и AfterBurn.';
-  return 'Сериозно над нормата. 4-те хормона са изхода.';
+  if (cat === 'under' && avatar === '05') return 'Под нормата. Целта е качване на чиста маса.';
+  if (cat === 'under') return 'Под нормата. Целта е чиста маса.';
+  if (cat === 'normal') return 'В нормата. Стягане без екстремен дефицит.';
+  if (cat === 'over') return 'Над нормата. Започваме с инсулинова чувствителност.';
+  return 'Сериозно над нормата. Балансът на четирите хормона е ключът.';
 }
 
 function classify(bmi: number): BmiCategory {
@@ -53,20 +54,6 @@ function bmiToPercent(bmi: number): number {
   return ((clamped - SCALE_MIN) / (SCALE_MAX - SCALE_MIN)) * 100;
 }
 
-// Polyline through dense ease-curve samples reads as a smooth curve at 19 points.
-function buildCurvePath(points: { x: number; y: number }[]): string {
-  if (points.length < 2) return '';
-  return points.reduce(
-    (acc, p, i) => acc + (i === 0 ? `M ${p.x} ${p.y}` : ` L ${p.x} ${p.y}`),
-    '',
-  );
-}
-
-// easeOutQuad: faster at the start (typical fat-loss curve), slower toward the goal.
-function easeOutQuad(t: number): number {
-  return t * (2 - t);
-}
-
 export function BmiProjection({ heightCm, currentKg, targetKg, targetDate, avatar }: Props) {
   const bmi = useMemo(() => {
     if (!heightCm || !currentKg) return 0;
@@ -77,24 +64,14 @@ export function BmiProjection({ heightCm, currentKg, targetKg, targetDate, avata
   const cat = classify(bmi);
   const markerLeft = bmiToPercent(bmi);
 
-  // Dense sample for the curve path (19 pts, every 5 days), eased.
-  const densePoints = useMemo(() => {
-    const out: { day: number; kg: number }[] = [];
-    for (let d = 0; d <= 90; d += 5) {
-      const t = d / 90;
-      out.push({ day: d, kg: currentKg + (targetKg - currentKg) * easeOutQuad(t) });
-    }
-    return out;
-  }, [currentKg, targetKg]);
-
-  // 4 milestone dots at days 0/30/60/90, on the same eased curve so they sit on the line.
-  const milestonePoints = useMemo(() => {
-    const days = [0, 30, 60, 90];
-    return days.map((d) => ({
-      day: d,
-      kg: currentKg + (targetKg - currentKg) * easeOutQuad(d / 90),
-    }));
-  }, [currentKg, targetKg]);
+  const densePoints = useMemo(
+    () => denseProjection(currentKg, targetKg),
+    [currentKg, targetKg],
+  );
+  const milestonePoints = useMemo(
+    () => milestoneProjection(currentKg, targetKg),
+    [currentKg, targetKg],
+  );
 
   // SVG layout
   const svgW = 600;
