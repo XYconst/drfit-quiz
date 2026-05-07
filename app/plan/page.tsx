@@ -1,5 +1,6 @@
 import { AVATARS, type AvatarId } from '@/lib/avatars';
 import { buildCheckoutUrl } from '@/lib/checkout';
+import { parsePersonalizeParams, personalizedSection01Bullets } from '@/lib/personalize';
 import { StickyCountdown } from '@/components/plan/StickyCountdown';
 import { NumberedSection } from '@/components/plan/NumberedSection';
 import { ComparisonBlock } from '@/components/plan/ComparisonBlock';
@@ -7,7 +8,7 @@ import { GuaranteeBlock } from '@/components/plan/GuaranteeBlock';
 import { CtaButton } from '@/components/plan/CtaButton';
 
 interface PageProps {
-  searchParams: Promise<{ avatar?: string; kg?: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }
 
 function isAvatar(s: string | undefined): s is AvatarId {
@@ -20,6 +21,8 @@ export default async function PlanPage({ searchParams }: PageProps) {
   const kg = sp.kg ? Number(sp.kg) : undefined;
   const avatar = AVATARS[avatarId];
   const checkoutUrl = buildCheckoutUrl(avatarId);
+  const personalize = parsePersonalizeParams(sp);
+  const section01 = personalizedSection01Bullets(personalize);
 
   return (
     <>
@@ -44,11 +47,13 @@ export default async function PlanPage({ searchParams }: PageProps) {
         </section>
 
         <NumberedSection number="01" title="Защо стандартните програми не работят за теб">
-          <ul className="space-y-2 text-[var(--color-text-body)]">
-            <li>• Не таргетират корена на проблема — метаболитните хормони</li>
-            <li>• Не се адаптират към твоя ритъм, сън и стрес</li>
-            <li>• Без подкрепа е лесно да се откажеш на 14-я ден</li>
-            <li>• Едно и също решение за всички — без персонализация</li>
+          <ul className="space-y-3 text-[var(--color-text-body)]">
+            {section01.map((b, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="text-[var(--color-brand-red)] font-bold leading-none mt-1.5">•</span>
+                <span>{b}</span>
+              </li>
+            ))}
           </ul>
         </NumberedSection>
 
@@ -71,7 +76,7 @@ export default async function PlanPage({ searchParams }: PageProps) {
         <NumberedSection number="03" title="Без план срещу С Dr.Fit план">
           <ComparisonBlock
             without={[
-              'Йо-йо ефект — сваляш и качваш',
+              'Йо-йо ефект, сваляш и качваш',
               'Налучкваш сам/-а',
               'Без подкрепа',
               'Скъпа фитнес зала',

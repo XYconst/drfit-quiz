@@ -13,7 +13,7 @@ export function StickyCountdown({ initialSeconds }: { initialSeconds: number }) 
   const sec = s % 60;
   return (
     <div className="sticky top-0 z-20 bg-[var(--color-brand-dark)] text-white text-sm py-2.5 px-4 flex items-center justify-center gap-2">
-      <span>🔥 Само за първите 10 абонати днес — изтича след</span>
+      <span>🔥 Само за първите 10 абонати днес. Изтича след</span>
       <span className="text-gold-gradient font-extrabold tabular-nums">{pad(m)}:{pad(sec)}</span>
     </div>
   );

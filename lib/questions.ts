@@ -142,9 +142,9 @@ export const STEPS: StepSpec[] = [
     headline: 'Колко активен/-на си през седмицата?',
     options: [
       { id: 'sedentary', label: 'Почти не се движа', value: 'sedentary', emoji: '🛋️' },
-      { id: 'light', label: 'Лек активен/-на — рядко тренировки', value: 'light', emoji: '🚶' },
-      { id: 'moderate', label: 'Умерено — 2-3 тренировки седмично', value: 'moderate', emoji: '🏃' },
-      { id: 'high', label: 'Много — 4+ тренировки седмично', value: 'high', emoji: '💪' },
+      { id: 'light', label: 'Лек активен/-на (рядко тренировки)', value: 'light', emoji: '🚶' },
+      { id: 'moderate', label: 'Умерено (2-3 тренировки седмично)', value: 'moderate', emoji: '🏃' },
+      { id: 'high', label: 'Много (4+ тренировки седмично)', value: 'high', emoji: '💪' },
     ],
   },
   {
@@ -178,9 +178,9 @@ export const STEPS: StepSpec[] = [
     headline: 'Колко стрес имаш?',
     options: [
       { id: 'low', label: 'Нисък', value: 'low', emoji: '🧘' },
-      { id: 'medium', label: 'Среден — има моменти', value: 'medium', emoji: '😅' },
-      { id: 'high', label: 'Висок — често съм напрегнат/-а', value: 'high', emoji: '😰' },
-      { id: 'burnout', label: 'Изгарящ — не мога да се отпусна', value: 'burnout', emoji: '🔥' },
+      { id: 'medium', label: 'Среден (има моменти)', value: 'medium', emoji: '😅' },
+      { id: 'high', label: 'Висок (често съм напрегнат/-а)', value: 'high', emoji: '😰' },
+      { id: 'burnout', label: 'Изгарящ (не мога да се отпусна)', value: 'burnout', emoji: '🔥' },
     ],
   },
   {
@@ -237,9 +237,9 @@ export const STEPS: StepSpec[] = [
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
     options: [
-      { id: 'morning', label: 'Сутрин — закуската е най-голяма', value: 'morning', emoji: '🌅' },
+      { id: 'morning', label: 'Сутрин (закуската е най-голяма)', value: 'morning', emoji: '🌅' },
       { id: 'lunch', label: 'На обяд', value: 'lunch', emoji: '☀️' },
-      { id: 'evening', label: 'Вечер — често пропускам закуска', value: 'evening', emoji: '🌙' },
+      { id: 'evening', label: 'Вечер (често пропускам закуска)', value: 'evening', emoji: '🌙' },
       { id: 'graze', label: 'Хапвам по малко цял ден', value: 'graze', emoji: '🍴' },
     ],
   },
@@ -249,7 +249,7 @@ export const STEPS: StepSpec[] = [
     type: 'single-select',
     headline: 'Как е енергията ти?',
     options: [
-      { id: 'stable', label: 'Стабилна — издържам докрай', value: 'stable', emoji: '⚡' },
+      { id: 'stable', label: 'Стабилна (издържам докрай)', value: 'stable', emoji: '⚡' },
       { id: 'afternoon-crash', label: 'Падам следобед', value: 'afternoon-crash', emoji: '🔋' },
       { id: 'always-tired', label: 'Уморен/-а съм почти винаги', value: 'always-tired', emoji: '😴' },
       { id: 'caffeine', label: 'Държа се с кафе', value: 'caffeine', emoji: '☕' },
@@ -264,7 +264,7 @@ export const STEPS: StepSpec[] = [
       { id: 'sweet', label: 'Сладко', value: 'sweet', emoji: '🍫' },
       { id: 'salty', label: 'Солено', value: 'salty', emoji: '🥨' },
       { id: 'both', label: 'И двете', value: 'both', emoji: '🍰' },
-      { id: 'none', label: 'Не — наситен/-а съм', value: 'none', emoji: '✋' },
+      { id: 'none', label: 'Не, наситен/-а съм', value: 'none', emoji: '✋' },
     ],
   },
   {
@@ -352,7 +352,7 @@ export const STEPS: StepSpec[] = [
     step: 24,
     id: 'metrics',
     type: 'numeric-combo',
-    headline: 'Последна стъпка — твоите числа',
+    headline: 'Последна стъпка: твоите числа',
     inputs: [
       { name: 'height', label: 'Височина', min: 140, max: 220, default: 170, suffix: 'см' },
       { name: 'weight', label: 'Тегло сега', min: 40, max: 200, default: 80, suffix: 'кг' },
@@ -377,7 +377,7 @@ export const STEPS: StepSpec[] = [
     id: 'email',
     type: 'email-gate',
     headline: 'Твоят 90-дневен план е готов',
-    subheadline: 'Въведи email-а си — изпращаме ти плана + достъп до приложението',
+    subheadline: 'Въведи email-а си и ти изпращаме плана + достъп до приложението',
     fields: [
       { name: 'email', type: 'email', label: 'Email', placeholder: 'твоят@email.bg', required: true },
       { name: 'phone', type: 'tel', label: 'Телефон (по желание)', placeholder: '+359...', required: false },

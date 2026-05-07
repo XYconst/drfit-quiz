@@ -107,7 +107,16 @@ export function QuizContainer() {
     }).catch(() => {/* swallow — analytics-grade reliability */});
     trackLead(values.email, avatar);
     try { localStorage.removeItem(STORAGE_KEY); } catch {/* ignore */}
-    router.push(`/plan?avatar=${avatar}&kg=${kg}`);
+    const sleep = state.answers.sleep as string | undefined;
+    const stress = state.answers.stress as string | undefined;
+    const diet = state.answers.dietStyle as string | undefined;
+    const past = state.answers.pastAttempts as string[] | undefined;
+    const params = new URLSearchParams({ avatar, kg: String(kg) });
+    if (sleep) params.set('sleep', sleep);
+    if (stress) params.set('stress', stress);
+    if (diet) params.set('diet', diet);
+    if (past && past.length) params.set('past', past.join(','));
+    router.push(`/plan?${params.toString()}`);
   };
 
   // Calculating screen renders bare (no shell)

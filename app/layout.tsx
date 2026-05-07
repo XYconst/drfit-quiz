@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-sans-run
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-display-runtime', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Dr.Fit — Твоят 90-дневен план',
+  title: 'Dr.Fit: Твоят 90-дневен план',
   description: 'Намери защо метаболизмът ти не работи и получи персонализиран 90-дневен план. Гаранция: плащаш 0 EUR.',
 };
 
