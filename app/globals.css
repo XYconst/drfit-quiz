@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand reds */
+  --color-brand-red: #A50015;
+  --color-brand-bright: #E50914;
+  --color-brand-red-deep: #7A000F;
+  --color-brand-red-tint: #FFF5F6;
+
+  /* Dark + neutral surfaces */
+  --color-brand-dark: #192126;
+  --color-brand-bg: #FAFAFA;
+  --color-surface-100: #F4F4F4;
+  --color-surface-200: #E5E5E5;
+  --color-line: #DEDEDF;
+
+  /* Text scale */
+  --color-text-muted: #6B7280;
+  --color-text-body: #4B5563;
+  --color-text-strong: #1F2937;
+  --color-text-headline: #111827;
+
+  /* Success greens — ✓ accents only, NEVER for CTAs */
+  --color-success-700: #047857;
+  --color-success-600: #059669;
+  --color-success-400: #34D399;
+  --color-success-50: #E8FAF3;
+
+  /* Amber callout */
+  --color-amber-bg: #FFFBEB;
+  --color-amber-border: #FED7AA;
+  --color-amber-text: #92400E;
+
+  /* Fonts */
+  --font-sans: "Gilroy", "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+}
+
+@layer base {
+  html, body { height: 100%; }
+  body {
+    background: var(--color-brand-bg);
+    color: var(--color-text-body);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 { color: var(--color-text-headline); font-weight: 800; letter-spacing: -0.01em; }
+}
+
+@layer utilities {
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, #E50914 0%, #A50015 100%);
+  }
+  .bg-gold-gradient {
+    background: linear-gradient(90deg, #cc7d04 10%, #feda5c 50%, #cc7d04 90%);
+  }
+  .text-gold-gradient {
+    background: linear-gradient(90deg, #cc7d04 10%, #feda5c 50%, #cc7d04 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .shadow-brand-red {
+    box-shadow: 0 10px 30px rgba(229, 9, 20, .28), 0 2px 6px rgba(122, 0, 15, .35);
+  }
+  .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    color: var(--color-brand-red);
+    position: relative;
+    padding-left: 30px;
+  }
+  .eyebrow::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 22px;
+    height: 2px;
+    background: var(--color-brand-red);
+    transform: translateY(-50%);
+  }
+}
