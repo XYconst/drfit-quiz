@@ -19,7 +19,8 @@ export function QuestionShell({ progress, onBack, children, headline, subheadlin
             type="button"
             onClick={onBack}
             disabled={!onBack}
-            className="size-10 grid place-items-center rounded-full text-[var(--color-text-body)] disabled:opacity-30 hover:bg-[var(--color-surface-100)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)]"
+            style={{ transformOrigin: 'center' }}
+            className="size-10 grid place-items-center rounded-full text-[var(--color-text-body)] disabled:opacity-30 hover:bg-[var(--color-surface-100)] motion-safe:transition-[background-color,transform] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)]"
             aria-label="Назад"
           >
             <ChevronLeftIcon width={22} height={22} />

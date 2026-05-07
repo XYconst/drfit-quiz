@@ -9,6 +9,7 @@ import { CtaButton } from '@/components/plan/CtaButton';
 import { BmiProjection } from '@/components/plan/BmiProjection';
 import { TestimonialsBlock } from '@/components/plan/TestimonialsBlock';
 import { CheckIcon, LockIcon } from '@/components/icons';
+import { HeroStagger, HeroItem } from '@/components/plan/HeroReveal';
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -41,14 +42,23 @@ export default async function PlanPage({ searchParams }: PageProps) {
       <main className="max-w-md mx-auto px-5 pt-14 pb-32">
         {/* Hero */}
         <section className="py-6">
-          <span className="eyebrow">Твоят план</span>
-          <h1
-            className="mt-3 text-3xl leading-[1.05] tracking-[-0.02em]"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 700 }}
-          >
-            {avatar.resultHeadlineBg(kg)}
-          </h1>
-          <p className="mt-3 text-base text-[var(--color-text-body)]">{avatar.resultSubBg}</p>
+          <HeroStagger>
+            <HeroItem as="span" className="eyebrow">Твоят план</HeroItem>
+            <HeroItem
+              as="h1"
+              className="mt-3 text-3xl leading-[1.05] tracking-[-0.02em]"
+              style={{ fontFamily: 'var(--font-display)', fontWeight: 700, textWrap: 'balance' }}
+            >
+              {avatar.resultHeadlineBg(kg)}
+            </HeroItem>
+            <HeroItem
+              as="p"
+              className="mt-3 text-base text-[var(--color-text-body)]"
+              style={{ textWrap: 'pretty' }}
+            >
+              {avatar.resultSubBg}
+            </HeroItem>
+          </HeroStagger>
 
           {showProjection ? (
             <div className="mt-6">

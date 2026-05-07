@@ -65,9 +65,15 @@ export function EmailGate({ fields, ctaLabel, onSubmit }: Props) {
       <button
         type="submit"
         disabled={!valid || submitting}
+        style={{ transformOrigin: 'center' }}
         className={[
-          'mt-2 w-full h-14 rounded-full font-bold text-white transition-all',
-          valid && !submitting ? 'bg-brand-gradient shadow-brand-red active:scale-[0.99]' : 'bg-[var(--color-surface-200)] text-[var(--color-text-muted)] cursor-not-allowed',
+          'mt-2 w-full h-14 rounded-full font-bold text-white',
+          'motion-safe:transition-[transform,background-color,box-shadow,opacity] motion-safe:duration-200 motion-safe:ease-out',
+          'motion-safe:active:scale-[0.98] motion-safe:active:duration-100',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2',
+          valid && !submitting
+            ? 'bg-brand-gradient shadow-brand-red cursor-pointer motion-safe:hover:shadow-[0_18px_30px_-12px_rgba(165,0,21,0.5)]'
+            : 'bg-[var(--color-surface-200)] text-[var(--color-text-muted)] cursor-not-allowed',
         ].join(' ')}
       >
         {submitting ? 'Изпращаме...' : ctaLabel}

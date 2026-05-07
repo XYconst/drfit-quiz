@@ -36,8 +36,12 @@ export function DateStep({ initial, onContinue }: Props) {
             key={c.id}
             type="button"
             onClick={() => onChip(c.id, c.addMonths)}
+            style={{ transformOrigin: 'center' }}
             className={[
-              'rounded-full px-4 py-2.5 text-sm font-medium border transition-all active:scale-95',
+              'rounded-full px-4 py-2.5 text-sm font-medium border',
+              'motion-safe:transition-[transform,background-color,border-color,color] motion-safe:duration-200 motion-safe:ease-out',
+              'motion-safe:active:scale-95 motion-safe:active:duration-100',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)]',
               chip === c.id
                 ? 'bg-[var(--color-brand-red)] border-[var(--color-brand-red)] text-white'
                 : 'bg-white border-[var(--color-line)] text-[var(--color-text-strong)]',

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/navigation';
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { STEPS, getStep, resolveOptions, resolveCardVariant, TOTAL_STEPS } from '@/lib/questions';
 import {
   classifyAvatar,
@@ -205,16 +206,30 @@ export function QuizContainer() {
   }
 
   return (
-    <QuestionShell
-      progress={state.currentStep / TOTAL_STEPS}
-      onBack={state.currentStep > 1 ? () => dispatch({ type: 'prev' }) : undefined}
-      headline={step.type === 'interstitial' ? undefined : step.headline}
-      subheadline={step.type === 'interstitial' ? undefined : step.subheadline}
-    >
-      <div key={step.id} className="flex flex-col flex-1">
-        {content}
-      </div>
-    </QuestionShell>
+    <MotionConfig reducedMotion="user">
+      <QuestionShell
+        progress={state.currentStep / TOTAL_STEPS}
+        onBack={state.currentStep > 1 ? () => dispatch({ type: 'prev' }) : undefined}
+        headline={step.type === 'interstitial' ? undefined : step.headline}
+        subheadline={step.type === 'interstitial' ? undefined : step.subheadline}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={step.id}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -12 }}
+            transition={{
+              x: { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] },
+              opacity: { duration: 0.18, ease: 'easeOut' },
+            }}
+            className="flex flex-col flex-1"
+          >
+            {content}
+          </motion.div>
+        </AnimatePresence>
+      </QuestionShell>
+    </MotionConfig>
   );
 }
 

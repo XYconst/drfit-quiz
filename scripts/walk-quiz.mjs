@@ -6,7 +6,14 @@ const OUT = '/tmp/drfit-walk';
 await mkdir(OUT, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+const ctx = await browser.newContext({
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 2,
+  // Bypass framer-motion entry/stagger transitions so screenshots capture the
+  // final layout state without timing-dependent flakiness. Real-browser visual
+  // verification of the animations is a separate manual step.
+  reducedMotion: 'reduce',
+});
 const page = await ctx.newPage();
 
 const errors = [];
@@ -15,7 +22,7 @@ page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.
 
 const log = [];
 async function snap(label) {
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(800);
   const f = `${OUT}/${String(log.length).padStart(2, '0')}-${label}.png`;
   await page.screenshot({ path: f, fullPage: true });
   log.push({ label, file: f, url: page.url() });
