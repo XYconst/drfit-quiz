@@ -43,7 +43,7 @@ export default async function PlanPage({ searchParams }: PageProps) {
         {/* Hero */}
         <section className="py-6">
           <HeroStagger>
-            <HeroItem as="span" className="eyebrow">Твоят план</HeroItem>
+            <HeroItem as="span" className="eyebrow">Твоят персонализиран план</HeroItem>
             <HeroItem
               as="h1"
               className="mt-3 text-3xl leading-[1.05] tracking-[-0.02em]"
@@ -76,12 +76,33 @@ export default async function PlanPage({ searchParams }: PageProps) {
               <p className="mt-2 text-2xl font-extrabold text-[var(--color-text-headline)]">
                 {kg ? `${kg} кг за 90 дни` : '90-дневна трансформация'}
               </p>
-              <p className="mt-1 text-xs text-[var(--color-text-muted)]">*Индивидуални резултати според следване на плана</p>
+              <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                Прогнозата е ориентир, базиран на твоите отговори. Реалните резултати зависят от спазването на плана.
+              </p>
             </div>
           )}
         </section>
 
-        <NumberedSection number="01" title="Защо стандартните програми не работят за теб">
+        <NumberedSection number="01" title="Какво включва твоят 90-дневен план">
+          <ul className="space-y-3">
+            {[
+              { t: 'Индивидуален хранителен план', s: 'Калории и макроси, изчислени за твоя метаболизъм' },
+              { t: 'Персонализирана тренировъчна програма', s: 'Адаптирана за оборудването, което имаш' },
+              { t: 'Неограничен чат с треньор', s: 'Бонус за първите 10 абонати днес' },
+              { t: 'Пълен достъп до приложението', s: 'app.dr-fit.co, всички функции отключени' },
+            ].map((row) => (
+              <li key={row.t} className="flex items-start gap-3">
+                <CheckIcon width={16} height={16} className="text-[var(--color-success-600)] mt-1.5 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-[var(--color-text-strong)]">{row.t}</span>
+                  <span className="block text-sm text-[var(--color-text-muted)]">{row.s}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </NumberedSection>
+
+        <NumberedSection number="02" title="Защо стандартните програми не работят за теб">
           <ul className="space-y-3 text-[var(--color-text-body)]">
             {section01.map((b, i) => (
               <li key={i} className="flex items-start gap-3">
@@ -92,41 +113,71 @@ export default async function PlanPage({ searchParams }: PageProps) {
           </ul>
         </NumberedSection>
 
-        <NumberedSection number="02" title="Какво включва твоят 90-дневен план">
-          <ul className="space-y-3">
-            {[
-              'Индивидуален хранителен план',
-              'Персонализирана тренировъчна програма',
-              'Неограничен чат с треньор (бонус за първите 10 днес)',
-              'Достъп до app.dr-fit.co',
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-3">
-                <CheckIcon width={16} height={16} className="text-[var(--color-success-600)] mt-1 shrink-0" />
-                <span className="text-[var(--color-text-strong)]">{t}</span>
-              </li>
-            ))}
-          </ul>
-        </NumberedSection>
-
         <NumberedSection number="03" title="Без план срещу С Dr.Fit план">
           <ComparisonBlock blockers={blockers} pastAttempts={pastAttempts} />
         </NumberedSection>
 
-        <NumberedSection number="04" title="Гаранция: плащаш 0 EUR">
-          <GuaranteeBlock />
-        </NumberedSection>
-
-        <NumberedSection number="05" title="Истории като твоята">
+        <NumberedSection number="04" title="Истории като твоята">
           <TestimonialsBlock avatar={avatarId} />
         </NumberedSection>
 
+        <NumberedSection number="05" title="Гаранция: плащаш 0 EUR накрая">
+          <GuaranteeBlock />
+        </NumberedSection>
+
+        {/* Pricing block */}
+        <section className="mt-12 rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] p-6">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="eyebrow">Какво плащаш днес</span>
+            <span className="text-xs text-[var(--color-text-muted)]" style={{ fontFamily: 'var(--font-mono)' }}>
+              90 дни
+            </span>
+          </div>
+          <div className="mt-4 flex items-baseline gap-3">
+            <span
+              className="text-5xl font-extrabold text-[var(--color-text-headline)]"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              49
+            </span>
+            <span className="text-2xl font-bold text-[var(--color-text-strong)]">EUR</span>
+            <span className="text-sm text-[var(--color-text-muted)] line-through">99 EUR</span>
+          </div>
+          <p className="mt-2 text-sm text-[var(--color-text-body)]">
+            Еднократно плащане. Завършваш 90-те дни и качваш отзив, ние ти връщаме всяка стотинка обратно.
+          </p>
+          <ul className="mt-4 space-y-2 text-sm text-[var(--color-text-body)]">
+            <li className="flex items-start gap-2">
+              <CheckIcon width={14} height={14} className="text-[var(--color-success-600)] mt-1 shrink-0" />
+              <span>Без скрити такси</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckIcon width={14} height={14} className="text-[var(--color-success-600)] mt-1 shrink-0" />
+              <span>Без автоматично подновяване</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckIcon width={14} height={14} className="text-[var(--color-success-600)] mt-1 shrink-0" />
+              <span>Възстановяване на сумата при завършване на програмата</span>
+            </li>
+          </ul>
+        </section>
+
+        {/* CTA + trust band */}
         <div className="mt-8">
           <CtaButton href={checkoutUrl} avatar={avatarId}>
             Започни моите 90 дни
           </CtaButton>
           <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[var(--color-text-muted)]">
             <LockIcon width={12} height={12} aria-hidden />
-            <span>Сигурно плащане през Stripe, без auto-renewal</span>
+            <span>Сигурно плащане през Stripe</span>
+          </p>
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-[var(--color-text-muted)] max-w-[36ch] mx-auto">
+            Натискайки бутона, потвърждаваш че си съгласен/-на с{' '}
+            <a href="/terms" className="underline hover:text-[var(--color-text-body)]">Общите условия</a>{' '}
+            и{' '}
+            <a href="/refund" className="underline hover:text-[var(--color-text-body)]">Политиката за връщане</a>.
+            Личните ти данни се обработват според{' '}
+            <a href="/privacy" className="underline hover:text-[var(--color-text-body)]">Политиката за поверителност</a>.
           </p>
         </div>
 
@@ -135,7 +186,7 @@ export default async function PlanPage({ searchParams }: PageProps) {
           <span className="flex flex-wrap gap-x-4 gap-y-1 justify-center">
             <a href="/terms" className="hover:text-[var(--color-text-body)] transition-colors">Общи условия</a>
             <a href="/privacy" className="hover:text-[var(--color-text-body)] transition-colors">Поверителност</a>
-            <a href="/refund" className="hover:text-[var(--color-text-body)] transition-colors">Политика за връщане</a>
+            <a href="/refund" className="hover:text-[var(--color-text-body)] transition-colors">Връщане на сумата</a>
             <a href="/impressum" className="hover:text-[var(--color-text-body)] transition-colors">Impressum</a>
           </span>
         </footer>

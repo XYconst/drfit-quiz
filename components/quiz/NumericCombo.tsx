@@ -2,6 +2,7 @@
 import type { NumericInputSpec } from '@/lib/questions';
 import { useState } from 'react';
 import { ArrowRightIcon } from '@/components/icons';
+import { WheelPicker } from './WheelPicker';
 
 interface Props {
   inputs: NumericInputSpec[];
@@ -23,29 +24,33 @@ export function NumericCombo({ inputs, initial, onContinue }: Props) {
 
   return (
     <>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3">
         {inputs.map((inp) => (
-          <label key={inp.name} className="flex flex-col gap-2">
-            <span className="text-sm font-semibold text-[var(--color-text-strong)]">{inp.label}</span>
-            <div className="flex items-center gap-2 rounded-2xl border border-[var(--color-line)] bg-white px-4 h-14 focus-within:border-[var(--color-brand-red)]">
-              <input
-                type="number"
-                inputMode="numeric"
+          <div
+            key={inp.name}
+            className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-4 py-3"
+          >
+            <div className="flex items-baseline justify-between">
+              <span className="text-sm font-semibold text-[var(--color-text-strong)]">{inp.label}</span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-muted)] font-bold">
+                {inp.min}–{inp.max} {inp.suffix}
+              </span>
+            </div>
+            <div className="-mx-1 mt-1">
+              <WheelPicker
                 min={inp.min}
                 max={inp.max}
                 value={values[inp.name]}
-                onChange={(e) => setValues((p) => ({ ...p, [inp.name]: Number(e.target.value) }))}
-                className="flex-1 bg-transparent text-lg font-semibold text-[var(--color-text-headline)] outline-none"
+                suffix={inp.suffix}
+                onChange={(v) => setValues((p) => ({ ...p, [inp.name]: v }))}
+                visibleRows={1}
+                rowHeight={42}
               />
-              {inp.suffix && <span className="text-sm text-[var(--color-text-muted)] font-medium">{inp.suffix}</span>}
             </div>
-            <span className="text-xs text-[var(--color-text-muted)]">
-              {inp.min} - {inp.max} {inp.suffix}
-            </span>
-          </label>
+          </div>
         ))}
       </div>
-      <div className="mt-auto pt-6 sticky bottom-0 bg-[var(--color-brand-bg)]">
+      <div className="mt-6 pt-2 sticky bottom-0 bg-[var(--color-brand-bg)]">
         <button
           type="button"
           onClick={() => onContinue(values)}
