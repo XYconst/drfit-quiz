@@ -338,10 +338,10 @@ export const STEPS: StepSpec[] = [
     headline: 'Подуваш ли се след хранене?',
     cardVariant: 'square',
     options: [
-      { id: 'often', label: 'Често', sub: 'Почти всеки ден', value: 'often', imageUrl: '/images/photo/bloating/often.png' },
-      { id: 'sometimes', label: 'Понякога', sub: 'След тежки храни', value: 'sometimes', imageUrl: '/images/photo/bloating/sometimes.png' },
-      { id: 'rarely', label: 'Рядко', sub: 'Изключения са', value: 'rarely', imageUrl: '/images/photo/bloating/rarely.png' },
-      { id: 'never', label: 'Никога', sub: 'Нямам проблем', value: 'never', imageUrl: '/images/photo/bloating/never.png' },
+      { id: 'often', label: 'Често', sub: 'Почти всеки ден', value: 'often', imageUrl: '/images/photo/bloating/{char}-often.png' },
+      { id: 'sometimes', label: 'Понякога', sub: 'След тежки храни', value: 'sometimes', imageUrl: '/images/photo/bloating/{char}-sometimes.png' },
+      { id: 'rarely', label: 'Рядко', sub: 'Изключения са', value: 'rarely', imageUrl: '/images/photo/bloating/{char}-rarely.png' },
+      { id: 'never', label: 'Никога', sub: 'Нямам проблем', value: 'never', imageUrl: '/images/photo/bloating/{char}-never.png' },
     ],
   },
   {
