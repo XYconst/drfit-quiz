@@ -64,11 +64,11 @@ export function InterstitialCard({ headline, body, ctaLabel, imageSrc, imageAlt 
         className="font-extrabold text-[var(--color-text-headline)]"
         style={{
           fontFamily: 'var(--font-sans)',
-          fontSize: 'clamp(2.25rem, 10vw, 3.75rem)',
-          lineHeight: 1.02,
-          letterSpacing: '-0.035em',
+          fontSize: 'clamp(1.5rem, 6.5vw, 2.25rem)',
+          lineHeight: 1.12,
+          letterSpacing: '-0.025em',
           textWrap: 'balance',
-          maxWidth: '14ch',
+          maxWidth: '20ch',
         }}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

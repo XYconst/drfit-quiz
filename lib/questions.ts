@@ -91,7 +91,7 @@ export const STEPS: StepSpec[] = [
     id: 'gender',
     type: 'single-select',
     headline: 'Започваме с теб',
-    subheadline: 'Кой/коя си?',
+    subheadline: 'Мъж или жена?',
     cardVariant: 'portrait',
     options: [
       { id: 'male', label: 'Мъж', value: 'male', imageUrl: img('gender', 'male') },
@@ -106,14 +106,14 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'icon-row',
     optionsByGender: {
       male: [
-        { id: 'lose-major', label: 'Сваля сериозно тегло', sub: '15+ кг за 90 дни', value: 'lose-major', icon: 'trending-down', tone: 'red' },
-        { id: 'tone-recomp', label: 'Свали + изгради мускули', sub: 'Преоформяне на тялото', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
-        { id: 'gain-mass', label: 'Качи чиста маса', sub: 'Програма за хардгейнъри', value: 'gain-mass', icon: 'trending-up', tone: 'dark' },
+        { id: 'lose-major', label: 'Сваляне на тегло', sub: 'Свалям мазнини, виждам резултат', value: 'lose-major', icon: 'trending-down', tone: 'red' },
+        { id: 'tone-recomp', label: 'Преоформяне', sub: 'Свалям мазнини и градя мускули', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
+        { id: 'gain-mass', label: 'Качване на маса', sub: 'Чиста мускулна маса', value: 'gain-mass', icon: 'trending-up', tone: 'dark' },
       ],
       female: [
-        { id: 'lose-major', label: 'Сваля сериозно тегло', sub: '15+ кг за 90 дни', value: 'lose-major', icon: 'trending-down', tone: 'red' },
-        { id: 'tone-recomp', label: 'Свали малко + се стегни', sub: 'Лек дефицит + тонизиране', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
-        { id: 'tone-only', label: 'Само се стегни и дефинирай', sub: 'Без сваляне на тегло', value: 'tone-only', icon: 'sparkles', tone: 'dark' },
+        { id: 'lose-major', label: 'Сваляне на тегло', sub: 'Свалям мазнини, виждам резултат', value: 'lose-major', icon: 'trending-down', tone: 'red' },
+        { id: 'tone-recomp', label: 'Тонизиране', sub: 'Стягам тялото и сваля малко', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
+        { id: 'tone-only', label: 'Дефиниране', sub: 'Стягам форми, без отслабване', value: 'tone-only', icon: 'sparkles', tone: 'dark' },
       ],
     },
   },
@@ -349,7 +349,7 @@ export const STEPS: StepSpec[] = [
     step: 18,
     id: 'bodyTemp',
     type: 'single-select',
-    headline: 'Как си с температурата?',
+    headline: 'Как е температурата на тялото ти?',
     cardVariant: 'split-photo',
     splitPhotoSlot: 'split-towel',
     options: [
@@ -362,7 +362,7 @@ export const STEPS: StepSpec[] = [
     step: 19,
     id: 'pastBest',
     type: 'single-select',
-    headline: 'Колко тегло си свалял/-а в най-добрата си форма?',
+    headline: 'В най-добрата си форма каква беше разликата в теглото ти?',
     cardVariant: 'square',
     options: [
       { id: 'lt5', label: 'Под 5 кг', value: 'lt5', imageUrl: img('pastBest', 'lt5') },

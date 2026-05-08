@@ -82,11 +82,11 @@ export function SplitPhotoSelect(props: Props) {
     img.src = imageSrc;
   }, [imageSrc]);
 
-  // The model floats on the right of the option list. At narrow widths the
-  // photo is anchored to the right margin and clipped if needed; at wider
-  // widths the column gets more breathing room. Background-removed cutouts
-  // (transparent PNG) sit on the brand-bg directly so there's no card chrome.
+  // The model floats on the right of the option list. Multi-select questions
+  // need more room for the option pills and the continue bar, so we shrink the
+  // photo column and shift it further right when in multi mode.
   const showPhoto = imageOk && Boolean(imageSrc);
+  const isMulti = props.mode === 'multi';
   return (
     <div className="relative">
       {showPhoto ? (
@@ -95,16 +95,19 @@ export function SplitPhotoSelect(props: Props) {
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut', delay: 0.06 }}
-          className="pointer-events-none absolute right-[-12px] top-[-8px] sm:right-0 w-[140px] sm:w-[200px] h-[420px] sm:h-[480px] z-0"
-          style={{
-            objectPosition: cropForSrc(imageSrc),
-          }}
+          className={[
+            'pointer-events-none absolute z-0',
+            isMulti
+              ? 'right-[-28px] top-[20px] sm:right-[-12px] w-[110px] sm:w-[150px] h-[360px] sm:h-[420px]'
+              : 'right-[-12px] top-[-8px] sm:right-0 w-[140px] sm:w-[200px] h-[420px] sm:h-[480px]',
+          ].join(' ')}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
             className="w-full h-full object-contain object-bottom"
+            style={{ objectPosition: cropForSrc(imageSrc) }}
           />
         </motion.div>
       ) : null}
@@ -112,7 +115,8 @@ export function SplitPhotoSelect(props: Props) {
       <motion.div
         className={[
           'relative z-10 flex flex-col gap-3',
-          showPhoto ? 'pr-[124px] sm:pr-[176px]' : '',
+          showPhoto && !isMulti ? 'pr-[124px] sm:pr-[176px]' : '',
+          showPhoto && isMulti ? 'pr-[88px] sm:pr-[130px]' : '',
         ].join(' ')}
         variants={container}
         initial="hidden"

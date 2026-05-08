@@ -37,6 +37,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -14,
     days: 90,
     mechanism: 'AfterBurn',
+    afterImg: '/images/photo/testimonials/transformation-1.jpg',
   },
   {
     id: 'gabriel',
@@ -48,6 +49,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -7,
     days: 90,
     mechanism: 'Carb-Cycling',
+    afterImg: '/images/photo/testimonials/transformation-2.jpg',
   },
   {
     id: 'misho',
@@ -59,6 +61,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: 6,
     days: 90,
     mechanism: 'TUT',
+    afterImg: '/images/photo/testimonials/transformation-3.jpg',
   },
   // Women
   {

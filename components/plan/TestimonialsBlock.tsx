@@ -20,20 +20,29 @@ function Card({ t }: { t: Testimonial }) {
   const initial = t.name[0] ?? '?';
   const isLoss = t.kgChange < 0;
   const kgLabel = `${isLoss ? '−' : '+'}${Math.abs(t.kgChange)} кг за ${t.days} дни`;
+  const photo = t.afterImg ?? t.beforeImg;
 
   return (
     <article className="snap-start shrink-0 w-[88%] sm:w-auto sm:max-w-[20rem] rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] overflow-hidden">
       {/* photo / initial */}
       <div className="aspect-square w-full bg-[var(--color-graphite)] flex items-center justify-center relative">
-        {/* When we have real photos, render before/after split here. */}
+        {photo ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={photo}
+            alt={`${t.name}, преди и след`}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <span
+            className="text-white/85 leading-none"
+            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 12vw, 5rem)', fontStyle: 'italic' }}
+          >
+            {initial}
+          </span>
+        )}
         <span
-          className="text-white/85 leading-none"
-          style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 12vw, 5rem)', fontStyle: 'italic' }}
-        >
-          {initial}
-        </span>
-        <span
-          className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-[var(--color-brand-red)] text-xs font-bold"
+          className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-white/95 text-[var(--color-brand-red)] text-xs font-bold shadow-lg"
           style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}
         >
           {kgLabel}

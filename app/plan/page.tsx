@@ -132,8 +132,10 @@ export default async function PlanPage({ searchParams }: PageProps) {
 
         <footer className="mt-16 pt-6 border-t border-[var(--color-line)] text-xs text-[var(--color-text-muted)] flex flex-col sm:flex-row items-center justify-between gap-3">
           <span style={{ fontFamily: 'var(--font-mono)' }}>© 2026 Thunder Digital</span>
-          <span className="flex gap-4">
-            <a href="/privacy" className="hover:text-[var(--color-text-body)] transition-colors">Privacy</a>
+          <span className="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+            <a href="/terms" className="hover:text-[var(--color-text-body)] transition-colors">Общи условия</a>
+            <a href="/privacy" className="hover:text-[var(--color-text-body)] transition-colors">Поверителност</a>
+            <a href="/refund" className="hover:text-[var(--color-text-body)] transition-colors">Политика за връщане</a>
             <a href="/impressum" className="hover:text-[var(--color-text-body)] transition-colors">Impressum</a>
           </span>
         </footer>
