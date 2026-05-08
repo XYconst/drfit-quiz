@@ -62,7 +62,8 @@ export function OptionCard({
         <img
           src={imageUrl}
           alt={imageAlt ?? ''}
-          className="w-full h-full object-cover motion-safe:transition-transform motion-safe:duration-[400ms] motion-safe:ease-out group-hover:motion-safe:scale-[1.03]"
+          className="w-full h-full object-contain motion-safe:transition-transform motion-safe:duration-[400ms] motion-safe:ease-out group-hover:motion-safe:scale-[1.03]"
+          style={{ objectPosition: 'center bottom' }}
           loading="lazy"
           draggable={false}
         />

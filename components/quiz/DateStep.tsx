@@ -50,65 +50,71 @@ export function DateStep({ initial, onContinue }: Props) {
 
   return (
     <>
-      {/* Hero date card — the signature element. The day number dominates. */}
+      {/* Hero date card — clean, no left strip. Big day number flanked by month + count band. */}
       <motion.div
         key={date}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.32, ease: 'easeOut' }}
-        className="relative overflow-hidden rounded-3xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-6 py-7 mb-5"
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white to-[var(--color-paper-warm)] border border-[var(--color-line)] px-6 py-8 mb-5 shadow-[0_10px_28px_-18px_rgba(25,33,38,0.18)]"
       >
-        {/* Left brand accent rule */}
-        <span aria-hidden className="absolute left-0 top-6 bottom-6 w-[3px] rounded-r-full bg-[var(--color-brand-red)]" />
-
         <div className="text-center">
           <span
             className="inline-block text-[10px] font-extrabold uppercase text-[var(--color-brand-red)]"
-            style={{ letterSpacing: '0.22em' }}
+            style={{ letterSpacing: '0.24em' }}
           >
-            Твоята дата
+            Твоята цел
           </span>
 
-          <div className="mt-4 flex flex-col items-center">
-            <span
+          <div className="mt-3 flex items-baseline justify-center gap-3">
+            <motion.span
+              key={`day-${day}`}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
               className="font-extrabold text-[var(--color-text-headline)] tabular-nums"
               style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 'clamp(4.5rem, 19vw, 7rem)',
-                lineHeight: 0.9,
-                letterSpacing: '-0.05em',
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(4rem, 18vw, 6rem)',
+                lineHeight: 0.95,
+                letterSpacing: '-0.04em',
               }}
             >
               {day}
-            </span>
+            </motion.span>
             <span
-              className="font-semibold text-[var(--color-text-strong)] mt-1 capitalize"
+              className="font-semibold text-[var(--color-text-strong)] capitalize"
               style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: 'clamp(1.375rem, 5vw, 1.75rem)',
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(1.25rem, 5vw, 1.625rem)',
                 letterSpacing: '-0.01em',
               }}
             >
               {month}
             </span>
-            <span
-              className="text-[13px] text-[var(--color-text-muted)] tabular-nums mt-0.5 font-medium"
-              style={{ letterSpacing: '0.04em' }}
-            >
-              {year}
-            </span>
           </div>
 
-          <div className="mt-5 inline-flex items-center gap-3 rounded-full border border-[var(--color-line)] bg-white px-4 py-1.5">
-            <span
-              className="text-[13px] font-bold text-[var(--color-text-strong)] tabular-nums"
+          <span
+            className="block mt-1 text-[13px] text-[var(--color-text-muted)] tabular-nums font-medium"
+            style={{ letterSpacing: '0.04em' }}
+          >
+            {year}
+          </span>
+
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-red-tint)] border border-[var(--color-brand-red)]/30 px-4 py-1.5">
+            <motion.span
+              key={`weeks-${diffWeeks}`}
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.32, ease: 'easeOut' }}
+              className="text-[13px] font-bold text-[var(--color-brand-red)] tabular-nums"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
-              ≈ {diffWeeks} седмици
-            </span>
-            <span aria-hidden className="size-1 rounded-full bg-[var(--color-brand-red)]" />
+              {diffWeeks} седмици
+            </motion.span>
+            <span aria-hidden className="size-1 rounded-full bg-[var(--color-brand-red)]/70" />
             <span
-              className="text-[13px] text-[var(--color-text-muted)] tabular-nums"
+              className="text-[13px] text-[var(--color-brand-red)]/85 tabular-nums"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               {diffDays} дни

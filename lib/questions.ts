@@ -99,7 +99,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 2,
+    step: 4,
     id: 'goal',
     type: 'single-select',
     headline: 'Каква е твоята цел?',
@@ -107,7 +107,7 @@ export const STEPS: StepSpec[] = [
     optionsByGender: {
       male: [
         { id: 'lose-major', label: 'Сваляне на тегло', sub: 'Свалям мазнини, виждам резултат', value: 'lose-major', icon: 'trending-down', tone: 'red' },
-        { id: 'tone-recomp', label: 'Преоформяне', sub: 'Свалям мазнини и градя мускули', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
+        { id: 'tone-recomp', label: 'Рекомпозиция', sub: 'Свалям мазнини и градя мускули', value: 'tone-recomp', icon: 'arrow-right-left', tone: 'amber' },
         { id: 'gain-mass', label: 'Качване на маса', sub: 'Чиста мускулна маса', value: 'gain-mass', icon: 'trending-up', tone: 'dark' },
       ],
       female: [
@@ -118,7 +118,7 @@ export const STEPS: StepSpec[] = [
     },
   },
   {
-    step: 3,
+    step: 5,
     id: 'bodyType',
     type: 'single-select',
     headline: 'Кое тяло описва теб днес?',
@@ -136,7 +136,7 @@ export const STEPS: StepSpec[] = [
     },
   },
   {
-    step: 4,
+    step: 2,
     id: 'age',
     type: 'single-select',
     headline: 'На колко си?',
@@ -157,7 +157,7 @@ export const STEPS: StepSpec[] = [
     },
   },
   {
-    step: 5,
+    step: 6,
     id: 'problemAreas',
     type: 'multi-select',
     headline: 'Кои зони те притесняват най-много?',
@@ -184,7 +184,7 @@ export const STEPS: StepSpec[] = [
     },
   },
   {
-    step: 6,
+    step: 7,
     id: 'activity',
     type: 'single-select',
     headline: 'Колко активен/-на си през седмицата?',
@@ -197,7 +197,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 7,
+    step: 8,
     id: 'jobMovement',
     type: 'single-select',
     headline: 'Какво описва твоя ден?',
@@ -209,12 +209,11 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 8,
+    step: 9,
     id: 'sleep',
     type: 'single-select',
     headline: 'Как спиш?',
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-relaxed',
+    cardVariant: 'icon-row',
     options: [
       { id: 'lt5', label: 'Под 5 часа', sub: 'Хронично недоспиване', value: 'lt5', icon: 'bed' },
       { id: '5-6', label: '5-6 часа', sub: 'Под минимума', value: '5-6', icon: 'cloud' },
@@ -224,7 +223,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 9,
+    step: 10,
     id: 'stress',
     type: 'single-select',
     headline: 'Колко стрес имаш?',
@@ -238,11 +237,12 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 10,
+    step: 11,
     id: 'water',
     type: 'single-select',
     headline: 'Колко вода пиеш на ден?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-bottle',
     options: [
       { id: 'lt1l', label: 'Под 1 литър', sub: 'Често забравяш', value: 'lt1l', icon: 'glass-water' },
       { id: '1-2l', label: '1-2 литра', sub: 'Стандартно', value: '1-2l', icon: 'cup-soda' },
@@ -251,7 +251,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 11,
+    step: 12,
     id: 'dietStyle',
     type: 'single-select',
     headline: 'Как се храниш сега?',
@@ -266,7 +266,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 12,
+    step: 13,
     id: 'pastAttempts',
     type: 'multi-select',
     headline: 'Какво си пробвал/-а досега?',
@@ -282,7 +282,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 13,
+    step: 14,
     id: 'interstitial-1',
     type: 'interstitial',
     headline: 'Над 10 000 души преминаха същия път с Dr.Fit',
@@ -291,7 +291,7 @@ export const STEPS: StepSpec[] = [
     imageUrl: '/images/photo/testimonials/transformation-3.jpg',
   },
   {
-    step: 14,
+    step: 15,
     id: 'mealTiming',
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
@@ -305,7 +305,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 15,
+    step: 16,
     id: 'energy',
     type: 'single-select',
     headline: 'Как е енергията ти?',
@@ -319,12 +319,11 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 16,
+    step: 17,
     id: 'cravings',
     type: 'single-select',
     headline: 'След ядене ти се иска още?',
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-bottle',
+    cardVariant: 'icon-row',
     options: [
       { id: 'sweet', label: 'Сладко', sub: 'Десерт или плод', value: 'sweet', icon: 'cake' },
       { id: 'salty', label: 'Солено', sub: 'Нещо хрупкаво', value: 'salty', icon: 'pizza' },
@@ -333,7 +332,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 17,
+    step: 18,
     id: 'bloating',
     type: 'single-select',
     headline: 'Подуваш ли се след хранене?',
@@ -346,7 +345,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 18,
+    step: 19,
     id: 'bodyTemp',
     type: 'single-select',
     headline: 'Как е температурата на тялото ти?',
@@ -359,7 +358,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 19,
+    step: 20,
     id: 'pastBest',
     type: 'single-select',
     headline: 'В най-добрата си форма каква беше разликата в теглото ти?',
@@ -373,7 +372,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 20,
+    step: 21,
     id: 'interstitial-2',
     type: 'interstitial',
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
@@ -382,13 +381,12 @@ export const STEPS: StepSpec[] = [
     imageUrl: '/images/photo/testimonials/transformation-2.jpg',
   },
   {
-    step: 21,
+    step: 22,
     id: 'motivation',
     type: 'multi-select',
     headline: 'Защо искаш да се промениш точно сега?',
     minSelect: 1,
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-lunge',
+    cardVariant: 'icon-row',
     options: [
       { id: 'health', label: 'За здраве', sub: 'Дълъг и активен живот', value: 'health', icon: 'heart' },
       { id: 'partner', label: 'За половинката си', sub: 'Иска ми се да впечатля', value: 'partner', icon: 'users' },
@@ -399,19 +397,18 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 22,
+    step: 23,
     id: 'targetDate',
     type: 'date',
     headline: 'До кога искаш да достигнеш целта?',
   },
   {
-    step: 23,
+    step: 24,
     id: 'blockers',
     type: 'multi-select',
     headline: 'Какво те спира досега?',
     minSelect: 1,
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-seated',
+    cardVariant: 'icon-row',
     options: [
       { id: 'no-time', label: 'Нямам време', sub: 'Дните минават бързо', value: 'no-time', icon: 'clock' },
       { id: 'no-plan', label: 'Нямам план', sub: 'Без ясна структура', value: 'no-plan', icon: 'route' },
@@ -423,10 +420,11 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 24,
+    step: 3,
     id: 'metrics',
     type: 'numeric-combo',
-    headline: 'Последна стъпка: твоите числа',
+    headline: 'Височина и тегло',
+    subheadline: 'За да изчислим индекса и калоричността ти.',
     inputs: [
       { name: 'height', label: 'Височина', min: 140, max: 220, default: 170, suffix: 'см' },
       { name: 'weight', label: 'Тегло сега', min: 40, max: 200, default: 80, suffix: 'кг' },
@@ -447,11 +445,14 @@ export const STEPS: StepSpec[] = [
     id: 'calculating',
     type: 'calculating',
     headline: 'Анализираме твоя метаболитен профил',
-    durationMs: 12000,
+    durationMs: 14000,
     milestonesBg: [
+      'Анализираме отговорите ти',
       'Изчисляваме BMI и метаболитна възраст',
+      'Изчисляваме хранителния ти режим',
       'Сравняваме с 10 000+ подобни профила',
-      'Подбираме оптималната тренировъчна програма',
+      'Подбираме тренировъчната програма',
+      'Компилираме резултатите',
       'Готово',
     ],
     midQuestions: [
