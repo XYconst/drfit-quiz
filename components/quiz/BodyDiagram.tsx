@@ -26,22 +26,26 @@ export interface BodyRegion {
   cx2?: number;
 }
 
+// Coords are tuned against the goal pose (hands-on-hips, three-quarter body).
+// In a 3:4 container with the body bottom-anchored, the head sits ~y=0.18,
+// chest ~y=0.32, navel ~y=0.55, hip-hand-rest ~y=0.66, thighs ~y=0.85.
 const MALE_REGIONS: BodyRegion[] = [
-  { id: 'chest',       label: 'Гърди',         cx: 0.5,  cy: 0.32, rx: 0.18, ry: 0.10 },
-  { id: 'belly',       label: 'Корем',         cx: 0.5,  cy: 0.50, rx: 0.13, ry: 0.10 },
-  { id: 'love-handles',label: 'Любовни дръжки', cx: 0.34, cy: 0.50, rx: 0.06, ry: 0.08, cx2: 0.66 },
-  { id: 'back',        label: 'Гръб',          cx: 0.5,  cy: 0.22, rx: 0.20, ry: 0.06 },
-  { id: 'arms',        label: 'Ръце',          cx: 0.18, cy: 0.42, rx: 0.07, ry: 0.16, cx2: 0.82 },
-  { id: 'whole-body',  label: 'Цялото тяло',   cx: 0.5,  cy: 0.50, rx: 0.42, ry: 0.46 },
+  { id: 'chest',        label: 'Гърди',          cx: 0.50, cy: 0.34, rx: 0.18, ry: 0.07 },
+  { id: 'belly',        label: 'Корем',          cx: 0.50, cy: 0.55, rx: 0.12, ry: 0.07 },
+  { id: 'love-handles', label: 'Любовни дръжки', cx: 0.32, cy: 0.55, rx: 0.05, ry: 0.06, cx2: 0.68 },
+  { id: 'arms',         label: 'Ръце',           cx: 0.20, cy: 0.46, rx: 0.06, ry: 0.12, cx2: 0.80 },
+  // 'back' marker: small dot at upper back / nape with subtle ring (front view can't show full back)
+  { id: 'back',         label: 'Гръб',           cx: 0.50, cy: 0.30, rx: 0.06, ry: 0.04 },
+  { id: 'whole-body',   label: 'Цялото тяло',    cx: 0.50, cy: 0.55, rx: 0.40, ry: 0.42 },
 ];
 
 const FEMALE_REGIONS: BodyRegion[] = [
-  { id: 'belly',       label: 'Корем',       cx: 0.5,  cy: 0.50, rx: 0.13, ry: 0.10 },
-  { id: 'waist',       label: 'Талия',       cx: 0.32, cy: 0.50, rx: 0.06, ry: 0.08, cx2: 0.68 },
-  { id: 'hips',        label: 'Ханш',        cx: 0.5,  cy: 0.66, rx: 0.22, ry: 0.07 },
-  { id: 'thighs',      label: 'Бедра',       cx: 0.36, cy: 0.80, rx: 0.08, ry: 0.10, cx2: 0.64 },
-  { id: 'arms',        label: 'Ръце',        cx: 0.18, cy: 0.42, rx: 0.07, ry: 0.16, cx2: 0.82 },
-  { id: 'whole-body',  label: 'Цялото тяло', cx: 0.5,  cy: 0.50, rx: 0.42, ry: 0.46 },
+  { id: 'belly',       label: 'Корем',       cx: 0.50, cy: 0.55, rx: 0.12, ry: 0.07 },
+  { id: 'waist',       label: 'Талия',       cx: 0.30, cy: 0.55, rx: 0.05, ry: 0.06, cx2: 0.70 },
+  { id: 'hips',        label: 'Ханш',        cx: 0.50, cy: 0.70, rx: 0.20, ry: 0.06 },
+  { id: 'thighs',      label: 'Бедра',       cx: 0.36, cy: 0.84, rx: 0.07, ry: 0.08, cx2: 0.64 },
+  { id: 'arms',        label: 'Ръце',        cx: 0.20, cy: 0.46, rx: 0.06, ry: 0.12, cx2: 0.80 },
+  { id: 'whole-body',  label: 'Цялото тяло', cx: 0.50, cy: 0.55, rx: 0.40, ry: 0.42 },
 ];
 
 interface Props {

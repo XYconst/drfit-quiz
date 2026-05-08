@@ -83,7 +83,8 @@ export function CalculatingScreen({
       const idx = Math.min(milestones.length - 1, Math.floor(p * milestones.length));
       setMilestoneIdx(idx);
       if (p < 1) raf = requestAnimationFrame(tick);
-      else setTimeout(onDone, 600);
+      // Hold for 3 seconds on the final 'Готово' state before advancing.
+      else setTimeout(onDone, 3000);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
@@ -225,7 +226,7 @@ export function CalculatingScreen({
               strokeDashoffset={dashOffset}
               transform="rotate(-90 160 160)"
               style={{
-                transition: 'stroke-dashoffset 120ms linear',
+                transition: 'stroke-dashoffset 320ms cubic-bezier(0.22, 0.61, 0.36, 1)',
                 filter: 'drop-shadow(0 0 12px rgba(229,9,20,0.55))',
               }}
             />
@@ -270,31 +271,17 @@ export function CalculatingScreen({
         </motion.p>
       </div>
 
-      {/* Bottom: profile counter + progress bar */}
-      <div className="relative px-6 pb-10">
-        <div className="flex items-baseline justify-between mb-2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
-            Анализирани профили
-          </p>
-          <p
-            className="text-base text-white"
-            style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}
-          >
-            {profilesCount.toLocaleString('bg-BG')}
-          </p>
-        </div>
-        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full rounded-full"
-            style={{
-              background: 'linear-gradient(90deg, #A50015 0%, #E50914 60%, #FF3B47 100%)',
-              boxShadow: '0 0 14px rgba(229,9,20,0.7)',
-            }}
-            initial={{ width: 0 }}
-            animate={{ width: `${progress * 100}%` }}
-            transition={{ duration: 0.1 }}
-          />
-        </div>
+      {/* Bottom: subtle profile counter only — progress is communicated by the ring */}
+      <div className="relative px-6 pb-10 flex items-baseline justify-center gap-2">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+          Анализирани профили
+        </p>
+        <p
+          className="text-sm text-white/85"
+          style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}
+        >
+          {profilesCount.toLocaleString('bg-BG')}
+        </p>
       </div>
 
       <AnimatePresence>

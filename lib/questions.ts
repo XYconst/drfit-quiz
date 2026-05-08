@@ -358,20 +358,6 @@ export const STEPS: StepSpec[] = [
   },
   {
     step: 20,
-    id: 'pastBest',
-    type: 'single-select',
-    headline: 'В най-добрата си форма каква беше разликата в теглото ти?',
-    cardVariant: 'square',
-    options: [
-      { id: 'lt5', label: 'Под 5 кг', value: 'lt5', imageUrl: img('pastBest', 'lt5') },
-      { id: '5-10', label: '5-10 кг', value: '5-10', imageUrl: img('pastBest', '5-10') },
-      { id: '10-20', label: '10-20 кг', value: '10-20', imageUrl: img('pastBest', '10-20') },
-      { id: 'gt20', label: 'Над 20 кг', value: 'gt20', imageUrl: img('pastBest', 'gt20') },
-      { id: 'never', label: 'Никога не съм опитвал/-а сериозно', value: 'never', imageUrl: img('pastBest', 'never') },
-    ],
-  },
-  {
-    step: 21,
     id: 'interstitial-2',
     type: 'interstitial',
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
@@ -380,7 +366,7 @@ export const STEPS: StepSpec[] = [
     imageUrl: '/images/photo/testimonials/transformation-2.jpg',
   },
   {
-    step: 22,
+    step: 21,
     id: 'motivation',
     type: 'multi-select',
     headline: 'Защо искаш да се промениш точно сега?',
@@ -396,13 +382,13 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 23,
+    step: 22,
     id: 'targetDate',
     type: 'date',
     headline: 'До кога искаш да достигнеш целта?',
   },
   {
-    step: 24,
+    step: 23,
     id: 'blockers',
     type: 'multi-select',
     headline: 'Какво те спира досега?',
@@ -431,7 +417,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 25,
+    step: 24,
     id: 'projection-preview',
     type: 'projection',
     headline: 'Така изглежда твоят път',
@@ -440,7 +426,7 @@ export const STEPS: StepSpec[] = [
     ctaBg: 'Виж моя план',
   },
   {
-    step: 26,
+    step: 25,
     id: 'calculating',
     type: 'calculating',
     headline: 'Анализираме твоя метаболитен профил',
@@ -451,8 +437,7 @@ export const STEPS: StepSpec[] = [
       'Изчисляваме хранителния ти режим',
       'Сравняваме с 10 000+ подобни профила',
       'Подбираме тренировъчната програма',
-      'Компилираме резултатите',
-      'Готово',
+      'Компилираме резултатите...',
     ],
     midQuestions: [
       {
@@ -478,7 +463,7 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
-    step: 27,
+    step: 26,
     id: 'email',
     type: 'email-gate',
     headline: 'Твоят 90-дневен план е готов',
