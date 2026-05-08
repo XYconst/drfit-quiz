@@ -1,0 +1,541 @@
+================================================================================
+DR.FIT vs BETTERME WALL PILATES: FULL QUIZ COMPARISON
+================================================================================
+
+Audience: Dancho.
+Purpose: side-by-side question list and rationale for the Dr.Fit quiz funnel.
+Date: 2026-05-08.
+Source repos: github.com/XYconst/drfit-quiz (branch feat/cards-redesign).
+Reference: docs/refs/betterme/README.md (17 captured BetterMe screens).
+
+
+================================================================================
+PART 1: BETTERME WALL PILATES FUNNEL (REFERENCE)
+================================================================================
+
+This is what BetterMe's Wall Pilates calisthenics quiz looks like end-to-end.
+We did not clone it. We used it as a structural reference for funnel pacing
+and layout patterns. Order is approximate; BetterMe varies the sequence by
+A/B test cohort.
+
+Step 1. Have you tried Wall Pilates workouts before?
+  - Yes
+  - No
+
+Step 2. What is your age?
+  Photo grid, 4 cards (men by age tier).
+  - 18 to 29
+  - 30 to 39
+  - 40 to 49
+  - 50 plus
+
+Step 3. What is your main goal?
+  Half-screen photo plus stacked text options.
+  - Gain muscle
+  - Lose weight
+  - Lose fat and gain muscle
+  - Improve overall fitness
+
+Step 4. How would you describe your physical build?
+  Photo grid, 4 cards.
+  - Slender
+  - Medium build
+  - Stocky
+  - Significantly overweight
+
+Step 5. What is your body goal?
+  Photo grid, 4 cards (target physiques).
+  - A few sizes smaller
+  - Athletic
+  - Shredded
+  - Swole
+
+Step 6. ENCOURAGEMENT INTERSTITIAL
+  "You are going to crush this!"
+  Single male model in side-plank pushup pose.
+
+Step 7. STAT INTERSTITIAL
+  "Over 780,000 men in their 30s have already tried our Calisthenics Workout
+  Plan."
+  Group photo of 3 men + "As featured in" Forbes / GQ / Garage Gym Reviews.
+
+Step 8. APP MOCKUP INTERSTITIAL
+  "The perfect solution is right here!"
+  Three tilted phone-mockups showing the in-app workout UI.
+
+Step 9. How long ago were you in the best shape of your life?
+  Half-screen photo plus stacked text.
+  - Less than a year ago
+  - 1 to 2 years ago
+  - More than 3 years ago
+  - Never
+
+Step 10. How does your weight typically change?
+  Half-screen photo, dynamic running pose.
+  - I struggle to gain weight or muscle
+  - I gain and lose weight easily
+  - I gain weight fast but lose it slowly
+
+Step 11. ENDOMORPH DIAGNOSIS INTERSTITIAL
+  "Looks like you have the endomorph body type"
+  Plank-pose model.
+
+Step 12. How many squats can you do in a row?
+  Half-screen, squatting model.
+  - I cannot do squats
+  - 11 to 20 squats
+  - 21 to 40 squats
+  - 40 plus squats
+
+Step 13. How many times have you worked out in the last 3 months?
+  Half-screen, high-knee running pose.
+  - Almost every day
+  - Several times a week
+  - Several times a month
+  - I do not work out
+
+Step 14. ENCOURAGEMENT INTERSTITIAL
+  "Achieve greater results with our plan."
+  Flexing-arm photo of model.
+
+Step 15. What are your target zones?
+  Anatomical multi-select, model on right with red-highlighted muscle groups.
+  - Belly
+  - Pecs
+  - Arms
+  - Legs
+  - Back
+  - Full body
+
+Step 16. How many times per week would you like to train?
+  Half-screen, squatting wide-stance model.
+  - 1 to 2 times
+  - 3 to 4 times
+  - 5 plus times
+
+Step 17. How long do you want your workouts to be?
+  Half-screen, dumbbell-curl model.
+  - 10 to 15 minutes
+  - 15 to 20 minutes
+  - 20 to 25 minutes
+  - 25 plus minutes
+  - I do not know
+
+Following BetterMe steps that were not captured but are part of every BetterMe
+quiz funnel based on public knowledge of their pattern:
+
+Step 18. Height (numeric, slider).
+Step 19. Current weight (numeric).
+Step 20. Target weight (numeric).
+Step 21. Date picker for goal date.
+Step 22. Calculating screen (animated, 8 to 12 seconds).
+Step 23. Email gate.
+Step 24. Plan / paywall page with charts and tier-priced subscription options.
+Step 25. Discount-redirect screens, hidden trial fee, recurring charges.
+
+Total length: approximately 35 to 50 steps depending on the cohort.
+
+
+================================================================================
+PART 2: DR.FIT QUIZ FUNNEL (CURRENT STATE)
+================================================================================
+
+27 steps total. Bulgarian-first copy. Source: lib/questions.ts on the
+feat/cards-redesign branch.
+
+Step 1. Gender
+  Headline: "Започваме с теб"
+  Sub: "Кой/коя си?"
+  - Мъж
+  - Жена
+
+Step 2. Goal (gender-specific options)
+  Headline: "Каква е твоята цел?"
+  For men:
+  - Сваля сериозно тегло (15+ кг за 90 дни)
+  - Свали + изгради мускули (Преоформяне на тялото)
+  - Качи чиста маса (Програма за хардгейнъри)
+  For women:
+  - Сваля сериозно тегло (15+ кг за 90 дни)
+  - Свали малко + се стегни (Лек дефицит + тонизиране)
+  - Само се стегни и дефинирай (Без сваляне на тегло)
+
+Step 3. Body type (gender-specific options)
+  Headline: "Кое тяло описва теб днес?"
+  For men:
+  - С наднормено тегло
+  - Слаб с малко мазнини
+  - Слаб
+  For women:
+  - С наднормено тегло
+  - Стройна, но не стегната
+  Avatar locks at end of this step (1 of 5 archetypes).
+
+Step 4. Age
+  Headline: "На колко си?"
+  - 18-29
+  - 30-39
+  - 40-49
+  - 50+
+
+Step 5. Problem areas (multi-select, gender-specific)
+  Headline: "Кои зони те притесняват най-много?"
+  For men: Корем, Любовни дръжки, Гърди, Гръб, Ръце, Цялото тяло
+  For women: Корем, Талия, Ханш, Бедра, Ръце, Цялото тяло
+
+Step 6. Activity level
+  Headline: "Колко активен/-на си през седмицата?"
+  - Почти не се движа (Седяща работа, без спорт)
+  - Лек активен/-на (Рядко тренировки)
+  - Умерено (2-3 тренировки седмично)
+  - Много активен/-на (4+ тренировки седмично)
+
+Step 7. Job movement
+  Headline: "Какво описва твоя ден?"
+  - Седяща работа, 8+ часа на стол
+  - Прав/-а през повечето време
+  - Физическа работа
+
+Step 8. Sleep
+  Headline: "Как спиш?"
+  - Под 5 часа (Хронично недоспиване)
+  - 5-6 часа (Под минимума)
+  - 6-7 часа (На границата)
+  - 7-8 часа (Здравословно)
+  - Над 8 часа (Дълъг сън)
+
+Step 9. Stress
+  Headline: "Колко стрес имаш?"
+  - Нисък (Спокоен/-йна съм)
+  - Среден (Има моменти)
+  - Висок (Често съм напрегнат/-а)
+  - Изгарящ (Не мога да се отпусна)
+
+Step 10. Water intake
+  Headline: "Колко вода пиеш на ден?"
+  - Под 1 литър
+  - 1-2 литра
+  - 2-3 литра
+  - Над 3 литра
+
+Step 11. Diet style
+  Headline: "Как се храниш сега?"
+  - Ям каквото ми се яде
+  - Опитвам се да внимавам
+  - Следвам конкретен план
+  - Опитвам, но не издържам (йо-йо)
+  - Нямам никаква система
+
+Step 12. Past attempts (multi-select)
+  Headline: "Какво си пробвал/-а досега?"
+  - Фитнес зала
+  - Диети (Кето, IF, нискокалорично)
+  - YouTube програми
+  - Хранителни добавки
+  - Личен треньор
+  - Нищо още
+
+Step 13. STAT INTERSTITIAL
+  Headline: "Над 10 000 души преминаха същия път с Dr.Fit"
+  Body: "98% казват, че проблемът не беше волята им. Беше планът."
+  CTA: Продължи
+
+Step 14. Meal timing
+  Headline: "Кога ядеш повечето си храна?"
+  - Сутрин (Закуската е най-голяма)
+  - На обяд
+  - Вечер (Често пропускам закуска)
+  - Хапвам по малко цял ден
+
+Step 15. Energy
+  Headline: "Как е енергията ти?"
+  - Стабилна (Издържам докрай)
+  - Падам следобед
+  - Уморен/-а съм почти винаги
+  - Държа се с кафе
+
+Step 16. Cravings
+  Headline: "След ядене ти се иска още?"
+  - Сладко
+  - Солено
+  - И двете
+  - Не, наситен/-а съм
+
+Step 17. Bloating
+  Headline: "Подуваш ли се след хранене?"
+  - Често
+  - Понякога
+  - Рядко
+  - Никога
+
+Step 18. Body temperature
+  Headline: "Как си с температурата?"
+  - Често ми е студено (особено ръце и крака)
+  - Нормално
+  - Често ми е топло (потя се лесно)
+
+Step 19. Past best loss
+  Headline: "Колко тегло си свалял/-а в най-добрата си форма?"
+  - Под 5 кг
+  - 5-10 кг
+  - 10-20 кг
+  - Над 20 кг
+  - Никога не съм опитвал/-а сериозно
+
+Step 20. STAT INTERSTITIAL
+  Headline: "92% от хората с твоя профил виждат първи резултати в първите
+  30 дни"
+  Body: "Това е силата на персонализацията. Ще ти покажем точно защо."
+  CTA: Продължи
+
+Step 21. Motivation (multi-select)
+  Headline: "Защо искаш да се промениш точно сега?"
+  - За здраве
+  - За половинката си
+  - За да се харесвам на снимки
+  - За децата
+  - Имам конкретно събитие
+  - Стига вече
+
+Step 22. Target date
+  Headline: "До кога искаш да достигнеш целта?"
+  Date picker plus quick chips (1m / 3m / 6m / 1 year).
+
+Step 23. Blockers (multi-select)
+  Headline: "Какво те спира досега?"
+  - Нямам време
+  - Нямам план
+  - Нямам подкрепа
+  - Скъпо ми е
+  - Не знам откъде да започна
+  - Страх ме е, че няма да издържа
+  - Пробвал/-а съм и не върви
+
+Step 24. Metrics
+  Headline: "Последна стъпка: твоите числа"
+  Inputs: височина (см), тегло сега (кг), целево тегло (кг).
+
+Step 25. PROJECTION PREVIEW
+  Headline: "Така изглежда твоят път"
+  Sub: "Готови сме с плана. Един последен поглед, преди да се захванем."
+  Mini projection chart, gender-matched testimonial card, italic
+  reassurance, CTA.
+
+Step 26. CALCULATING SCREEN (12 seconds)
+  Headline: "Анализираме твоя метаболитен профил"
+  Milestones:
+  - Изчисляваме BMI и метаболитна възраст
+  - Сравняваме с 10 000+ подобни профила
+  - Подбираме оптималната тренировъчна програма
+  - Готово
+  Two pause-questions surfaced as overlay during the loader:
+    a) at 30%: "Кога предпочиташ да тренираш?" (Сутрин / Обед / Вечер)
+    b) at 65%: "С какво оборудване разполагаш?" (Само у дома / Зала / И двете)
+
+Step 27. Email gate
+  Headline: "Твоят 90-дневен план е готов"
+  Sub: "Въведи email-а си и ти изпращаме плана плюс достъп до приложението"
+  Fields: email (required), телефон (optional)
+  CTA: Виж моя план
+
+
+================================================================================
+PART 3: WHY THE QUESTIONS ARE THE WAY THEY ARE
+================================================================================
+
+The Dr.Fit quiz is shorter than BetterMe (27 vs 35 to 50 steps), more medical
+than fitness in framing, and personalized via 5 avatar archetypes rather than
+generic copy swaps. Each step earns its place by either routing to the avatar
+or feeding directly into the personalized result page.
+
+Below is a step-by-step justification.
+
+GROUP A: AVATAR ROUTER (steps 1 to 3)
+--------------------------------------
+
+These three steps lock the user into one of five archetypes by the end of
+step 3. The archetype drives every personalized element on the result page:
+hero headline, projected outcome, comparison block, testimonial set,
+program angle.
+
+  Avatar 01: Overweight Man (fat loss, AfterBurn emphasis)
+  Avatar 02: Overweight Woman (fat loss, женски метаболизъм framing)
+  Avatar 03: Skinny-Fat Man (recomp, AfterBurn plus lean gain)
+  Avatar 04: Skinny-Fat Woman (lean tone, "стегни се")
+  Avatar 05: Skinny Man (anabolic only, no AfterBurn, "хардгейнър")
+
+Step 1 (Gender) feeds the goal options on step 2. Step 2 (Goal) plus step 3
+(Body type) deterministically map to one of the five avatars. There is no
+"blocked" path: contradictions resolve toward the closest archetype rather
+than rejecting the user.
+
+BetterMe asks the same three pieces in the same order but uses the answers
+for cosmetic copy swaps only. Their "endomorph" and "ectomorph" labels are
+generic, not productized. We branded ours.
+
+GROUP B: AGE AND PROBLEM AREAS (steps 4 to 5)
+--------------------------------------
+
+Step 4 (Age) is for cohort-matching ("92% of people LIKE YOU see results in
+30 days") and program calibration. The stat interstitial on step 20 reads
+back the user's age tier in the social proof.
+
+Step 5 (Problem areas) is what the program targets. Multi-select because
+people rarely have one issue. Used in the workout program prescription and
+in the result-page copy: "Twe focus on your X and Y."
+
+BetterMe collects target zones too, just much later in their flow (step 15
+of 17). We surface it earlier so the rest of the lifestyle questions feel
+context-relevant rather than generic.
+
+GROUP C: LIFESTYLE BASELINE (steps 6 to 12)
+--------------------------------------
+
+These seven steps are the metabolic-mechanism diagnostic. Each one fuels a
+specific personalized bullet on the result page, section 01 ("Why standard
+programs do not work for you"):
+
+  Step 6  Activity level     -> sets caloric calibration
+  Step 7  Job movement       -> NEAT (non-exercise activity thermogenesis)
+  Step 8  Sleep              -> cortisol bullet
+  Step 9  Stress             -> cortisol bullet
+  Step 10 Water              -> hydration bullet (used in app, not result)
+  Step 11 Diet style         -> insulin bullet
+  Step 12 Past attempts      -> "what we will do differently" bullet
+
+This is where Dr.Fit diverges most from BetterMe. BetterMe's lifestyle
+questions are mostly cosmetic (they exist to pad the funnel). Ours are
+load-bearing: each one writes a sentence on the paywall that the user can
+read back about their own answer. This is a direct response to the brand
+voice ("Не е била волята. Било е биологията.") which only works if we can
+point to specific biology factors.
+
+GROUP D: TRUST INTERSTITIAL #1 (step 13)
+--------------------------------------
+
+"Над 10 000 души преминаха същия път с Dr.Fit. 98% казват, че проблемът
+не беше волята им. Беше планът."
+
+Inserted at the midpoint to break up the run of lifestyle questions and to
+plant the brand thesis (it was the plan, not the willpower) before the user
+keeps answering. BetterMe has multiple interstitials at this position; we
+have one because the funnel is shorter.
+
+GROUP E: METABOLIC DIAGNOSTIC (steps 14 to 19)
+--------------------------------------
+
+These six steps are the most clinical-sounding part of the funnel. They
+exist because Dr.Fit's brand is "the program that fixes 4 hormones"
+(insulin, leptin, ghrelin, cortisol) and these questions are what the
+brand uses to claim a hormonal diagnosis without actually making a medical
+claim:
+
+  Step 14 Meal timing        -> insulin / leptin
+  Step 15 Energy levels      -> cortisol / glycemic profile
+  Step 16 Cravings           -> dopamine plus insulin
+  Step 17 Bloating           -> gut and digestive marker
+  Step 18 Body temperature   -> thyroid signal
+  Step 19 Past best loss     -> realistic projection anchor
+
+BetterMe does not have an equivalent block. Their funnel skips straight
+from lifestyle to fitness assessment (squats, push-ups). Ours is the
+metabolism-and-hormone block, which is the productized brand mechanism.
+This is the strongest content moat the brand has and the funnel reflects
+it directly.
+
+GROUP F: TRUST INTERSTITIAL #2 (step 20)
+--------------------------------------
+
+"92% от хората с твоя профил виждат първи резултати в първите 30 дни."
+
+Reads back the avatar plus age tier matched in earlier steps. The "твоя
+профил" phrase makes the social proof feel personal even though the
+underlying claim is segment-wide.
+
+GROUP G: COMMITMENT AND CONSTRAINTS (steps 21 to 23)
+--------------------------------------
+
+  Step 21 Motivation         -> personalized hero copy variants
+  Step 22 Target date        -> projection chart end-point
+  Step 23 Blockers           -> dynamic "without plan vs with Dr.Fit"
+                                comparison block on the result page
+
+Step 23 is critical: the comparison block on the paywall is generated from
+the user's reported blockers and past attempts. It says back to them, in
+their own words, what was failing. BetterMe uses a static comparison
+table. Ours is dynamic.
+
+GROUP H: NUMBERS AND PROJECTION (steps 24 to 25)
+--------------------------------------
+
+  Step 24 Metrics (h, w, tw) -> BMI projection chart
+  Step 25 Projection preview -> shows the projected curve before the user
+                                even sees the paywall
+
+The projection-preview step is borrowed from BetterMe (they show a curve
+right before email gate). The difference is that ours uses the user's own
+height plus weight plus target plus the chosen target date. BetterMe shows
+a generic curve with cohort data.
+
+GROUP I: CALCULATING SCREEN WITH PAUSE QUESTIONS (step 26)
+--------------------------------------
+
+12-second animated loader. Two questions surface as full-screen overlays
+during the loader:
+
+  - At 30 percent: "Кога предпочиташ да тренираш?"
+  - At 65 percent: "С какво оборудване разполагаш?"
+
+These are not really part of the avatar routing. They are program-config
+questions that we do not need until the program is generated. By tucking
+them inside the calculating screen, we get the answers without making the
+quiz feel longer. BetterMe has a similar trick.
+
+GROUP J: EMAIL GATE (step 27)
+--------------------------------------
+
+Headline reads back what the user just earned: "Твоят 90-дневен план е
+готов." Phone is optional, email is required. After submit, lead is
+written to the API endpoint, Pixel fires, and the user lands on the
+personalized /plan paywall.
+
+
+================================================================================
+KEY DIVERGENCES FROM BETTERME
+================================================================================
+
+1. Length. 27 vs ~40+ steps. Every step we kept feeds either the avatar
+   router or a specific personalized element on the paywall. BetterMe's
+   length is the product (funnel-revenue per question). Ours is not.
+
+2. Voice. Bulgarian "Ти" everywhere. Anti-blame ("Не е била волята.
+   Било е биологията."). Mechanism reframe (4 hormones, not 4000 calories).
+
+3. Mechanism IP. Three branded methods anchor every step:
+     - Carb-Cycling / Въглехидратна ротация
+     - Time-Under-Tension / Време под напрежение
+     - AfterBurn / Последващо изгаряне
+   Plus "the 4 hormones" framing.
+
+4. Offer. The paywall sells a single 49 EUR commitment fee, fully refunded
+   on completion plus before/after photos. Not a hidden-trial subscription.
+   The funnel is built to qualify motivated buyers for this offer.
+
+5. Personalization is load-bearing. Every lifestyle question writes a
+   bullet on the paywall using the user's own answer. The blockers
+   question writes the comparison block. The metrics question feeds the
+   projection chart. If we removed any of those questions, the paywall
+   would visibly degrade.
+
+6. Avatar segmentation. 5 archetypes with separate testimonial pools,
+   stat anchors, hero headlines, and program angles. BetterMe has 1
+   funnel with cosmetic copy swaps.
+
+7. Local market. "10 000+ българи" social proof, dynamic city detection
+   on stat interstitials when running ads, hardcover-via-Econt on the
+   book funnel side.
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================
