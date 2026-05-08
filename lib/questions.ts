@@ -94,8 +94,8 @@ export const STEPS: StepSpec[] = [
     subheadline: 'Мъж или жена?',
     cardVariant: 'portrait',
     options: [
-      { id: 'male', label: 'Мъж', value: 'male', imageUrl: img('gender', 'male') },
-      { id: 'female', label: 'Жена', value: 'female', imageUrl: img('gender', 'female') },
+      { id: 'male', label: 'Мъж', value: 'male', imageUrl: '/images/photo/gender/male.png' },
+      { id: 'female', label: 'Жена', value: 'female', imageUrl: '/images/photo/gender/female.png' },
     ],
   },
   {
@@ -125,13 +125,13 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'portrait',
     optionsByGender: {
       male: [
-        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/silhouettes/m-overweight.svg' },
-        { id: 'skinny-fat', label: 'Слаб с малко мазнини', value: 'skinny-fat', imageUrl: '/silhouettes/m-skinny-fat.svg' },
-        { id: 'skinny', label: 'Слаб', value: 'skinny', imageUrl: '/silhouettes/m-skinny.svg' },
+        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/m-overweight.png' },
+        { id: 'skinny-fat', label: 'Слаб с малко мазнини', value: 'skinny-fat', imageUrl: '/images/photo/body-type/m-skinny-fat.png' },
+        { id: 'skinny', label: 'Слаб', value: 'skinny', imageUrl: '/images/photo/body-type/m-skinny.png' },
       ],
       female: [
-        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/silhouettes/f-overweight.svg' },
-        { id: 'skinny-fat', label: 'Стройна, но не стегната', value: 'skinny-fat', imageUrl: '/silhouettes/f-skinny-fat.svg' },
+        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/f-overweight.png' },
+        { id: 'skinny-fat', label: 'Стройна, но не стегната', value: 'skinny-fat', imageUrl: '/images/photo/body-type/f-skinny-fat.png' },
       ],
     },
   },
@@ -296,7 +296,7 @@ export const STEPS: StepSpec[] = [
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
     cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-walking',
+    splitPhotoSlot: 'split-food',
     options: [
       { id: 'morning', label: 'Сутрин', sub: 'Закуската е най-голяма', value: 'morning', icon: 'sun' },
       { id: 'lunch', label: 'На обяд', sub: 'Балансирано в средата', value: 'lunch', icon: 'utensils' },

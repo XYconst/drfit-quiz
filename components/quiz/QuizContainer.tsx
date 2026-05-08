@@ -193,6 +193,7 @@ export function QuizContainer() {
     content = (
       <BodyDiagram
         gender={gender}
+        characterImageSrc={characterImagePath(character, 'goal')}
         selected={selected}
         minSelect={step.minSelect ?? 1}
         maxSelect={step.maxSelect}
