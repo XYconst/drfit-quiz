@@ -160,6 +160,8 @@ export function QuizContainer() {
       ...o,
       label: genderize(o.label, gender),
       sub: o.sub ? genderize(o.sub, gender) : o.sub,
+      // Resolve {char} placeholder in imageUrl to the matched character code.
+      imageUrl: o.imageUrl ? o.imageUrl.replace('{char}', character) : o.imageUrl,
     }));
 
   let content: React.ReactNode = null;

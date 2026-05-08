@@ -125,13 +125,14 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'portrait',
     optionsByGender: {
       male: [
-        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/m-overweight.png' },
-        { id: 'skinny-fat', label: 'Слаб с малко мазнини', value: 'skinny-fat', imageUrl: '/images/photo/body-type/m-skinny-fat.png' },
-        { id: 'skinny', label: 'Слаб', value: 'skinny', imageUrl: '/images/photo/body-type/m-skinny.png' },
+        // imageUrl is a placeholder template. Resolved per character in QuizContainer.
+        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/{char}-overweight.png' },
+        { id: 'skinny-fat', label: 'Слаб с малко мазнини', value: 'skinny-fat', imageUrl: '/images/photo/body-type/{char}-skinny-fat.png' },
+        { id: 'skinny', label: 'Слаб', value: 'skinny', imageUrl: '/images/photo/body-type/{char}-skinny.png' },
       ],
       female: [
-        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/f-overweight.png' },
-        { id: 'skinny-fat', label: 'Стройна, но не стегната', value: 'skinny-fat', imageUrl: '/images/photo/body-type/f-skinny-fat.png' },
+        { id: 'overweight', label: 'С наднормено тегло', value: 'overweight', imageUrl: '/images/photo/body-type/{char}-overweight.png' },
+        { id: 'skinny-fat', label: 'Стройна, но не стегната', value: 'skinny-fat', imageUrl: '/images/photo/body-type/{char}-skinny-fat.png' },
       ],
     },
   },
