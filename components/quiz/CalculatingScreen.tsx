@@ -19,16 +19,25 @@ interface Props {
   onMidAnswer?: (stepId: string, value: string, optionId: string) => void;
   /** "26 / 27" style label for the step counter eyebrow. */
   stepLabel?: string;
+  /** Path to the matched-character cutout. Falls back to no photo when undefined. */
+  characterImageSrc?: string;
 }
 
 const HORMONES = [
-  { id: 'insulin', label: 'Инсулин', en: 'Insulin', angle: -90, value: '104.2', unit: 'mIU/L' },
-  { id: 'leptin', label: 'Лептин', en: 'Leptin', angle: 0, value: '12.8', unit: 'ng/mL' },
-  { id: 'ghrelin', label: 'Грелин', en: 'Ghrelin', angle: 90, value: '28.5', unit: 'pg/mL' },
-  { id: 'cortisol', label: 'Кортизол', en: 'Cortisol', angle: 180, value: '16.4', unit: 'µg/dL' },
-] as const;
+  { id: 'insulin', label: 'Инсулин', position: 'top' as const, threshold: 0.0 },
+  { id: 'leptin', label: 'Лептин', position: 'right' as const, threshold: 0.25 },
+  { id: 'ghrelin', label: 'Грелин', position: 'bottom' as const, threshold: 0.5 },
+  { id: 'cortisol', label: 'Кортизол', position: 'left' as const, threshold: 0.75 },
+];
 
 const FINAL_PROFILES = 10847;
+
+const POSITION_CLASSES: Record<'top' | 'right' | 'bottom' | 'left', string> = {
+  top:    'absolute left-1/2 -translate-x-1/2 -top-2',
+  right:  'absolute top-1/2 -translate-y-1/2 -right-2',
+  bottom: 'absolute left-1/2 -translate-x-1/2 -bottom-2',
+  left:   'absolute top-1/2 -translate-y-1/2 -left-2',
+};
 
 export function CalculatingScreen({
   headline,
@@ -38,6 +47,7 @@ export function CalculatingScreen({
   midQuestions = [],
   onMidAnswer,
   stepLabel,
+  characterImageSrc,
 }: Props) {
   const [progress, setProgress] = useState(0);
   const [milestoneIdx, setMilestoneIdx] = useState(0);
@@ -55,7 +65,6 @@ export function CalculatingScreen({
     const tick = (t: number) => {
       const p = Math.min(1, (t - (startRef.current ?? t)) / durationMs);
 
-      // Trigger any unanswered mid-question whose threshold we've just crossed.
       const next = midQuestions.find(
         (q) => p >= q.atProgress && !answeredIds.has(q.id) && q.atProgress > progressRef.current,
       );
@@ -89,7 +98,6 @@ export function CalculatingScreen({
       next.add(answeredId);
       return next;
     });
-    // Resume from the threshold by adjusting the effective start time.
     startRef.current = performance.now() - pendingQuestion.atProgress * durationMs;
     progressRef.current = pendingQuestion.atProgress + 0.0001;
     setPendingQuestion(null);
@@ -97,47 +105,27 @@ export function CalculatingScreen({
   };
 
   const profilesCount = Math.round(FINAL_PROFILES * progress);
-  const cx = 160;
-  const cy = 160;
-  const ringR = 110;
+
+  // Progress ring math.
+  const ringR = 132;
+  const ringStroke = 6;
+  const circumference = 2 * Math.PI * ringR;
+  const dashOffset = circumference * (1 - progress);
 
   return (
     <div
       className="relative min-h-dvh flex flex-col text-white overflow-hidden"
       style={{
         background:
-          'radial-gradient(80% 50% at 50% 28%, rgba(229,9,20,0.14) 0%, rgba(229,9,20,0) 55%), radial-gradient(140% 100% at 50% 100%, #0d1115 0%, #1a2027 45%, #2b3138 100%)',
+          'radial-gradient(60% 40% at 50% 22%, rgba(229,9,20,0.10) 0%, rgba(229,9,20,0) 60%), linear-gradient(180deg, #0a0d11 0%, #14191f 50%, #1c2229 100%)',
       }}
     >
-      {/* Subtle dot-grid overlay — lab/scientific texture */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.10]"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)',
-          backgroundSize: '22px 22px',
-        }}
-      />
-      {/* Top vignette */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-40"
-        style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%)' }}
-      />
-      {/* Bottom vignette */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-48"
-        style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)' }}
-      />
-
       <div className="relative flex-1 flex flex-col items-center justify-center px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.42, ease: 'easeOut' }}
           className="text-[10px] font-extrabold uppercase tracking-[0.28em] text-[var(--color-brand-bright)] mb-3"
-          style={{ textShadow: '0 0 18px rgba(229,9,20,0.55)' }}
         >
           {stepLabel ? `Анализ · стъпка ${stepLabel}` : 'Анализ'}
         </motion.p>
@@ -145,175 +133,138 @@ export function CalculatingScreen({
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.06, ease: [0.22, 0.61, 0.36, 1] }}
-          className="font-extrabold mb-8"
+          className="font-extrabold mb-10 text-white"
           style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(1.875rem, 7.5vw, 2.625rem)',
-            lineHeight: 1.05,
-            letterSpacing: '-0.03em',
+            fontSize: 'clamp(1.625rem, 6vw, 2.125rem)',
+            lineHeight: 1.1,
+            letterSpacing: '-0.025em',
             textWrap: 'balance',
             maxWidth: '22ch',
-            margin: '0 auto 2rem',
-            textShadow: '0 1px 22px rgba(0,0,0,0.55)',
+            margin: '0 auto 2.5rem',
           }}
         >
           {headline}
         </motion.h2>
 
-        <svg viewBox="0 0 320 320" className="w-72 sm:w-80 h-auto" role="img" aria-label="4-те хормона">
-          <defs>
-            <radialGradient id="silhGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(229,9,20,0.45)" />
-              <stop offset="60%" stopColor="rgba(229,9,20,0.10)" />
-              <stop offset="100%" stopColor="rgba(229,9,20,0)" />
-            </radialGradient>
-            <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Pulsing halo around center */}
-          <motion.circle
-            cx={cx}
-            cy={cy}
-            r={70}
-            fill="url(#silhGrad)"
-            initial={false}
-            animate={{ scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ transformOrigin: `${cx}px ${cy}px` }}
-          />
-
-          {/* Subtle scan ring */}
-          <motion.circle
-            cx={cx}
-            cy={cy}
-            r={ringR + 18}
-            fill="none"
-            stroke="rgba(229,9,20,0.18)"
-            strokeWidth="0.8"
-            strokeDasharray="3 6"
-            initial={false}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
-            style={{ transformOrigin: `${cx}px ${cy}px` }}
-          />
-
-          {/* Body silhouette */}
-          <g
-            transform={`translate(${cx - 22} ${cy - 56})`}
-            fill="rgba(255,255,255,0.88)"
-            stroke="none"
-          >
-            <circle cx="22" cy="14" r="11" />
-            <path d="M5 30 Q22 22 39 30 L42 70 Q22 76 2 70 Z" />
-            <path d="M14 70 L10 110 L18 110 L22 80 L26 110 L34 110 L30 70 Z" />
-          </g>
-
-          {/* Hormone nodes */}
-          {HORMONES.map((h, i) => {
-            const rad = (h.angle * Math.PI) / 180;
-            const x = cx + Math.cos(rad) * ringR;
-            const y = cy + Math.sin(rad) * ringR;
-            const active = i <= milestoneIdx && progress > 0;
-            const wasJustActivated = i === milestoneIdx && progress > 0;
+        {/* Center stage: progress ring + character photo + hormone labels */}
+        <div className="relative" style={{ width: 320, height: 320 }}>
+          {/* Hormone labels positioned at compass points around the ring */}
+          {HORMONES.map((h) => {
+            const active = progress >= h.threshold;
             return (
-              <g key={h.id}>
-                <motion.line
-                  x1={cx}
-                  y1={cy}
-                  x2={x}
-                  y2={y}
-                  stroke="#E50914"
-                  strokeWidth="1.4"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{
-                    pathLength: active ? 1 : 0,
-                    opacity: active ? 0.7 : 0,
-                  }}
-                  transition={{ duration: 0.55, ease: 'easeOut' }}
-                />
-                <motion.circle
-                  cx={x}
-                  cy={y}
-                  r={22}
-                  fill={active ? '#E50914' : 'transparent'}
-                  stroke={active ? '#FF3B47' : 'rgba(255,255,255,0.32)'}
-                  strokeWidth="1.5"
-                  filter={active ? 'url(#nodeGlow)' : undefined}
-                  initial={false}
-                  animate={{
-                    scale: active ? [0.85, 1.12, 1] : 1,
-                  }}
-                  transition={{ duration: 0.45 }}
-                />
-                {wasJustActivated && (
-                  <motion.circle
-                    cx={x}
-                    cy={y}
-                    r={22}
-                    fill="none"
-                    stroke="#FF3B47"
-                    strokeWidth="1.5"
-                    initial={{ scale: 1, opacity: 0.7 }}
-                    animate={{ scale: 2.2, opacity: 0 }}
-                    transition={{ duration: 1.4, repeat: 2 }}
+              <motion.div
+                key={h.id}
+                className={POSITION_CLASSES[h.position]}
+                initial={false}
+                animate={{
+                  opacity: active ? 1 : 0.45,
+                  y: h.position === 'top' ? (active ? -4 : 0) : h.position === 'bottom' ? (active ? 4 : 0) : 0,
+                  x: h.position === 'left' ? (active ? -4 : 0) : h.position === 'right' ? (active ? 4 : 0) : 0,
+                }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <div className="flex items-center gap-2">
+                  <motion.span
+                    aria-hidden
+                    className="block size-1.5 rounded-full"
+                    initial={false}
+                    animate={{
+                      backgroundColor: active ? '#FF3B47' : 'rgba(255,255,255,0.4)',
+                      boxShadow: active ? '0 0 12px rgba(255,59,71,0.85)' : 'none',
+                    }}
+                    transition={{ duration: 0.4 }}
                   />
-                )}
-                <text
-                  x={x}
-                  y={y + 42}
-                  textAnchor="middle"
-                  fontSize="11"
-                  fontWeight="700"
-                  letterSpacing="0.18em"
-                  style={{ textTransform: 'uppercase' }}
-                  fill={active ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.45)'}
-                >
-                  {h.label}
-                </text>
-                {active ? (
-                  <motion.text
-                    x={x}
-                    y={y + 58}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#FF3B47"
-                    style={{ fontFamily: 'var(--font-mono)' }}
-                    initial={{ opacity: 0, y: y + 64 }}
-                    animate={{ opacity: 1, y: y + 58 }}
-                    transition={{ duration: 0.32, delay: 0.15 }}
+                  <span
+                    className="text-[11px] font-bold uppercase"
+                    style={{
+                      letterSpacing: '0.22em',
+                      color: active ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                    }}
                   >
-                    {h.value} {h.unit}
-                  </motion.text>
-                ) : (
-                  <text
-                    x={x}
-                    y={y + 58}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="rgba(255,255,255,0.28)"
-                    style={{ fontFamily: 'var(--font-mono)' }}
-                  >
-                    {h.en}
-                  </text>
-                )}
-              </g>
+                    {h.label}
+                  </span>
+                </div>
+              </motion.div>
             );
           })}
-        </svg>
+
+          {/* Progress ring (SVG) */}
+          <svg
+            viewBox="0 0 320 320"
+            className="absolute inset-0 w-full h-full"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#A50015" />
+                <stop offset="50%" stopColor="#E50914" />
+                <stop offset="100%" stopColor="#FF3B47" />
+              </linearGradient>
+            </defs>
+
+            {/* Track */}
+            <circle
+              cx={160}
+              cy={160}
+              r={ringR}
+              fill="none"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth={ringStroke}
+            />
+            {/* Progress arc — starts at top (12 o'clock), rotates by -90deg */}
+            <circle
+              cx={160}
+              cy={160}
+              r={ringR}
+              fill="none"
+              stroke="url(#ringGrad)"
+              strokeWidth={ringStroke}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+              transform="rotate(-90 160 160)"
+              style={{
+                transition: 'stroke-dashoffset 120ms linear',
+                filter: 'drop-shadow(0 0 12px rgba(229,9,20,0.55))',
+              }}
+            />
+          </svg>
+
+          {/* Character photo inside the ring */}
+          <div
+            className="absolute inset-0 flex items-end justify-center"
+            style={{ paddingBottom: 12 }}
+          >
+            <div
+              className="relative overflow-hidden"
+              style={{
+                width: 232,
+                height: 264,
+                borderRadius: '50% / 42%',
+                background: 'radial-gradient(70% 70% at 50% 60%, rgba(229,9,20,0.18) 0%, rgba(229,9,20,0) 70%)',
+              }}
+            >
+              {characterImageSrc ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={characterImageSrc}
+                  alt=""
+                  className="absolute inset-0 w-full h-full"
+                  style={{ objectFit: 'contain', objectPosition: 'center bottom' }}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
 
         <motion.p
           key={milestoneIdx}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32, ease: 'easeOut' }}
-          className="mt-6 text-[15px] text-white/90 min-h-[1.5em] max-w-[28ch] font-medium"
-          style={{ textShadow: '0 1px 12px rgba(0,0,0,0.45)' }}
+          className="mt-10 text-[15px] text-white min-h-[1.5em] max-w-[28ch] font-medium"
+          style={{ textShadow: '0 1px 12px rgba(0,0,0,0.65)' }}
         >
           {milestones[milestoneIdx]}
         </motion.p>
@@ -322,7 +273,7 @@ export function CalculatingScreen({
       {/* Bottom: profile counter + progress bar */}
       <div className="relative px-6 pb-10">
         <div className="flex items-baseline justify-between mb-2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
             Анализирани профили
           </p>
           <p
@@ -346,7 +297,6 @@ export function CalculatingScreen({
         </div>
       </div>
 
-      {/* Mid-loading question overlay */}
       <AnimatePresence>
         {pendingQuestion && (
           <MidLoadingQuestion

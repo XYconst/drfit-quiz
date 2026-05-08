@@ -149,6 +149,7 @@ export function QuizContainer() {
         midQuestions={step.midQuestions}
         onMidAnswer={(stepId, value) => dispatch({ type: 'answer', stepId, value })}
         stepLabel={`${state.currentStep} / ${TOTAL_STEPS}`}
+        characterImageSrc={characterImagePath(character, 'goal')}
       />
     );
   }
