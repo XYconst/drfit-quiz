@@ -23,8 +23,11 @@ export interface MidQuestionSpec {
   options: Array<{ id: string; label: string; value: string }>;
 }
 
-/** Card layout variants for OptionCard. See components/quiz/OptionCard.tsx. */
-export type CardVariant = 'portrait' | 'square' | 'wide' | 'icon-row';
+/** Card layout variants for OptionCard. See components/quiz/OptionCard.tsx.
+ *  'split-photo' renders a hero photo of the user's matched character above the
+ *  stacked option list (BetterMe-style). When this variant is set, splitPhotoSlot
+ *  must point at a character pose folder under public/images/photo/. */
+export type CardVariant = 'portrait' | 'square' | 'wide' | 'icon-row' | 'split-photo';
 
 export interface OptionSpec {
   id: string;
@@ -71,6 +74,9 @@ export interface StepSpec {
   fields?: Array<{ name: string; type: 'email' | 'tel'; label: string; placeholder?: string; required: boolean }>;
   /** If true, only render when gender matches. */
   showOnlyForGender?: Gender;
+  /** When cardVariant is 'split-photo', this slot name is resolved to
+   *  /images/photo/{splitPhotoSlot}/{characterCode}.png at render time. */
+  splitPhotoSlot?: string;
 }
 
 const img = (step: string, opt: string) => `/images/quiz/${step}/${opt}.svg`;
@@ -203,7 +209,8 @@ export const STEPS: StepSpec[] = [
     id: 'sleep',
     type: 'single-select',
     headline: 'Как спиш?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-relaxed',
     options: [
       { id: 'lt5', label: 'Под 5 часа', sub: 'Хронично недоспиване', value: 'lt5', icon: 'bed' },
       { id: '5-6', label: '5-6 часа', sub: 'Под минимума', value: '5-6', icon: 'cloud' },
@@ -217,7 +224,8 @@ export const STEPS: StepSpec[] = [
     id: 'stress',
     type: 'single-select',
     headline: 'Колко стрес имаш?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-stretch',
     options: [
       { id: 'low', label: 'Нисък', sub: 'Спокоен/-йна съм', value: 'low', icon: 'smile' },
       { id: 'medium', label: 'Среден', sub: 'Има моменти', value: 'medium', icon: 'meh' },
@@ -243,7 +251,8 @@ export const STEPS: StepSpec[] = [
     id: 'dietStyle',
     type: 'single-select',
     headline: 'Как се храниш сега?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-bench',
     options: [
       { id: 'free', label: 'Ям каквото ми се яде', sub: 'Без правила', value: 'free', icon: 'sandwich' },
       { id: 'mindful', label: 'Опитвам се да внимавам', sub: 'Гледам по-чисто, без строг план', value: 'mindful', icon: 'leaf' },
@@ -281,7 +290,8 @@ export const STEPS: StepSpec[] = [
     id: 'mealTiming',
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-walking',
     options: [
       { id: 'morning', label: 'Сутрин', sub: 'Закуската е най-голяма', value: 'morning', icon: 'sun' },
       { id: 'lunch', label: 'На обяд', sub: 'Балансирано в средата', value: 'lunch', icon: 'utensils' },
@@ -294,7 +304,8 @@ export const STEPS: StepSpec[] = [
     id: 'energy',
     type: 'single-select',
     headline: 'Как е енергията ти?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-squat',
     options: [
       { id: 'stable', label: 'Стабилна', sub: 'Издържам докрай', value: 'stable', icon: 'gauge' },
       { id: 'afternoon-crash', label: 'Падам следобед', sub: 'Имам ясен спад', value: 'afternoon-crash', icon: 'battery-medium' },
@@ -307,7 +318,8 @@ export const STEPS: StepSpec[] = [
     id: 'cravings',
     type: 'single-select',
     headline: 'След ядене ти се иска още?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-bottle',
     options: [
       { id: 'sweet', label: 'Сладко', sub: 'Десерт или плод', value: 'sweet', icon: 'cake' },
       { id: 'salty', label: 'Солено', sub: 'Нещо хрупкаво', value: 'salty', icon: 'pizza' },
@@ -333,7 +345,8 @@ export const STEPS: StepSpec[] = [
     id: 'bodyTemp',
     type: 'single-select',
     headline: 'Как си с температурата?',
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-towel',
     options: [
       { id: 'cold', label: 'Често ми е студено', sub: 'Особено ръце и крака', value: 'cold', icon: 'thermometer-snowflake' },
       { id: 'normal', label: 'Нормално', sub: 'Без отклонения', value: 'normal', icon: 'thermometer' },
@@ -345,7 +358,8 @@ export const STEPS: StepSpec[] = [
     id: 'pastBest',
     type: 'single-select',
     headline: 'Колко тегло си свалял/-а в най-добрата си форма?',
-    cardVariant: 'square',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-front',
     options: [
       { id: 'lt5', label: 'Под 5 кг', value: 'lt5', imageUrl: img('pastBest', 'lt5') },
       { id: '5-10', label: '5-10 кг', value: '5-10', imageUrl: img('pastBest', '5-10') },
@@ -368,7 +382,8 @@ export const STEPS: StepSpec[] = [
     type: 'multi-select',
     headline: 'Защо искаш да се промениш точно сега?',
     minSelect: 1,
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-lunge',
     options: [
       { id: 'health', label: 'За здраве', sub: 'Дълъг и активен живот', value: 'health', icon: 'heart' },
       { id: 'partner', label: 'За половинката си', sub: 'Иска ми се да впечатля', value: 'partner', icon: 'users' },
@@ -390,7 +405,8 @@ export const STEPS: StepSpec[] = [
     type: 'multi-select',
     headline: 'Какво те спира досега?',
     minSelect: 1,
-    cardVariant: 'icon-row',
+    cardVariant: 'split-photo',
+    splitPhotoSlot: 'split-seated',
     options: [
       { id: 'no-time', label: 'Нямам време', sub: 'Дните минават бързо', value: 'no-time', icon: 'clock' },
       { id: 'no-plan', label: 'Нямам план', sub: 'Без ясна структура', value: 'no-plan', icon: 'route' },

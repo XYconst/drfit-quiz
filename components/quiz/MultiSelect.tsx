@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { OptionSpec, CardVariant } from '@/lib/questions';
 import { OptionCard } from './OptionCard';
 import { OptionRow } from './OptionRow';
+import { SplitPhotoSelect } from './SplitPhotoSelect';
 import { ArrowRightIcon, resolveIcon } from '@/components/icons';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
   minSelect: number;
   maxSelect?: number;
   variant: CardVariant;
+  splitPhotoSrc?: string;
   onToggle: (value: string) => void;
   onContinue: () => void;
 }
@@ -39,11 +41,27 @@ export function MultiSelect({
   minSelect,
   maxSelect,
   variant,
+  splitPhotoSrc,
   onToggle,
   onContinue,
 }: Props) {
   const canContinue = selected.length >= minSelect;
   const atCap = typeof maxSelect === 'number' && selected.length >= maxSelect;
+
+  if (variant === 'split-photo') {
+    return (
+      <SplitPhotoSelect
+        mode="multi"
+        options={options}
+        selectedMulti={selected}
+        minSelect={minSelect}
+        maxSelect={maxSelect}
+        imageSrc={splitPhotoSrc ?? ''}
+        onToggle={onToggle}
+        onContinue={onContinue}
+      />
+    );
+  }
 
   return (
     <>

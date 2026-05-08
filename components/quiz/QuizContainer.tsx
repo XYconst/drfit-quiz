@@ -12,6 +12,7 @@ import {
 } from '@/lib/avatars';
 import { trackQuizStep, trackLead } from '@/lib/pixel';
 import { genderize } from '@/lib/genderize';
+import { pickCharacter, characterImagePath, FALLBACK_CHARACTER } from '@/lib/character';
 import type { OptionSpec } from '@/lib/questions';
 import { QuestionShell } from './QuestionShell';
 import { SingleSelect } from './SingleSelect';
@@ -79,8 +80,10 @@ export function QuizContainer() {
   const gender = (state.answers.gender as Gender | undefined) ?? null;
   const goal = state.answers.goal as Goal | undefined;
   const bodyType = state.answers.bodyType as BodyType | undefined;
+  const age = state.answers.age as string | undefined;
   const avatar: AvatarOrBlocked | null =
     gender && goal && bodyType ? classifyAvatar(gender, goal, bodyType) : null;
+  const character = pickCharacter(gender, age) ?? FALLBACK_CHARACTER;
 
   // tracking
   useEffect(() => {
@@ -169,24 +172,36 @@ export function QuizContainer() {
     );
   } else if (step.type === 'single-select') {
     const opts = genderizeOpts(resolveOptions(step, gender ?? undefined));
+    const variant = resolveCardVariant(step, opts.length);
+    const splitPhotoSrc =
+      variant === 'split-photo' && step.splitPhotoSlot
+        ? characterImagePath(character, step.splitPhotoSlot)
+        : undefined;
     content = (
       <SingleSelect
         options={opts}
         selected={state.answers[step.id] as string | undefined}
-        variant={resolveCardVariant(step, opts.length)}
+        variant={variant}
+        splitPhotoSrc={splitPhotoSrc}
         onPick={onSingle}
       />
     );
   } else if (step.type === 'multi-select') {
     const opts = genderizeOpts(resolveOptions(step, gender ?? undefined));
     const selected = (state.answers[step.id] as string[] | undefined) ?? [];
+    const variant = resolveCardVariant(step, opts.length);
+    const splitPhotoSrc =
+      variant === 'split-photo' && step.splitPhotoSlot
+        ? characterImagePath(character, step.splitPhotoSlot)
+        : undefined;
     content = (
       <MultiSelect
         options={opts}
         selected={selected}
         minSelect={step.minSelect ?? 1}
         maxSelect={step.maxSelect}
-        variant={resolveCardVariant(step, opts.length)}
+        variant={variant}
+        splitPhotoSrc={splitPhotoSrc}
         onToggle={(v) => dispatch({ type: 'multi-toggle', stepId: step.id, value: v })}
         onContinue={onContinue}
       />

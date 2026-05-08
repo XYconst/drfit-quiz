@@ -11,6 +11,8 @@ This guide replaces the looser "ONE Стефан + ONE Мария" plan in `HAND
 
 Eight anchors total. Each character is generated ONCE as a base reference portrait, then reused as a character-reference image for every scene that calls for them.
 
+The names are placeholders. They exist so we can refer to "M2" or "Стефан" in the slot map without confusion. Swap freely.
+
 | Code | Name | Gender | Age tier | Build | Hair | Eyes | Distinctive |
 |---|---|---|---|---|---|---|---|
 | **M1** | Алекс | M | 18-29 | Lean athletic, low body fat, defined but not bulky | Short dark brown, side-parted, slight texture | Brown | Light stubble, clean jawline |
@@ -32,7 +34,7 @@ Eight anchors total. Each character is generated ONCE as a base reference portra
 
 **Premise.** Men shirtless. Women in athletic top + bottom. Branding has to be present but small enough that the photo could pass as an editorial fitness shoot, not a uniform shoot.
 
-**Mark.** A flat wordmark "DR.FIT" in brand red `#A50015` on black, or white on black. No icons, no full lockup. Treat it like a designer label: visible to the eye that looks for it, invisible to the eye that doesn't.
+**Mark.** Just the word "DR.FIT" set in a clean modern sans-serif (Manrope ExtraBold or similar geometric sans), all caps, brand red `#A50015` on black or white on black. No logo glyph, no icon, no full lockup. Treat it like a designer label: visible to the eye that looks for it, invisible to the eye that doesn't.
 
 **Where it goes:**
 
@@ -42,7 +44,7 @@ Eight anchors total. Each character is generated ONCE as a base reference portra
 | Men's joggers (matte-black) | Same wordmark on the left thigh seam, lower third | Used in stretch/dynamic poses |
 | Men's wristband (optional, black silicone) | Tone-on-tone debossed wordmark | Add to every shot, cheap continuity anchor |
 | Women's sports bra (matte-black) | Small wordmark stamp center-chest, brand red, ~2 cm wide | Standard for every female shot |
-| Women's leggings or shorts (matte-black) | Wordmark on the right hip seam, lower third | Used when bra alone would feel under-dressed |
+| Women's leggings (matte-black) | Wordmark on the right hip seam, lower third | Leggings only across the full female cast, no shorts |
 | Water bottle prop (optional, matte-black) | Larger wordmark on the bottle, brand red | Use sparingly, only in scenes where a prop reads naturally |
 
 **Hard rules.**

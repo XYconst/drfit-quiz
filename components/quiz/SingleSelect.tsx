@@ -3,12 +3,15 @@ import { motion } from 'framer-motion';
 import type { OptionSpec, CardVariant } from '@/lib/questions';
 import { OptionCard } from './OptionCard';
 import { OptionRow } from './OptionRow';
+import { SplitPhotoSelect } from './SplitPhotoSelect';
 import { resolveIcon } from '@/components/icons';
 
 interface Props {
   options: OptionSpec[];
   selected?: string;
   variant: CardVariant;
+  /** Required when variant === 'split-photo'. Path to the matched character pose. */
+  splitPhotoSrc?: string;
   onPick: (value: string, optionId: string) => void;
 }
 
@@ -30,7 +33,18 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' as const } },
 };
 
-export function SingleSelect({ options, selected, variant, onPick }: Props) {
+export function SingleSelect({ options, selected, variant, splitPhotoSrc, onPick }: Props) {
+  if (variant === 'split-photo') {
+    return (
+      <SplitPhotoSelect
+        mode="single"
+        options={options}
+        selected={selected}
+        imageSrc={splitPhotoSrc ?? ''}
+        onPick={onPick}
+      />
+    );
+  }
   return (
     <motion.div
       className={gridClass(variant)}
