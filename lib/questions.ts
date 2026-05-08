@@ -131,12 +131,20 @@ export const STEPS: StepSpec[] = [
     type: 'single-select',
     headline: 'На колко си?',
     cardVariant: 'square',
-    options: [
-      { id: '18-29', label: '18-29', value: '18-29', imageUrl: img('age', '18-29') },
-      { id: '30-39', label: '30-39', value: '30-39', imageUrl: img('age', '30-39') },
-      { id: '40-49', label: '40-49', value: '40-49', imageUrl: img('age', '40-49') },
-      { id: '50+', label: '50+', value: '50+', imageUrl: img('age', '50-59') },
-    ],
+    optionsByGender: {
+      male: [
+        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/m1.png' },
+        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/m2.png' },
+        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/m3.png' },
+        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/m4.png' },
+      ],
+      female: [
+        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/f1.png' },
+        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/f2.png' },
+        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/f3.png' },
+        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/f4.png' },
+      ],
+    },
   },
   {
     step: 5,
