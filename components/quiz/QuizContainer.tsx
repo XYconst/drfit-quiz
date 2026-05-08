@@ -23,6 +23,7 @@ import { CalculatingScreen } from './CalculatingScreen';
 import { InterstitialCard } from './InterstitialCard';
 import { DateStep } from './DateStep';
 import { GoalSelect } from './GoalSelect';
+import { BodyDiagram } from './BodyDiagram';
 import { ProjectionPreview } from './ProjectionPreview';
 import { ConfirmDialog } from './ConfirmDialog';
 import { RotateCcwIcon } from '@/components/icons';
@@ -185,6 +186,18 @@ export function QuizContainer() {
         variant={variant}
         splitPhotoSrc={splitPhotoSrc}
         onPick={onSingle}
+      />
+    );
+  } else if (step.type === 'multi-select' && step.id === 'problemAreas' && gender) {
+    const selected = (state.answers[step.id] as string[] | undefined) ?? [];
+    content = (
+      <BodyDiagram
+        gender={gender}
+        selected={selected}
+        minSelect={step.minSelect ?? 1}
+        maxSelect={step.maxSelect}
+        onToggle={(v) => dispatch({ type: 'multi-toggle', stepId: step.id, value: v })}
+        onContinue={onContinue}
       />
     );
   } else if (step.type === 'multi-select') {
