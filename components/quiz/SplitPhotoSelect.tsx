@@ -5,6 +5,33 @@ import type { OptionSpec } from '@/lib/questions';
 import { OptionRow } from './OptionRow';
 import { resolveIcon } from '@/components/icons';
 
+/**
+ * Per-slot crop hint. Different poses put the body action at different vertical
+ * positions in the frame; the hero crop window keeps all of them anchored on
+ * the most expressive region.
+ */
+const SLOT_CROP: Record<string, string> = {
+  'goal':           'center 30%',
+  'enc-1':          'center 40%',
+  'enc-2':          'center 30%',
+  'split-relaxed':  'center 30%',
+  'split-stretch':  'center 35%',
+  'split-bench':    'center 40%',
+  'split-walking':  'center 35%',
+  'split-squat':    'center 55%',
+  'split-bottle':   'center 35%',
+  'split-towel':    'center 30%',
+  'split-front':    'center 35%',
+  'split-lunge':    'center 55%',
+  'split-seated':   'center 50%',
+};
+
+function cropForSrc(imageSrc: string): string {
+  const m = imageSrc.match(/\/photo\/([^/]+)\//);
+  if (m && SLOT_CROP[m[1]]) return SLOT_CROP[m[1]];
+  return 'center 35%';
+}
+
 interface BaseProps {
   options: OptionSpec[];
   imageSrc: string;
@@ -63,14 +90,14 @@ export function SplitPhotoSelect(props: Props) {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.32, ease: 'easeOut' }}
-          className="relative w-full h-[200px] sm:h-[260px] rounded-2xl overflow-hidden bg-[var(--color-graphite)]"
+          className="relative w-full h-[260px] sm:h-[320px] rounded-2xl overflow-hidden bg-[var(--color-graphite)]"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center 28%' }}
+            style={{ objectPosition: cropForSrc(imageSrc) }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
         </motion.div>
@@ -130,7 +157,7 @@ function ContinueBar({
 }) {
   const canContinue = selectedCount >= minSelect;
   return (
-    <div className="mt-2 sticky bottom-4">
+    <div className="mt-4 pt-4 sticky bottom-0 bg-[var(--color-brand-bg)] pb-2 -mx-5 px-5 border-t border-[var(--color-line)]/40">
       <button
         type="button"
         onClick={onContinue}
