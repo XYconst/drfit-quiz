@@ -295,8 +295,7 @@ export const STEPS: StepSpec[] = [
     id: 'mealTiming',
     type: 'single-select',
     headline: 'Кога ядеш повечето си храна?',
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-food',
+    cardVariant: 'icon-row',
     options: [
       { id: 'morning', label: 'Сутрин', sub: 'Закуската е най-голяма', value: 'morning', icon: 'sun' },
       { id: 'lunch', label: 'На обяд', sub: 'Балансирано в средата', value: 'lunch', icon: 'utensils' },
@@ -338,10 +337,10 @@ export const STEPS: StepSpec[] = [
     headline: 'Подуваш ли се след хранене?',
     cardVariant: 'square',
     options: [
-      { id: 'often', label: 'Често', sub: 'Почти всеки ден', value: 'often', imageUrl: img('bloating', 'often') },
-      { id: 'sometimes', label: 'Понякога', sub: 'След тежки храни', value: 'sometimes', imageUrl: img('bloating', 'sometimes') },
-      { id: 'rarely', label: 'Рядко', sub: 'Изключения са', value: 'rarely', imageUrl: img('bloating', 'rarely') },
-      { id: 'never', label: 'Никога', sub: 'Нямам проблем', value: 'never', imageUrl: img('bloating', 'never') },
+      { id: 'often', label: 'Често', sub: 'Почти всеки ден', value: 'often', imageUrl: '/images/photo/bloating/often.png' },
+      { id: 'sometimes', label: 'Понякога', sub: 'След тежки храни', value: 'sometimes', imageUrl: '/images/photo/bloating/sometimes.png' },
+      { id: 'rarely', label: 'Рядко', sub: 'Изключения са', value: 'rarely', imageUrl: '/images/photo/bloating/rarely.png' },
+      { id: 'never', label: 'Никога', sub: 'Нямам проблем', value: 'never', imageUrl: '/images/photo/bloating/never.png' },
     ],
   },
   {

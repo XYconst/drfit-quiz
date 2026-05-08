@@ -2,28 +2,29 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import type { OptionSpec } from '@/lib/questions';
-import { OptionRow } from './OptionRow';
-import { resolveIcon } from '@/components/icons';
+import { CheckIcon, resolveIcon } from '@/components/icons';
 
 /**
- * Per-slot crop hint. Different poses put the body action at different vertical
- * positions in the frame; the hero crop window keeps all of them anchored on
- * the most expressive region.
+ * Two-column option grid with the matched character cutout below. Designed to
+ * fit a 390x844 mobile viewport without scrolling, so option cards are compact
+ * and the photo fills the remaining vertical space.
  */
+
 const SLOT_CROP: Record<string, string> = {
-  'goal':           'center 30%',
-  'enc-1':          'center 40%',
-  'enc-2':          'center 30%',
-  'split-relaxed':  'center 30%',
-  'split-stretch':  'center 35%',
-  'split-bench':    'center 40%',
-  'split-walking':  'center 35%',
-  'split-squat':    'center 55%',
-  'split-bottle':   'center 35%',
-  'split-towel':    'center 30%',
-  'split-front':    'center 35%',
-  'split-lunge':    'center 55%',
-  'split-seated':   'center 50%',
+  goal: 'center 30%',
+  'enc-1': 'center 40%',
+  'enc-2': 'center 30%',
+  'split-relaxed': 'center 30%',
+  'split-stretch': 'center 35%',
+  'split-bench': 'center 40%',
+  'split-walking': 'center 35%',
+  'split-squat': 'center 55%',
+  'split-bottle': 'center 35%',
+  'split-towel': 'center 30%',
+  'split-front': 'center 35%',
+  'split-lunge': 'center 55%',
+  'split-seated': 'center 50%',
+  'split-food': 'center 35%',
 };
 
 function cropForSrc(imageSrc: string): string {
@@ -55,20 +56,19 @@ interface MultiProps extends BaseProps {
 
 type Props = SingleProps | MultiProps;
 
-const container = {
+const grid = {
   hidden: {},
   show: { transition: { staggerChildren: 0.04, delayChildren: 0.04 } },
 };
 
-const item = {
-  hidden: { opacity: 0, y: 10 },
+const cell = {
+  hidden: { opacity: 0, y: 8 },
   show: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' as const } },
 };
 
 export function SplitPhotoSelect(props: Props) {
   const { options, imageSrc, imageAlt = '' } = props;
 
-  // imageSrc may 404 (pose generation pending). Detect once, fall back to neutral state.
   const [imageOk, setImageOk] = useState(true);
   useEffect(() => {
     setImageOk(true);
@@ -82,73 +82,94 @@ export function SplitPhotoSelect(props: Props) {
     img.src = imageSrc;
   }, [imageSrc]);
 
-  // The model floats on the right of the option list. Multi-select questions
-  // need more room for the option pills and the continue bar, so we shrink the
-  // photo column and shift it further right when in multi mode.
   const showPhoto = imageOk && Boolean(imageSrc);
   const isMulti = props.mode === 'multi';
+
   return (
-    <div className="relative">
+    <div className="flex flex-col h-full gap-4">
+      <motion.div
+        className="grid grid-cols-2 gap-2.5"
+        variants={grid}
+        initial="hidden"
+        animate="show"
+      >
+        {options.map((opt) => {
+          const isSelected = isMulti
+            ? props.selectedMulti.includes(opt.value)
+            : props.selected === opt.value;
+          return (
+            <motion.button
+              type="button"
+              key={opt.id}
+              variants={cell}
+              onClick={() => {
+                if (isMulti) {
+                  props.onToggle(opt.value);
+                } else {
+                  props.onPick(opt.value, opt.id);
+                }
+              }}
+              aria-pressed={isSelected}
+              className={[
+                'relative rounded-2xl border-2 p-3 text-left',
+                'min-h-[80px] flex flex-col justify-between gap-2',
+                'motion-safe:transition-[transform,border-color,background-color] motion-safe:duration-200',
+                'motion-safe:active:scale-[0.97]',
+                isSelected
+                  ? 'border-[var(--color-brand-red)] bg-[var(--color-brand-red-tint)]'
+                  : 'border-[var(--color-line)] bg-[var(--color-paper-warm)] hover:border-[var(--color-text-muted)]',
+              ].join(' ')}
+            >
+              <span
+                className={[
+                  'shrink-0 grid place-items-center size-7 rounded-full',
+                  isSelected ? 'bg-white text-[var(--color-brand-red)]' : 'bg-[var(--color-surface-100)] text-[var(--color-text-strong)]',
+                ].join(' ')}
+              >
+                {resolveIcon(opt.icon)}
+              </span>
+              <span className="block">
+                <span className="block font-semibold text-[14px] leading-tight text-[var(--color-text-headline)]">
+                  {opt.label}
+                </span>
+                {opt.sub && (
+                  <span className="block mt-0.5 text-[11px] leading-snug text-[var(--color-text-muted)] line-clamp-2">
+                    {opt.sub}
+                  </span>
+                )}
+              </span>
+              {isSelected && (
+                <span
+                  aria-hidden
+                  className="absolute top-2 right-2 size-5 rounded-md bg-[var(--color-brand-red)] grid place-items-center"
+                >
+                  <CheckIcon width={12} height={12} className="text-white" />
+                </span>
+              )}
+            </motion.button>
+          );
+        })}
+      </motion.div>
+
       {showPhoto ? (
         <motion.div
           aria-hidden
-          initial={{ opacity: 0, x: 16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut', delay: 0.06 }}
-          className={[
-            'pointer-events-none absolute z-0',
-            isMulti
-              ? 'right-[-28px] top-[20px] sm:right-[-12px] w-[110px] sm:w-[150px] h-[360px] sm:h-[420px]'
-              : 'right-[-12px] top-[-8px] sm:right-0 w-[140px] sm:w-[200px] h-[420px] sm:h-[480px]',
-          ].join(' ')}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+          className="flex-1 min-h-[180px] flex items-end justify-center pointer-events-none"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
-            className="w-full h-full object-contain object-bottom"
+            className="max-h-full w-auto h-full object-contain"
             style={{ objectPosition: cropForSrc(imageSrc) }}
           />
         </motion.div>
       ) : null}
 
-      <motion.div
-        className={[
-          'relative z-10 flex flex-col gap-3',
-          showPhoto && !isMulti ? 'pr-[124px] sm:pr-[176px]' : '',
-          showPhoto && isMulti ? 'pr-[88px] sm:pr-[130px]' : '',
-        ].join(' ')}
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {options.map((opt) => {
-          const isMulti = props.mode === 'multi';
-          const isSelected = isMulti
-            ? props.selectedMulti.includes(opt.value)
-            : props.selected === opt.value;
-          return (
-            <motion.div key={opt.id} variants={item}>
-              <OptionRow
-                icon={resolveIcon(opt.icon)}
-                label={opt.label}
-                sub={opt.sub}
-                tone={opt.tone}
-                selected={isSelected}
-                onClick={() => {
-                  if (isMulti) {
-                    props.onToggle(opt.value);
-                  } else {
-                    props.onPick(opt.value, opt.id);
-                  }
-                }}
-              />
-            </motion.div>
-          );
-        })}
-      </motion.div>
-
-      {props.mode === 'multi' ? (
+      {isMulti ? (
         <ContinueBar
           selectedCount={props.selectedMulti.length}
           minSelect={props.minSelect}
@@ -170,7 +191,7 @@ function ContinueBar({
 }) {
   const canContinue = selectedCount >= minSelect;
   return (
-    <div className="mt-4 pt-4 sticky bottom-0 bg-[var(--color-brand-bg)] pb-2 -mx-5 px-5 border-t border-[var(--color-line)]/40">
+    <div className="pt-3 pb-2 sticky bottom-0 bg-[var(--color-brand-bg)] -mx-5 px-5 border-t border-[var(--color-line)]/40">
       <button
         type="button"
         onClick={onContinue}
