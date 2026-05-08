@@ -252,11 +252,15 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'interstitial') {
+    const imageSrc = step.splitPhotoSlot
+      ? characterImagePath(character, step.splitPhotoSlot)
+      : undefined;
     content = (
       <InterstitialCard
         headline={genderize(step.headline ?? '', gender)}
         body={genderize(step.bodyBg ?? '', gender)}
         ctaLabel={step.ctaBg ?? 'Продължи'}
+        imageSrc={imageSrc}
         onContinue={onContinue}
       />
     );
