@@ -82,29 +82,38 @@ export function SplitPhotoSelect(props: Props) {
     img.src = imageSrc;
   }, [imageSrc]);
 
+  // The model floats on the right of the option list. At narrow widths the
+  // photo is anchored to the right margin and clipped if needed; at wider
+  // widths the column gets more breathing room. Background-removed cutouts
+  // (transparent PNG) sit on the brand-bg directly so there's no card chrome.
+  const showPhoto = imageOk && Boolean(imageSrc);
   return (
-    <div className="flex flex-col gap-4">
-      {/* Photo: top quarter on mobile, side panel on wider screens */}
-      {imageOk && imageSrc ? (
+    <div className="relative">
+      {showPhoto ? (
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.32, ease: 'easeOut' }}
-          className="relative w-full h-[260px] sm:h-[320px] rounded-2xl overflow-hidden bg-[var(--color-graphite)]"
+          aria-hidden
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: 'easeOut', delay: 0.06 }}
+          className="pointer-events-none absolute right-[-12px] top-[-8px] sm:right-0 w-[140px] sm:w-[200px] h-[420px] sm:h-[480px] z-0"
+          style={{
+            objectPosition: cropForSrc(imageSrc),
+          }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: cropForSrc(imageSrc) }}
+            className="w-full h-full object-contain object-bottom"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
         </motion.div>
       ) : null}
 
       <motion.div
-        className="flex flex-col gap-3"
+        className={[
+          'relative z-10 flex flex-col gap-3',
+          showPhoto ? 'pr-[124px] sm:pr-[176px]' : '',
+        ].join(' ')}
         variants={container}
         initial="hidden"
         animate="show"

@@ -77,6 +77,10 @@ export interface StepSpec {
   /** When cardVariant is 'split-photo', this slot name is resolved to
    *  /images/photo/{splitPhotoSlot}/{characterCode}.png at render time. */
   splitPhotoSlot?: string;
+  /** Direct image URL for an interstitial. Takes precedence over splitPhotoSlot.
+   *  Use for static assets like real before/after testimonial photos that should
+   *  not vary by character. */
+  imageUrl?: string;
 }
 
 const img = (step: string, opt: string) => `/images/quiz/${step}/${opt}.svg`;
@@ -284,7 +288,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Над 10 000 души преминаха същия път с Dr.Fit',
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът.',
     ctaBg: 'Продължи',
-    splitPhotoSlot: 'enc-1',
+    imageUrl: '/images/photo/testimonials/transformation-3.jpg',
   },
   {
     step: 14,
@@ -359,8 +363,7 @@ export const STEPS: StepSpec[] = [
     id: 'pastBest',
     type: 'single-select',
     headline: 'Колко тегло си свалял/-а в най-добрата си форма?',
-    cardVariant: 'split-photo',
-    splitPhotoSlot: 'split-front',
+    cardVariant: 'square',
     options: [
       { id: 'lt5', label: 'Под 5 кг', value: 'lt5', imageUrl: img('pastBest', 'lt5') },
       { id: '5-10', label: '5-10 кг', value: '5-10', imageUrl: img('pastBest', '5-10') },
@@ -376,7 +379,7 @@ export const STEPS: StepSpec[] = [
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
-    splitPhotoSlot: 'enc-2',
+    imageUrl: '/images/photo/testimonials/transformation-2.jpg',
   },
   {
     step: 21,

@@ -252,9 +252,11 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'interstitial') {
-    const imageSrc = step.splitPhotoSlot
-      ? characterImagePath(character, step.splitPhotoSlot)
-      : undefined;
+    const imageSrc = step.imageUrl
+      ? step.imageUrl
+      : step.splitPhotoSlot
+        ? characterImagePath(character, step.splitPhotoSlot)
+        : undefined;
     content = (
       <InterstitialCard
         headline={genderize(step.headline ?? '', gender)}
