@@ -93,15 +93,22 @@ export default async function PlanPage({ searchParams }: PageProps) {
   const name = sp.name?.trim();
   const greeting = name ? `${name}, отстъпката ти е готова` : 'Отстъпката ти е готова';
 
-  const slug = name
+  // Personal redemption code: derive from the email's local part (the most
+  // unique handle we have for this user). Fallback to name, then avatar id.
+  const email = sp.email?.trim();
+  const fromEmail = email
+    ? email.split('@')[0]?.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 10)
+    : '';
+  const fromName = name
     ? name
         .normalize('NFKD')
         .replace(/[̀-ͯ]/g, '')
         .replace(/[^a-zA-Zа-яА-Я0-9]/g, '')
         .toUpperCase()
         .slice(0, 8)
-    : `AV${avatarId}`;
-  const discountCode = `DRFIT-${slug || `AV${avatarId}`}-50`;
+    : '';
+  const slug = fromEmail || fromName || `AV${avatarId}`;
+  const discountCode = `DRFIT-${slug}-50`;
 
   return (
     <main>
