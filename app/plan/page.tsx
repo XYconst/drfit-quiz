@@ -48,6 +48,25 @@ const PLANS: PricingPlan[] = [
   },
 ];
 
+const DEFAULT_CHARACTER_BY_AVATAR: Record<AvatarId, string> = {
+  '01': 'm2',
+  '02': 'f2',
+  '03': 'm2',
+  '04': 'f2',
+  '05': 'm1',
+};
+
+const DEFAULT_BODYTYPE_BY_AVATAR: Record<AvatarId, string> = {
+  '01': 'overweight',
+  '02': 'overweight',
+  '03': 'skinny-fat',
+  '04': 'skinny-fat',
+  '05': 'underweight',
+};
+
+const VALID_CHARS = new Set(['m1', 'm2', 'm3', 'm4', 'f1', 'f2', 'f3', 'f4']);
+const VALID_BODYTYPES = new Set(['overweight', 'skinny-fat', 'underweight', 'perfect']);
+
 export default async function PlanPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const avatarId: AvatarId = isAvatar(sp.avatar) ? sp.avatar : '01';
@@ -60,14 +79,29 @@ export default async function PlanPage({ searchParams }: PageProps) {
   const heightM = heightCm / 100;
   const bmi = heightM > 0 && currentKg > 0 ? currentKg / (heightM * heightM) : undefined;
   const targetDateLabel = sp.td;
+  const goalDays = Math.max(7, Number(sp.days) || 90);
 
   const motivationCodes = sp.mot ? sp.mot.split(',').map((s) => s.trim()).filter(Boolean) : [];
   const goalLabels = motivationCodes
     .map((code) => MOTIVATION_LABELS[code])
     .filter((v): v is string => Boolean(v));
 
+  const character = sp.char && VALID_CHARS.has(sp.char) ? sp.char : DEFAULT_CHARACTER_BY_AVATAR[avatarId];
+  const currentBodyType =
+    sp.bt && VALID_BODYTYPES.has(sp.bt) ? sp.bt : DEFAULT_BODYTYPE_BY_AVATAR[avatarId];
+
   const name = sp.name?.trim();
   const greeting = name ? `${name}, отстъпката ти е готова` : 'Отстъпката ти е готова';
+
+  const slug = name
+    ? name
+        .normalize('NFKD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-zA-Zа-яА-Я0-9]/g, '')
+        .toUpperCase()
+        .slice(0, 8)
+    : `AV${avatarId}`;
+  const discountCode = `DRFIT-${slug || `AV${avatarId}`}-50`;
 
   return (
     <main>
@@ -77,8 +111,13 @@ export default async function PlanPage({ searchParams }: PageProps) {
         goalLabels={goalLabels}
         plans={PLANS}
         checkoutBaseUrl={checkoutUrl}
+        discountCode={discountCode}
+        initialDiscountPercent="30%"
+        bumpedDiscountPercent="50%"
+        character={character}
+        currentBodyType={currentBodyType}
+        goalDays={goalDays}
       />
-      {/* avatar context kept available for downstream personalization */}
       <span className="hidden" aria-hidden data-avatar={avatar.id} />
     </main>
   );

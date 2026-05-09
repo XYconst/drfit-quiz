@@ -139,7 +139,7 @@ export function ProjectionPreview({
           >
             Като теб са успели
           </p>
-          <TestimonialCard testimonial={testimonial} />
+          <TestimonialCard testimonial={testimonial} imgSrc={testimonial.afterImg} />
         </motion.div>
       )}
 

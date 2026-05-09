@@ -1,10 +1,12 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DiscountSwipe } from './DiscountSwipe';
+import { ScrubReveal } from './ScrubReveal';
 import { PlanLoading } from './PlanLoading';
 import { PricingPlans, type PricingPlan } from './PricingPlans';
 import { PaymentMethods } from './PaymentMethods';
+import { EscalationModal } from './EscalationModal';
+import { CurrentToTarget } from './CurrentToTarget';
 import { CheckIcon, LockIcon } from '@/components/icons';
 
 interface CurrentState {
@@ -22,10 +24,38 @@ interface Props {
   plans: PricingPlan[];
   defaultPlanId?: string;
   checkoutBaseUrl: string;
+  /** Personal redemption code shown on the scrub-to-reveal banner. */
+  discountCode: string;
+  /** Initial discount percentage label (e.g. "30%"). */
+  initialDiscountPercent: string;
+  /** Bumped percentage offered when the user closes the banner (e.g. "50%"). */
+  bumpedDiscountPercent: string;
+  /** Character code (m1-m4 / f1-f4) used for the current/target body visuals. */
+  character: string;
+  /** Body-type the user picked in the quiz (for the "current" visual). */
+  currentBodyType: string;
+  /** Total days to goal — drives the realism verdict. */
+  goalDays: number;
 }
 
-export function PlanFlow({ greeting, currentState, goalLabels, plans, defaultPlanId, checkoutBaseUrl }: Props) {
+export function PlanFlow({
+  greeting,
+  currentState,
+  goalLabels,
+  plans,
+  defaultPlanId,
+  checkoutBaseUrl,
+  discountCode,
+  initialDiscountPercent,
+  bumpedDiscountPercent,
+  character,
+  currentBodyType,
+  goalDays,
+}: Props) {
   const [phase, setPhase] = useState<'swipe' | 'loading' | 'full'>('swipe');
+  const [discountPercent, setDiscountPercent] = useState<string>(initialDiscountPercent);
+  const [escalationOpen, setEscalationOpen] = useState(false);
+  const [escalationDone, setEscalationDone] = useState(false);
   const [selectedId, setSelectedId] = useState<string>(
     defaultPlanId ?? plans.find((p) => p.recommended)?.id ?? plans[0].id,
   );
@@ -33,6 +63,25 @@ export function PlanFlow({ greeting, currentState, goalLabels, plans, defaultPla
   const selected = useMemo(() => plans.find((p) => p.id === selectedId) ?? plans[0], [plans, selectedId]);
 
   const checkoutHref = `${checkoutBaseUrl}${checkoutBaseUrl.includes('?') ? '&' : '?'}plan=${selected.id}`;
+
+  const handleClose = () => {
+    if (escalationDone) {
+      // User already saw the bump; let them dismiss the banner straight to the full plan.
+      setPhase('loading');
+    } else {
+      setEscalationOpen(true);
+    }
+  };
+  const acceptBump = () => {
+    setDiscountPercent(bumpedDiscountPercent);
+    setEscalationDone(true);
+    setEscalationOpen(false);
+  };
+  const declineBump = () => {
+    setEscalationDone(true);
+    setEscalationOpen(false);
+    setPhase('loading');
+  };
 
   return (
     <div className="max-w-md mx-auto px-5 pt-6 pb-32">
@@ -45,13 +94,15 @@ export function PlanFlow({ greeting, currentState, goalLabels, plans, defaultPla
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.32, ease: 'easeOut' }}
           >
-            <DiscountSwipe
+            <ScrubReveal
               greeting={greeting}
-              percent="51%"
+              percent={discountPercent}
               fromPrice="99 EUR"
-              toPrice="49 EUR"
+              toPrice={`${selected.price.toFixed(2).replace('.', ',')} EUR`}
+              code={discountCode}
               initialSeconds={9 * 60 + 42}
               onClaim={() => setPhase('loading')}
+              onClose={handleClose}
             />
             <p className="mt-6 text-center text-[13px] text-[var(--color-text-muted)] max-w-[36ch] mx-auto">
               Отстъпката е резервирана за теб въз основа на отговорите ти. Плъзни, за да я отключиш и да видиш плана си.
@@ -86,10 +137,21 @@ export function PlanFlow({ greeting, currentState, goalLabels, plans, defaultPla
               selected={selected}
               onSelect={setSelectedId}
               checkoutHref={checkoutHref}
+              character={character}
+              currentBodyType={currentBodyType}
+              goalDays={goalDays}
+              discountPercent={discountPercent}
             />
           </motion.div>
         )}
       </AnimatePresence>
+
+      <EscalationModal
+        open={escalationOpen}
+        bumpedPercent={bumpedDiscountPercent}
+        onAccept={acceptBump}
+        onDecline={declineBump}
+      />
     </div>
   );
 }
@@ -102,9 +164,25 @@ interface FullProps {
   selected: PricingPlan;
   onSelect: (id: string) => void;
   checkoutHref: string;
+  character: string;
+  currentBodyType: string;
+  goalDays: number;
+  discountPercent: string;
 }
 
-function FullPlanContent({ greeting, currentState, goalLabels, plans, selected, onSelect, checkoutHref }: FullProps) {
+function FullPlanContent({
+  greeting,
+  currentState,
+  goalLabels,
+  plans,
+  selected,
+  onSelect,
+  checkoutHref,
+  character,
+  currentBodyType,
+  goalDays,
+  discountPercent,
+}: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   return (
@@ -131,7 +209,7 @@ function FullPlanContent({ greeting, currentState, goalLabels, plans, selected, 
         </h1>
       </header>
 
-      {/* Current state card */}
+      {/* Current state card — height/weight/BMI */}
       <section className="rounded-2xl bg-white border border-[var(--color-line)] p-5">
         <p
           className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-3"
@@ -140,15 +218,26 @@ function FullPlanContent({ greeting, currentState, goalLabels, plans, selected, 
           Къде си сега
         </p>
         <div className="grid grid-cols-3 gap-3 text-center">
-          <Stat label="Височина" value={heightCm ? `${heightCm}` : '—'} suffix="см" />
-          <Stat label="Тегло" value={currentKg ? `${currentKg}` : '—'} suffix="кг" />
-          <Stat label="BMI" value={bmi ? bmi.toFixed(1) : '—'} suffix="" />
+          <Stat label="Височина" value={heightCm ? `${heightCm}` : '··'} suffix="см" />
+          <Stat label="Тегло" value={currentKg ? `${currentKg}` : '··'} suffix="кг" />
+          <Stat label="BMI" value={bmi ? bmi.toFixed(1) : '··'} suffix="" />
         </div>
         <div className="mt-4 pt-4 border-t border-[var(--color-line)] grid grid-cols-2 gap-3 text-center">
-          <Stat label="Цел" value={targetKg ? `${targetKg}` : '—'} suffix="кг" small />
+          <Stat label="Цел" value={targetKg ? `${targetKg}` : '··'} suffix="кг" small />
           <Stat label="Срок" value={targetDateLabel || '90 дни'} suffix="" small />
         </div>
       </section>
+
+      {/* Current → Target visual + realism check */}
+      {currentKg > 0 && targetKg > 0 && (
+        <CurrentToTarget
+          character={character}
+          currentBodyType={currentBodyType}
+          currentKg={currentKg}
+          targetKg={targetKg}
+          days={goalDays}
+        />
+      )}
 
       {/* Goals */}
       {goalLabels.length > 0 && (
@@ -182,7 +271,7 @@ function FullPlanContent({ greeting, currentState, goalLabels, plans, selected, 
           >
             Избери план
           </p>
-          <span className="text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums">−51%</span>
+          <span className="text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums">−{discountPercent}</span>
         </div>
         <PricingPlans plans={plans} defaultId={selected.id} onChange={onSelect} />
       </section>

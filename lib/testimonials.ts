@@ -37,7 +37,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -14,
     days: 90,
     mechanism: 'AfterBurn',
-    afterImg: '/images/photo/testimonials/transformation-1.jpg',
+    afterImg: '/images/photo/testimonials/male-1.jpg',
   },
   {
     id: 'gabriel',
@@ -49,7 +49,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -7,
     days: 90,
     mechanism: 'Carb-Cycling',
-    afterImg: '/images/photo/testimonials/transformation-2.jpg',
+    afterImg: '/images/photo/testimonials/male-3.jpg',
   },
   {
     id: 'misho',
@@ -61,7 +61,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: 6,
     days: 90,
     mechanism: 'TUT',
-    afterImg: '/images/photo/testimonials/transformation-3.jpg',
+    afterImg: '/images/photo/testimonials/male-4.jpg',
   },
   // Women
   {
@@ -74,6 +74,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -11,
     days: 90,
     mechanism: 'AfterBurn',
+    afterImg: '/images/photo/testimonials/female-2.jpg',
   },
   {
     id: 'ralitsa',
@@ -85,6 +86,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -5,
     days: 90,
     mechanism: 'Carb-Cycling',
+    afterImg: '/images/photo/testimonials/female-3.jpg',
   },
   {
     id: 'katerina',
@@ -96,6 +98,7 @@ export const TESTIMONIALS: Testimonial[] = [
     kgChange: -6,
     days: 90,
     mechanism: 'TUT',
+    afterImg: '/images/photo/testimonials/female-1.jpg',
   },
 ];
 

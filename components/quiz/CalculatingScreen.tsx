@@ -141,43 +141,7 @@ export function CalculatingScreen({
           {headline}
         </motion.h2>
 
-        {/* Hormone labels in a row above the ring */}
-        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-6 max-w-[320px]">
-          {HORMONES.map((h) => {
-            const active = progress >= h.threshold;
-            return (
-              <motion.div
-                key={h.id}
-                className="flex items-center gap-2"
-                initial={false}
-                animate={{ opacity: active ? 1 : 0.45 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-              >
-                <motion.span
-                  aria-hidden
-                  className="block size-1.5 rounded-full"
-                  initial={false}
-                  animate={{
-                    backgroundColor: active ? '#FF3B47' : 'rgba(255,255,255,0.4)',
-                    boxShadow: active ? '0 0 12px rgba(255,59,71,0.85)' : 'none',
-                  }}
-                  transition={{ duration: 0.4 }}
-                />
-                <span
-                  className="text-[11px] font-bold uppercase"
-                  style={{
-                    letterSpacing: '0.22em',
-                    color: active ? '#ffffff' : 'rgba(255,255,255,0.7)',
-                  }}
-                >
-                  {h.label}
-                </span>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Center stage: progress ring + character photo */}
+        {/* Center stage: progress ring + character photo + hormone overlays */}
         <div className="relative" style={{ width: 320, height: 320 }}>
           {/* Progress ring (SVG) */}
           <svg
@@ -242,6 +206,47 @@ export function CalculatingScreen({
               ) : null}
             </div>
           </div>
+
+          {/* Hormone labels — overlay on top of the ring at compass points */}
+          {HORMONES.map((h) => {
+            const active = progress >= h.threshold;
+            const pos =
+              h.position === 'top'
+                ? 'left-1/2 -translate-x-1/2 top-0'
+                : h.position === 'right'
+                  ? 'right-0 top-1/2 -translate-y-1/2'
+                  : h.position === 'bottom'
+                    ? 'left-1/2 -translate-x-1/2 bottom-0'
+                    : 'left-0 top-1/2 -translate-y-1/2';
+            return (
+              <motion.div
+                key={h.id}
+                className={`absolute z-10 ${pos}`}
+                initial={false}
+                animate={{ opacity: active ? 1 : 0.55 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <div className="flex items-center gap-1.5 rounded-full bg-black/55 backdrop-blur-md px-3 py-1.5 border border-white/10">
+                  <motion.span
+                    aria-hidden
+                    className="block size-1.5 rounded-full"
+                    initial={false}
+                    animate={{
+                      backgroundColor: active ? '#FF3B47' : 'rgba(255,255,255,0.5)',
+                      boxShadow: active ? '0 0 12px rgba(255,59,71,0.85)' : 'none',
+                    }}
+                    transition={{ duration: 0.4 }}
+                  />
+                  <span
+                    className="text-[10px] font-bold uppercase text-white"
+                    style={{ letterSpacing: '0.2em' }}
+                  >
+                    {h.label}
+                  </span>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         <motion.p
