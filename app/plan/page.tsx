@@ -19,16 +19,16 @@ const GENDER_BY_AVATAR: Record<AvatarId, Gender> = {
   '05': 'male',
 };
 
-// Base (no-discount) prices; PlanFlow applies the active discount % at render
-// time so prices stay in sync with whatever offer is currently in play.
+// Promo prices shown when the default 30% discount is active. The 50% bump
+// applies a deeper multiplier on top of these (PlanFlow handles it).
 const PLANS: PricingPlan[] = [
   {
     id: 'month',
     label: '4 седмици',
     durationLabel: 'Стандартен месец',
     oldPrice: 39.99,
-    price: 39.99,
-    perDay: 39.99 / 28,
+    price: 19.99,
+    perDay: 0.71,
     days: 28,
     tagLabel: 'Най-често избиран',
     tone: 'slate',
@@ -38,8 +38,8 @@ const PLANS: PricingPlan[] = [
     label: '3 месеца',
     durationLabel: 'Целият 90-дневен план',
     oldPrice: 99.0,
-    price: 99.0,
-    perDay: 99.0 / 90,
+    price: 49.0,
+    perDay: 0.54,
     days: 90,
     recommended: true,
     tagLabel: 'Най-изгоден',
@@ -50,8 +50,8 @@ const PLANS: PricingPlan[] = [
     label: '1 седмица',
     durationLabel: 'Тест',
     oldPrice: 13.99,
-    price: 13.99,
-    perDay: 13.99 / 7,
+    price: 6.93,
+    perDay: 0.99,
     days: 7,
     tagLabel: 'Най-евтин',
     tone: 'emerald',

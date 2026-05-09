@@ -81,15 +81,20 @@ export function PlanFlow({
   );
   const bumpedPctValue = parsePercent(bumpedDiscountPercent) || BUMPED_PCT;
 
-  // Apply the active discount % to every plan's price + perDay so the cards,
-  // the selected-plan summary and the popups all stay in sync.
+  // Plans default to their promo prices (those map to the 30% label). When
+  // the bumped 50% is active we apply an extra multiplier so every tier
+  // visibly drops further. Ratio = (1 - 50%) / (1 - 30%) = 5/7.
+  const bumpMultiplier = (1 - bumpedPctValue / 100) / (1 - INITIAL_PCT / 100);
+  const isBumped = discountPct >= bumpedPctValue;
   const plans = useMemo(
     () =>
       basePlans.map((p) => {
-        const price = p.oldPrice * (1 - discountPct / 100);
-        return { ...p, price, perDay: price / Math.max(1, p.days) };
+        if (!isBumped) return p;
+        const price = p.price * bumpMultiplier;
+        const perDay = p.perDay * bumpMultiplier;
+        return { ...p, price, perDay };
       }),
-    [basePlans, discountPct],
+    [basePlans, isBumped, bumpMultiplier],
   );
 
   const selected = useMemo(() => plans.find((p) => p.id === selectedId) ?? plans[0], [plans, selectedId]);
@@ -97,9 +102,12 @@ export function PlanFlow({
   const fmtEur = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR`;
   const fmtPerDay = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR/ден`;
 
-  // Bumped tier (used inside the exit-intent popup body).
-  const bumpedSelectedPrice = selected.oldPrice * (1 - bumpedPctValue / 100);
-  const bumpedSelectedPerDay = bumpedSelectedPrice / Math.max(1, selected.days);
+  // Bumped tier (used inside the exit-intent popup body). Compute against the
+  // original promo price so the popup numbers match what the cards will show
+  // after the user dismisses or accepts the bump.
+  const baseSelected = basePlans.find((p) => p.id === selectedId) ?? basePlans[0];
+  const bumpedSelectedPrice = baseSelected.price * bumpMultiplier;
+  const bumpedSelectedPerDay = baseSelected.perDay * bumpMultiplier;
 
   const buildCheckoutHref = (disc: '30' | '50') => {
     const sep = checkoutBaseUrl.includes('?') ? '&' : '?';
