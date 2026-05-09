@@ -467,12 +467,10 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'icon-row',
     options: [
       { id: 'no-time', label: 'Нямам време', sub: 'Дните минават бързо', value: 'no-time', icon: 'clock' },
-      { id: 'no-plan', label: 'Нямам план', sub: 'Без ясна структура', value: 'no-plan', icon: 'route' },
-      { id: 'no-support', label: 'Нямам подкрепа', sub: 'Сам/сама съм в това', value: 'no-support', icon: 'users' },
+      { id: 'no-plan', label: 'Нямам ясен план', sub: 'Не знам откъде да започна', value: 'no-plan', icon: 'route' },
+      { id: 'no-support', label: 'Нямам подкрепа', sub: 'Сам/-а съм в това', value: 'no-support', icon: 'users' },
       { id: 'expensive', label: 'Скъпо ми е', sub: 'Бюджетът е стегнат', value: 'expensive', icon: 'coins' },
-      { id: 'lost', label: 'Не знам откъде да започна', sub: 'Прекалено много информация', value: 'lost', icon: 'compass' },
-      { id: 'fear', label: 'Страх ме е, че няма да издържа', sub: 'Притеснява ме провал', value: 'fear', icon: 'shield-alert' },
-      { id: 'failed', label: 'Пробвал/-а съм и не върви', sub: 'Не получавам резултат', value: 'failed', icon: 'trending-down' },
+      { id: 'failed', label: 'Опитвал/-а съм и не върви', sub: 'Страх ме е, че пак няма да издържа', value: 'failed', icon: 'trending-down' },
     ],
   },
   {

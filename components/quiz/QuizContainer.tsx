@@ -47,7 +47,16 @@ function reducer(state: State, action: Action): State {
     case 'multi-toggle': {
       const raw = state.answers[action.stepId];
       const cur: string[] = Array.isArray(raw) ? raw : [];
-      const next = cur.includes(action.value) ? cur.filter((v) => v !== action.value) : [...cur, action.value];
+      let next: string[];
+      if (cur.includes(action.value)) {
+        next = cur.filter((v) => v !== action.value);
+      } else if (action.value === 'whole-body') {
+        // Selecting "whole body" clears any other selections — they're redundant.
+        next = ['whole-body'];
+      } else {
+        // Selecting any other option clears "whole body".
+        next = [...cur.filter((v) => v !== 'whole-body'), action.value];
+      }
       return { ...state, answers: { ...state.answers, [action.stepId]: next } };
     }
     case 'next':

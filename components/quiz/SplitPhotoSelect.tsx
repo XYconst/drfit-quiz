@@ -92,7 +92,7 @@ export function SplitPhotoSelect(props: Props) {
   return (
     <div className="flex flex-col h-full gap-4 min-h-0">
       <motion.div
-        className="grid grid-cols-2 gap-2.5"
+        className="grid grid-cols-2 gap-2.5 [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:w-[calc(50%-0.3125rem)] [&>:last-child:nth-child(odd)]:justify-self-center"
         variants={grid}
         initial="hidden"
         animate="show"
