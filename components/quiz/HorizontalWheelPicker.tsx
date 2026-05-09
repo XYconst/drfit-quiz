@@ -29,9 +29,10 @@ export function HorizontalWheelPicker({
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const lastEmittedRef = useRef<number>(value);
-  const padCols = visibleCols;
 
-  // Sync external value -> scroll position.
+  // Sync external value -> scroll position. We center the picked column under
+  // the highlight band by anchoring on the column center vs the viewport
+  // center, regardless of how wide the container actually is.
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -78,12 +79,14 @@ export function HorizontalWheelPicker({
         style={{ width: colWidth, height: height - 8 }}
       />
 
-      {/* Side fades — affordance + soft mask */}
+      {/* Side fades — affordance + soft mask. Width is half the container
+          minus the highlight column so the fade tapers right up to the
+          highlight band edge no matter how wide the container is. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-y-0 left-0 z-[2]"
         style={{
-          width: visibleCols * colWidth,
+          width: `calc(50% - ${colWidth / 2}px)`,
           background:
             'linear-gradient(90deg, var(--color-brand-bg) 0%, rgba(250,250,250,0.65) 60%, transparent 100%)',
         }}
@@ -92,7 +95,7 @@ export function HorizontalWheelPicker({
         aria-hidden
         className="pointer-events-none absolute inset-y-0 right-0 z-[2]"
         style={{
-          width: visibleCols * colWidth,
+          width: `calc(50% - ${colWidth / 2}px)`,
           background:
             'linear-gradient(270deg, var(--color-brand-bg) 0%, rgba(250,250,250,0.65) 60%, transparent 100%)',
         }}
@@ -104,8 +107,10 @@ export function HorizontalWheelPicker({
         style={{
           scrollSnapType: 'x mandatory',
           scrollbarWidth: 'none',
-          paddingLeft: padCols * colWidth,
-          paddingRight: padCols * colWidth,
+          // Pad to the viewport center so the first/last items can scroll
+          // under the centered highlight band regardless of container width.
+          paddingLeft: `calc(50% - ${colWidth / 2}px)`,
+          paddingRight: `calc(50% - ${colWidth / 2}px)`,
         }}
       >
         {items.map((v) => (
