@@ -296,7 +296,7 @@ export function QuizContainer() {
   return (
     <MotionConfig reducedMotion="user">
       <QuestionShell
-        progress={state.currentStep / TOTAL_STEPS}
+        progress={Math.pow(state.currentStep / TOTAL_STEPS, 0.45)}
         onBack={
           step.type === 'email-gate'
             ? () => setShowResetConfirm(true)

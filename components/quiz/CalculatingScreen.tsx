@@ -32,13 +32,6 @@ const HORMONES = [
 
 const FINAL_PROFILES = 10847;
 
-const POSITION_CLASSES: Record<'top' | 'right' | 'bottom' | 'left', string> = {
-  top:    'absolute left-1/2 -translate-x-1/2 -top-2',
-  right:  'absolute top-1/2 -translate-y-1/2 -right-2',
-  bottom: 'absolute left-1/2 -translate-x-1/2 -bottom-2',
-  left:   'absolute top-1/2 -translate-y-1/2 -left-2',
-};
-
 export function CalculatingScreen({
   headline,
   milestones,
@@ -148,48 +141,44 @@ export function CalculatingScreen({
           {headline}
         </motion.h2>
 
-        {/* Center stage: progress ring + character photo + hormone labels */}
-        <div className="relative" style={{ width: 320, height: 320 }}>
-          {/* Hormone labels positioned at compass points around the ring */}
+        {/* Hormone labels in a row above the ring */}
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-6 max-w-[320px]">
           {HORMONES.map((h) => {
             const active = progress >= h.threshold;
             return (
               <motion.div
                 key={h.id}
-                className={POSITION_CLASSES[h.position]}
+                className="flex items-center gap-2"
                 initial={false}
-                animate={{
-                  opacity: active ? 1 : 0.45,
-                  y: h.position === 'top' ? (active ? -4 : 0) : h.position === 'bottom' ? (active ? 4 : 0) : 0,
-                  x: h.position === 'left' ? (active ? -4 : 0) : h.position === 'right' ? (active ? 4 : 0) : 0,
-                }}
+                animate={{ opacity: active ? 1 : 0.45 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
               >
-                <div className="flex items-center gap-2">
-                  <motion.span
-                    aria-hidden
-                    className="block size-1.5 rounded-full"
-                    initial={false}
-                    animate={{
-                      backgroundColor: active ? '#FF3B47' : 'rgba(255,255,255,0.4)',
-                      boxShadow: active ? '0 0 12px rgba(255,59,71,0.85)' : 'none',
-                    }}
-                    transition={{ duration: 0.4 }}
-                  />
-                  <span
-                    className="text-[11px] font-bold uppercase"
-                    style={{
-                      letterSpacing: '0.22em',
-                      color: active ? '#ffffff' : 'rgba(255,255,255,0.7)',
-                    }}
-                  >
-                    {h.label}
-                  </span>
-                </div>
+                <motion.span
+                  aria-hidden
+                  className="block size-1.5 rounded-full"
+                  initial={false}
+                  animate={{
+                    backgroundColor: active ? '#FF3B47' : 'rgba(255,255,255,0.4)',
+                    boxShadow: active ? '0 0 12px rgba(255,59,71,0.85)' : 'none',
+                  }}
+                  transition={{ duration: 0.4 }}
+                />
+                <span
+                  className="text-[11px] font-bold uppercase"
+                  style={{
+                    letterSpacing: '0.22em',
+                    color: active ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                  }}
+                >
+                  {h.label}
+                </span>
               </motion.div>
             );
           })}
+        </div>
 
+        {/* Center stage: progress ring + character photo */}
+        <div className="relative" style={{ width: 320, height: 320 }}>
           {/* Progress ring (SVG) */}
           <svg
             viewBox="0 0 320 320"

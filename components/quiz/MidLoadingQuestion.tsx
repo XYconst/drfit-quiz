@@ -58,7 +58,7 @@ export function MidLoadingQuestion({ headline, options, onAnswer }: Props) {
           style={{ letterSpacing: '0.2em' }}
         >
           <span aria-hidden className="size-1.5 rounded-full bg-[var(--color-brand-red)]" />
-          Пауза за персонализация
+          Последни въпроси
         </p>
 
         <h3
