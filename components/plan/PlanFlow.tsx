@@ -199,21 +199,49 @@ function FullPlanContent({
       </header>
 
       {/* Current state card — height/weight/BMI */}
-      <section className="rounded-2xl bg-white border border-[var(--color-line)] p-5">
-        <p
-          className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-3"
-          style={{ letterSpacing: '0.22em' }}
-        >
-          Къде си сега
-        </p>
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <Stat label="Височина" value={heightCm ? `${heightCm}` : '··'} suffix="см" />
-          <Stat label="Тегло" value={currentKg ? `${currentKg}` : '··'} suffix="кг" />
-          <Stat label="BMI" value={bmi ? bmi.toFixed(1) : '··'} suffix="" />
-        </div>
-        <div className="mt-4 pt-4 border-t border-[var(--color-line)] grid grid-cols-2 gap-3 text-center">
-          <Stat label="Цел" value={targetKg ? `${targetKg}` : '··'} suffix="кг" small />
-          <Stat label="Срок" value={targetDateLabel || '90 дни'} suffix="" small />
+      <section
+        className="relative rounded-[22px] overflow-hidden p-5"
+        style={{
+          background:
+            'linear-gradient(160deg, #FFFFFF 0%, #FBFAF7 60%, #F8F4EE 100%)',
+          boxShadow:
+            '0 1px 0 rgba(255,255,255,0.6) inset, 0 18px 36px -28px rgba(25,33,38,0.25)',
+        }}
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[22px]"
+          style={{
+            padding: 1,
+            background:
+              'linear-gradient(135deg, rgba(25,33,38,0.12), rgba(25,33,38,0.02))',
+            WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+          }}
+        />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-4">
+            <span
+              aria-hidden
+              className="size-1 rounded-full bg-[var(--color-brand-red)]"
+            />
+            <p
+              className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
+              style={{ letterSpacing: '0.22em' }}
+            >
+              Къде си сега
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <BigStat label="Височина" value={heightCm ? `${heightCm}` : '··'} suffix="см" />
+            <BigStat label="Тегло" value={currentKg ? `${currentKg}` : '··'} suffix="кг" />
+            <BigStat label="BMI" value={bmi ? bmi.toFixed(1) : '··'} suffix="" gradient />
+          </div>
+          <div className="mt-5 pt-4 border-t border-black/5 grid grid-cols-2 gap-2">
+            <SmallStat label="Цел" value={targetKg ? `${targetKg}` : '··'} suffix="кг" />
+            <SmallStat label="Срок" value={targetDateLabel || '90 дни'} suffix="" />
+          </div>
         </div>
       </section>
 
@@ -313,21 +341,74 @@ function FullPlanContent({
   );
 }
 
-function Stat({ label, value, suffix, small = false }: { label: string; value: string; suffix: string; small?: boolean }) {
+function BigStat({
+  label,
+  value,
+  suffix,
+  gradient = false,
+}: {
+  label: string;
+  value: string;
+  suffix: string;
+  gradient?: boolean;
+}) {
   return (
-    <div>
+    <div className="text-center">
       <p
-        className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]"
-        style={{ letterSpacing: '0.18em' }}
+        className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)]"
+        style={{ letterSpacing: '0.2em' }}
       >
         {label}
       </p>
       <p
-        className={`mt-1 ${small ? 'text-[18px]' : 'text-[24px]'} font-extrabold tabular-nums text-[var(--color-text-headline)]`}
-        style={{ letterSpacing: '-0.02em' }}
+        className="mt-1 font-extrabold tabular-nums leading-none"
+        style={{
+          fontSize: 'clamp(1.875rem, 8vw, 2.375rem)',
+          letterSpacing: '-0.04em',
+          ...(gradient
+            ? {
+                background: 'linear-gradient(180deg, #E50914 0%, #A50015 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }
+            : { color: 'var(--color-text-headline)' }),
+        }}
       >
         {value}
-        {suffix && <span className="text-[12px] font-semibold text-[var(--color-text-muted)] ml-1">{suffix}</span>}
+      </p>
+      {suffix && (
+        <p
+          className="mt-1 text-[10.5px] font-bold uppercase text-[var(--color-text-muted)]"
+          style={{ letterSpacing: '0.16em' }}
+        >
+          {suffix}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SmallStat({ label, value, suffix }: { label: string; value: string; suffix: string }) {
+  return (
+    <div className="text-center">
+      <p
+        className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)]"
+        style={{ letterSpacing: '0.2em' }}
+      >
+        {label}
+      </p>
+      <p
+        className="mt-1 text-[20px] font-extrabold tabular-nums text-[var(--color-text-headline)] leading-tight"
+        style={{ letterSpacing: '-0.025em' }}
+      >
+        {value}
+        {suffix && (
+          <span className="text-[12px] font-semibold text-[var(--color-text-muted)] ml-1">
+            {suffix}
+          </span>
+        )}
       </p>
     </div>
   );

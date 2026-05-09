@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { ArrowRightIcon, ShieldAlertIcon, CircleCheckIcon } from '@/components/icons';
+import { ArrowRightIcon } from '@/components/icons';
 
 interface Props {
   /** Character code, e.g. "f2" or "m3". Drives which body-type photo we render. */
@@ -67,95 +67,150 @@ export function CurrentToTarget({ character, currentBodyType, currentKg, targetK
 
       {/* Realism verdict */}
       <motion.div
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.32, delay: 0.1 }}
-        className={[
-          'mt-5 rounded-2xl p-4',
-          isSafe
-            ? 'bg-[var(--color-success-50)] border border-[var(--color-success-600)]/30'
-            : 'bg-[var(--color-amber-bg)] border border-[var(--color-amber-text)]/30',
-        ].join(' ')}
-        style={{ fontFamily: 'var(--font-sans)' }}
+        transition={{ duration: 0.36, delay: 0.1 }}
+        className="mt-5 relative rounded-[22px] overflow-hidden"
+        style={{
+          fontFamily: 'var(--font-sans)',
+          background: isSafe
+            ? 'linear-gradient(160deg, #F0FBF5 0%, #FFFFFF 55%, #FBFDFB 100%)'
+            : 'linear-gradient(160deg, #FFF1ED 0%, #FFFFFF 50%, #FFF6F1 100%)',
+          boxShadow: isSafe
+            ? '0 1px 0 rgba(4,120,87,0.08) inset, 0 14px 32px -22px rgba(4,120,87,0.35)'
+            : '0 1px 0 rgba(165,0,21,0.10) inset, 0 14px 32px -22px rgba(165,0,21,0.35)',
+        }}
       >
-        <div className="flex items-center gap-3">
-          <span
-            aria-hidden
-            className={[
-              'shrink-0 size-8 rounded-full grid place-items-center',
-              isSafe ? 'bg-[var(--color-success-600)] text-white' : 'bg-[var(--color-amber-text)] text-white',
-            ].join(' ')}
-          >
-            {isSafe ? <CircleCheckIcon width={18} height={18} /> : <ShieldAlertIcon width={18} height={18} />}
-          </span>
-          <p
-            className={[
-              'text-[15px] font-extrabold leading-tight',
-              isSafe ? 'text-[var(--color-success-700)]' : 'text-[var(--color-amber-text)]',
-            ].join(' ')}
-            style={{ letterSpacing: '-0.01em' }}
-          >
-            {isSafe ? 'Реалистична цел' : gaining ? 'Прекалено бърза цел' : 'Прекалено бързо темпо'}
-          </p>
-        </div>
+        {/* Hairline gradient border */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[22px]"
+          style={{
+            padding: 1,
+            background: isSafe
+              ? 'linear-gradient(135deg, rgba(4,120,87,0.35), rgba(4,120,87,0.05))'
+              : 'linear-gradient(135deg, rgba(229,9,20,0.45), rgba(165,0,21,0.08))',
+            WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+          }}
+        />
 
-        <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
-          <Pill label={losing ? 'Сваляш' : 'Качваш'} value={`${totalKg.toFixed(0)} кг`} />
-          <Pill label="Срок" value={`${Math.round(weeks)} седм.`} />
-          <Pill
-            label="Темпо"
-            value={`${perWeek.toFixed(2).replace('.', ',')} кг/седм.`}
-            warn={!isSafe}
-          />
-        </dl>
-
-        {!isSafe && (
-          <div className="mt-4 rounded-xl bg-white/60 border border-[var(--color-amber-text)]/20 px-3 py-2.5">
+        <div className="relative px-5 pt-5 pb-5">
+          <div className="flex items-center gap-2.5">
+            <span
+              aria-hidden
+              className="relative inline-flex size-2 rounded-full"
+              style={{
+                background: isSafe ? '#059669' : '#E50914',
+                boxShadow: isSafe ? '0 0 0 4px rgba(5,150,105,0.18)' : '0 0 0 4px rgba(229,9,20,0.18)',
+              }}
+            />
             <p
-              className="text-[10px] font-extrabold uppercase text-[var(--color-amber-text)]"
-              style={{ letterSpacing: '0.18em' }}
+              className="text-[10px] font-extrabold uppercase"
+              style={{
+                letterSpacing: '0.22em',
+                color: isSafe ? '#047857' : '#A50015',
+              }}
             >
-              Препоръчваме
-            </p>
-            <p className="mt-1 text-[14px] font-bold text-[var(--color-text-strong)] leading-snug">
-              <span className="tabular-nums">{safeWeeks} седмици</span> ({Math.round(safeDays / 30)} мес.)
-              за здравословно темпо около <span className="tabular-nums">{losing ? '1' : '0,5'} кг/седм.</span>
+              {isSafe ? 'Реалистична цел' : gaining ? 'Прекалено бърза цел' : 'Прекалено бързо темпо'}
             </p>
           </div>
-        )}
 
-        {isSafe && (
-          <p className="mt-3 text-[13px] text-[var(--color-text-body)] leading-snug">
-            В безопасния диапазон. Можем да го направим устойчиво.
-          </p>
-        )}
+          {/* Hero number — current pace */}
+          <div className="mt-3 flex items-baseline gap-2">
+            <span
+              className="font-extrabold tabular-nums leading-none"
+              style={{
+                fontSize: 'clamp(2.625rem, 12vw, 3.5rem)',
+                letterSpacing: '-0.045em',
+                background: isSafe
+                  ? 'linear-gradient(180deg, #047857 0%, #065F46 100%)'
+                  : 'linear-gradient(180deg, #E50914 0%, #A50015 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              {perWeek.toFixed(2).replace('.', ',')}
+            </span>
+            <span
+              className="font-bold text-[var(--color-text-strong)] leading-tight"
+              style={{ fontSize: 'clamp(0.8125rem, 3.4vw, 0.9375rem)', letterSpacing: '-0.01em' }}
+            >
+              кг<br />на седмица
+            </span>
+          </div>
+
+          {/* Stat strip */}
+          <div className="mt-4 grid grid-cols-2 gap-0 rounded-2xl bg-white/70 border border-black/5 backdrop-blur-[2px] divide-x divide-black/5">
+            <Stat label={losing ? 'Сваляш общо' : 'Качваш общо'} value={`${totalKg.toFixed(0)} кг`} />
+            <Stat label="За" value={`${Math.round(weeks)} седм.`} />
+          </div>
+
+          {!isSafe && (
+            <div
+              className="mt-4 rounded-2xl px-4 py-3.5 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,243,236,0.85) 100%)',
+                boxShadow: 'inset 0 0 0 1px rgba(165,0,21,0.12)',
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="size-1 rounded-full"
+                  style={{ background: '#A50015' }}
+                />
+                <p
+                  className="text-[10px] font-extrabold uppercase"
+                  style={{ letterSpacing: '0.22em', color: '#A50015' }}
+                >
+                  Препоръчваме
+                </p>
+              </div>
+              <p
+                className="mt-1.5 font-extrabold leading-tight text-[var(--color-text-headline)]"
+                style={{ fontSize: 'clamp(0.9375rem, 4vw, 1.0625rem)', letterSpacing: '-0.018em' }}
+              >
+                <span className="tabular-nums">{safeWeeks} седмици</span>{' '}
+                <span className="text-[var(--color-text-muted)] font-semibold">
+                  ({Math.round(safeDays / 30)} мес.)
+                </span>
+              </p>
+              <p className="mt-1 text-[12.5px] text-[var(--color-text-body)]">
+                Здравословно темпо около{' '}
+                <span className="font-bold tabular-nums text-[var(--color-text-strong)]">
+                  {losing ? '1' : '0,5'} кг/седм.
+                </span>
+              </p>
+            </div>
+          )}
+
+          {isSafe && (
+            <p className="mt-3 text-[13px] text-[var(--color-text-body)] leading-snug">
+              В безопасния диапазон. Темпото е устойчиво и реалистично.
+            </p>
+          )}
+        </div>
       </motion.div>
     </section>
   );
 }
 
-function Pill({ label, value, warn = false }: { label: string; value: string; warn?: boolean }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      className={[
-        'rounded-xl px-2 py-2 border',
-        warn
-          ? 'bg-[var(--color-amber-text)]/8 border-[var(--color-amber-text)]/30'
-          : 'bg-white/70 border-[var(--color-line)]',
-      ].join(' ')}
-    >
+    <div className="px-3 py-3">
       <p
-        className="text-[9px] font-bold uppercase text-[var(--color-text-muted)]"
-        style={{ letterSpacing: '0.16em' }}
+        className="text-[9.5px] font-bold uppercase text-[var(--color-text-muted)]"
+        style={{ letterSpacing: '0.18em' }}
       >
         {label}
       </p>
       <p
-        className={[
-          'mt-0.5 text-[13px] font-extrabold tabular-nums leading-tight',
-          warn ? 'text-[var(--color-amber-text)]' : 'text-[var(--color-text-headline)]',
-        ].join(' ')}
-        style={{ letterSpacing: '-0.01em' }}
+        className="mt-0.5 text-[20px] font-extrabold tabular-nums text-[var(--color-text-headline)] leading-tight"
+        style={{ letterSpacing: '-0.025em' }}
       >
         {value}
       </p>
