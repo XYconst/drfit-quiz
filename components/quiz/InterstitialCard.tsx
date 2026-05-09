@@ -139,23 +139,24 @@ export function InterstitialCard({
             <span className="text-[13px] font-semibold text-[var(--color-text-headline)]">
               4.8
             </span>
-            <span className="text-[12px] text-[var(--color-text-muted)]">
-              · 12 400+ оценки
-            </span>
           </div>
           <div className="flex items-center gap-2.5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/badges/app-store.svg"
-              alt="Свали от App Store"
-              className="h-10 w-auto"
-            />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/badges/google-play.png"
-              alt="Свали от Google Play"
-              className="h-10 w-auto"
-            />
+            <div className="h-11 w-[140px] flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/badges/app-store.svg"
+                alt="Свали от App Store"
+                className="max-h-full max-w-full"
+              />
+            </div>
+            <div className="h-11 w-[140px] flex items-center justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/badges/google-play.png"
+                alt="Свали от Google Play"
+                className="max-h-full max-w-full"
+              />
+            </div>
           </div>
         </motion.div>
       )}
