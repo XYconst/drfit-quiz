@@ -12,3 +12,4 @@ build/
 .claude/
 .tmp-screens/
 __pycache__/
+.vercel
