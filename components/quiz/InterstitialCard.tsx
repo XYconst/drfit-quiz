@@ -43,22 +43,6 @@ export function InterstitialCard({ headline, body, ctaLabel, imageSrc, imageAlt 
         </motion.div>
       ) : null}
 
-      {/* Brand pill badge — small, deliberate, brand-red anchor */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.32, ease: 'easeOut' }}
-        className="inline-flex items-center gap-2 rounded-full border border-[var(--color-brand-red)]/25 bg-white/80 backdrop-blur-sm px-3.5 py-1.5"
-      >
-        <span aria-hidden className="size-1.5 rounded-full bg-[var(--color-brand-red)]" />
-        <span
-          className="text-[10px] font-extrabold uppercase text-[var(--color-brand-red)]"
-          style={{ letterSpacing: '0.22em' }}
-        >
-          Dr.Fit
-        </span>
-      </motion.div>
-
       {/* Headline — Manrope ExtraBold, oversized, very tight tracking */}
       <motion.h2
         className="font-extrabold text-[var(--color-text-headline)]"
