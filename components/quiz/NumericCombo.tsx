@@ -2,7 +2,7 @@
 import type { NumericInputSpec } from '@/lib/questions';
 import { useState } from 'react';
 import { ArrowRightIcon } from '@/components/icons';
-import { WheelPicker } from './WheelPicker';
+import { HorizontalWheelPicker } from './HorizontalWheelPicker';
 
 interface Props {
   inputs: NumericInputSpec[];
@@ -78,7 +78,7 @@ function NumericRow({ spec, value, onChange, isFirst, isLast }: RowProps) {
         isLast ? '' : 'border-b border-[var(--color-line)]',
       ].join(' ')}
     >
-      <div className="flex items-baseline justify-between mb-2">
+      <div className="flex items-baseline justify-between mb-3">
         <span
           className="text-[11px] uppercase font-bold text-[var(--color-text-muted)]"
           style={{ letterSpacing: '0.22em' }}
@@ -89,8 +89,8 @@ function NumericRow({ spec, value, onChange, isFirst, isLast }: RowProps) {
           className="font-extrabold tabular-nums text-[var(--color-text-headline)]"
           style={{
             fontFamily: 'var(--font-sans)',
-            fontSize: 'clamp(1.625rem, 7vw, 2rem)',
-            letterSpacing: '-0.03em',
+            fontSize: 'clamp(1.875rem, 8vw, 2.375rem)',
+            letterSpacing: '-0.035em',
             lineHeight: 1,
           }}
         >
@@ -102,14 +102,14 @@ function NumericRow({ spec, value, onChange, isFirst, isLast }: RowProps) {
           )}
         </span>
       </div>
-      <WheelPicker
+      <HorizontalWheelPicker
         min={spec.min}
         max={spec.max}
         value={value}
-        suffix={spec.suffix}
         onChange={onChange}
-        visibleRows={2}
-        rowHeight={40}
+        visibleCols={3}
+        colWidth={56}
+        height={68}
       />
     </div>
   );
