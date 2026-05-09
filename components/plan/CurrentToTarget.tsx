@@ -260,13 +260,14 @@ function BodyCard({
           : 'border-[var(--color-line)]',
       ].join(' ')}
     >
-      <div className="relative aspect-[4/5] bg-[var(--color-surface-100)]">
+      <div className="relative aspect-[3/4] bg-[var(--color-surface-100)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imgSrc}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: 'center 18%' }}
+          style={{ objectPosition: 'center top' }}
+          loading="eager"
         />
       </div>
       <div className="px-3 py-2 text-center">

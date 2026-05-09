@@ -8,6 +8,7 @@ import { CurrentToTarget } from './CurrentToTarget';
 import { MotivationVisuals } from './MotivationVisuals';
 import { PreCheckoutModal } from './PreCheckoutModal';
 import { ScrubReveal } from './ScrubReveal';
+import { PlanLoading } from './PlanLoading';
 import { LockIcon } from '@/components/icons';
 
 interface CurrentState {
@@ -43,13 +44,22 @@ interface Props {
 }
 
 type ModalStage = 'none' | 'initial' | 'bumped';
+type ViewStage = 'scratch' | 'loading' | 'plan';
+
+const INITIAL_PCT = 30;
+const BUMPED_PCT = 50;
+
+function parsePercent(label: string): number {
+  const n = parseInt(label.replace(/[^0-9]/g, ''), 10);
+  return Number.isFinite(n) ? n : 0;
+}
 
 export function PlanFlow({
   greeting,
   currentState,
   motivationCodes,
   gender,
-  plans,
+  plans: basePlans,
   defaultPlanId,
   checkoutBaseUrl,
   discountCode,
@@ -60,24 +70,36 @@ export function PlanFlow({
   goalDays,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string>(
-    defaultPlanId ?? plans.find((p) => p.recommended)?.id ?? plans[0].id,
+    defaultPlanId ?? basePlans.find((p) => p.recommended)?.id ?? basePlans[0].id,
   );
   const [stage, setStage] = useState<ModalStage>('none');
   const [bumpSeen, setBumpSeen] = useState(false);
-  const [sliderClaimed, setSliderClaimed] = useState(false);
+  const [view, setView] = useState<ViewStage>('scratch');
+  // Active discount % applied to all pricing tiers in the plan view.
+  const [discountPct, setDiscountPct] = useState<number>(
+    parsePercent(initialDiscountPercent) || INITIAL_PCT,
+  );
+  const bumpedPctValue = parsePercent(bumpedDiscountPercent) || BUMPED_PCT;
+
+  // Apply the active discount % to every plan's price + perDay so the cards,
+  // the selected-plan summary and the popups all stay in sync.
+  const plans = useMemo(
+    () =>
+      basePlans.map((p) => {
+        const price = p.oldPrice * (1 - discountPct / 100);
+        return { ...p, price, perDay: price / Math.max(1, p.days) };
+      }),
+    [basePlans, discountPct],
+  );
 
   const selected = useMemo(() => plans.find((p) => p.id === selectedId) ?? plans[0], [plans, selectedId]);
 
   const fmtEur = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR`;
   const fmtPerDay = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR/ден`;
 
-  // Page price = "30% off" tier. Bumped = "50% off" — apply the ratio (5/7) so
-  // the second offer is a real, visible drop from the first.
-  const bumpRatio = 0.5 / 0.7;
-  const initialPrice = selected.price;
-  const initialPerDay = selected.perDay;
-  const bumpedPrice = selected.price * bumpRatio;
-  const bumpedPerDay = selected.perDay * bumpRatio;
+  // Bumped tier (used inside the exit-intent popup body).
+  const bumpedSelectedPrice = selected.oldPrice * (1 - bumpedPctValue / 100);
+  const bumpedSelectedPerDay = bumpedSelectedPrice / Math.max(1, selected.days);
 
   const buildCheckoutHref = (disc: '30' | '50') => {
     const sep = checkoutBaseUrl.includes('?') ? '&' : '?';
@@ -93,11 +115,19 @@ export function PlanFlow({
     window.location.href = buildCheckoutHref('30');
   };
   const onAcceptBumped = () => {
+    setDiscountPct(bumpedPctValue);
     window.location.href = buildCheckoutHref('50');
   };
+  // Closing the bumped popup applies the 50% across all plans visually.
+  const onCloseBumped = () => {
+    setDiscountPct(bumpedPctValue);
+    setStage('none');
+  };
 
-  // Slider X — skip the scratch step and reveal the plan straight away.
-  const onSliderClose = () => setSliderClaimed(true);
+  // Slider claim: brief loading affordance, then reveal the plan.
+  const onSliderClaim = () => setView('loading');
+  // Slider X — skip the scratch + loading and reveal the plan immediately.
+  const onSliderClose = () => setView('plan');
 
   // Exit-intent: fire the 50% bump exactly once when the user actually tries
   // to leave the page. Desktop signal = pointer leaves the top of the
@@ -105,7 +135,7 @@ export function PlanFlow({
   // and intercept popstate). Only armed once the plan is visible — no point
   // showing a "wait" offer to someone who never engaged.
   useEffect(() => {
-    if (!sliderClaimed || bumpSeen) return;
+    if (view !== 'plan' || bumpSeen) return;
     if (typeof window === 'undefined') return;
 
     const trigger = () => {
@@ -140,19 +170,19 @@ export function PlanFlow({
       document.removeEventListener('mouseleave', onMouseLeave);
       window.removeEventListener('popstate', onPopState);
     };
-  }, [sliderClaimed, bumpSeen, stage]);
+  }, [view, bumpSeen, stage]);
 
   return (
     <div className="max-w-md mx-auto px-5 pt-6 pb-32">
-      {/* Stage 1 — focus on the discount: scratch card centered in viewport */}
-      {!sliderClaimed && (
+      {/* Stage 1 — scratch card centered in viewport */}
+      {view === 'scratch' && (
         <div className="min-h-[80vh] flex flex-col justify-center">
           <ScrubReveal
             greeting={greeting}
             percent={initialDiscountPercent}
             code={discountCode}
             initialSeconds={9 * 60 + 42}
-            onClaim={() => setSliderClaimed(true)}
+            onClaim={onSliderClaim}
             onClose={onSliderClose}
           />
           <p className="mt-6 text-center text-[12px] text-[var(--color-text-muted)] max-w-[34ch] mx-auto">
@@ -162,9 +192,20 @@ export function PlanFlow({
         </div>
       )}
 
-      {/* Stage 2 — full plan reveals after the code is unlocked */}
+      {/* Stage 2 — short loading affordance so the user reads the code */}
+      {view === 'loading' && (
+        <div className="min-h-[80vh] flex flex-col justify-center gap-4">
+          <PlanLoading durationMs={5000} onDone={() => setView('plan')} />
+          <p className="text-center text-[12px] text-[var(--color-text-muted)] max-w-[36ch] mx-auto">
+            Кодът <span className="font-bold text-[var(--color-brand-red)]">{discountCode}</span> е
+            активиран — прилагаме {initialDiscountPercent} към всички планове.
+          </p>
+        </div>
+      )}
+
+      {/* Stage 3 — full plan */}
       <AnimatePresence>
-        {sliderClaimed && (
+        {view === 'plan' && (
           <motion.div
             key="full"
             initial={{ opacity: 0, y: 24 }}
@@ -183,6 +224,7 @@ export function PlanFlow({
               character={character}
               currentBodyType={currentBodyType}
               goalDays={goalDays}
+              discountPct={discountPct}
             />
           </motion.div>
         )}
@@ -195,8 +237,8 @@ export function PlanFlow({
         headline="активирай отстъпката си"
         body="Запази персонализираната си цена за следващите 10 минути."
         fromPrice={fmtEur(selected.oldPrice)}
-        toPrice={fmtEur(initialPrice)}
-        perDay={fmtPerDay(initialPerDay)}
+        toPrice={fmtEur(selected.price)}
+        perDay={fmtPerDay(selected.perDay)}
         acceptLabel="Активирай и плати"
         onAccept={onAcceptInitial}
         onClose={onCloseInitial}
@@ -209,11 +251,11 @@ export function PlanFlow({
         headline="последна оферта за теб"
         body="Сваляме още 20%. Това е най-добрата цена, която ще видиш."
         fromPrice={fmtEur(selected.oldPrice)}
-        toPrice={fmtEur(bumpedPrice)}
-        perDay={fmtPerDay(bumpedPerDay)}
+        toPrice={fmtEur(bumpedSelectedPrice)}
+        perDay={fmtPerDay(bumpedSelectedPerDay)}
         acceptLabel="Заключи отстъпката"
         onAccept={onAcceptBumped}
-        onClose={() => setStage('none')}
+        onClose={onCloseBumped}
       />
     </div>
   );
@@ -231,6 +273,8 @@ interface FullProps {
   character: string;
   currentBodyType: string;
   goalDays: number;
+  /** Active discount % currently applied to all tiers. */
+  discountPct: number;
 }
 
 function FullPlanContent({
@@ -245,6 +289,7 @@ function FullPlanContent({
   character,
   currentBodyType,
   goalDays,
+  discountPct,
 }: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
@@ -340,12 +385,21 @@ function FullPlanContent({
 
       {/* Pricing plans */}
       <section>
-        <p
-          className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-4"
-          style={{ letterSpacing: '0.22em' }}
-        >
-          Избери план
-        </p>
+        <div className="flex items-baseline justify-between mb-4">
+          <p
+            className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
+            style={{ letterSpacing: '0.22em' }}
+          >
+            Избери план
+          </p>
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full bg-brand-gradient text-white px-2.5 py-1 text-[10px] font-extrabold uppercase shadow-brand-red"
+            style={{ letterSpacing: '0.18em' }}
+          >
+            <span aria-hidden className="size-1 rounded-full bg-white" />
+            −{discountPct}% активирана
+          </span>
+        </div>
         <PricingPlans plans={plans} defaultId={selected.id} onChange={onSelect} />
       </section>
 

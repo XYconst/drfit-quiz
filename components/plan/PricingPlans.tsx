@@ -9,9 +9,14 @@ export interface PricingPlan {
   id: string;
   label: string;
   durationLabel: string;
+  /** Pre-discount sticker price (used for the strike-through). */
   oldPrice: number;
+  /** Currently active price after applying the live discount %. */
   price: number;
+  /** Currently active per-day price after applying the live discount %. */
   perDay: number;
+  /** Plan duration in days, used to recompute perDay when discount changes. */
+  days: number;
   recommended?: boolean;
   /** Short uppercase ribbon, e.g. "Най-често избиран". */
   tagLabel?: string;
