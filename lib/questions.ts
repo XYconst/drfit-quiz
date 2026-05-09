@@ -189,6 +189,15 @@ export const STEPS: StepSpec[] = [
   },
   {
     step: 7,
+    id: 'interstitial-early',
+    type: 'interstitial',
+    headline: '8 от 10 души идват при нас със същите зони',
+    bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
+    ctaBg: 'Продължи',
+    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
+  },
+  {
+    step: 8,
     id: 'activity',
     type: 'single-select',
     headline: 'Колко активен/-на си през седмицата?',
@@ -292,7 +301,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Над 10 000 души преминаха същия път с Dr.Fit',
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/transformation-3.jpg',
+    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
   },
   {
     step: 15,
@@ -367,7 +376,7 @@ export const STEPS: StepSpec[] = [
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/transformation-2.jpg',
+    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
   },
   {
     step: 21,
@@ -407,6 +416,15 @@ export const STEPS: StepSpec[] = [
       { id: 'fear', label: 'Страх ме е, че няма да издържа', sub: 'Притеснява ме провал', value: 'fear', icon: 'shield-alert' },
       { id: 'failed', label: 'Пробвал/-а съм и не върви', sub: 'Не получавам резултат', value: 'failed', icon: 'trending-down' },
     ],
+  },
+  {
+    step: 24,
+    id: 'interstitial-commit',
+    type: 'interstitial',
+    headline: 'Виждаме точно къде си заседнал/-а. И как да продължиш',
+    bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
+    ctaBg: 'Продължи',
+    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
   },
   {
     step: 3,
@@ -483,7 +501,9 @@ export const STEPS: StepSpec[] = [
 export const TOTAL_STEPS = STEPS.length;
 
 export function getStep(n: number): StepSpec | undefined {
-  return STEPS.find((s) => s.step === n);
+  // n is 1-indexed and reflects array position so we can insert/reorder freely
+  // without renumbering every step.step field.
+  return STEPS[n - 1];
 }
 
 export function resolveOptions(step: StepSpec, gender?: Gender): OptionSpec[] {

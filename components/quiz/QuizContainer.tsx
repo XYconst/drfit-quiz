@@ -256,7 +256,7 @@ export function QuizContainer() {
     );
   } else if (step.type === 'interstitial') {
     const imageSrc = step.imageUrl
-      ? step.imageUrl
+      ? step.imageUrl.replace('{char}', character)
       : step.splitPhotoSlot
         ? characterImagePath(character, step.splitPhotoSlot)
         : undefined;
