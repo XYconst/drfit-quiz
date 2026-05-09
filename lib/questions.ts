@@ -215,7 +215,7 @@ export const STEPS: StepSpec[] = [
     imageUrl: '/images/photo/testimonials/{gender}-1.jpg',
     testimonialByGender: {
       male: 'Стоян, 28 · март 2024',
-      female: 'Мария, 35 · март 2024',
+      female: 'Мария, 35 · май 2025',
     },
   },
   {
@@ -335,7 +335,7 @@ export const STEPS: StepSpec[] = [
     imageUrl: '/images/photo/testimonials/{gender}-2.jpg',
     testimonialByGender: {
       male: 'Иван, 34 · февруари 2024',
-      female: 'Петя, 42 · юли 2024',
+      female: 'Петя, 42 · септември 2025',
     },
     showStoreBadges: true,
   },
@@ -423,7 +423,7 @@ export const STEPS: StepSpec[] = [
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-3.jpg',
     testimonialByGender: {
-      male: 'Димитър, 31 · юни 2024',
+      male: 'Димитър, 31 · юни 2025',
       female: 'Галина, 30 · октомври 2024',
     },
   },
@@ -484,8 +484,8 @@ export const STEPS: StepSpec[] = [
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-4.jpg',
     testimonialByGender: {
-      male: 'Александър, 38 · септември 2024',
-      female: 'Светлана, 39 · април 2024',
+      male: 'Александър, 38 · август 2024',
+      female: 'Светлана, 39 · януари 2025',
     },
     showStoreBadges: true,
   },
