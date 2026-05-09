@@ -70,6 +70,36 @@ interface RowProps {
 }
 
 function NumericRow({ spec, value, onChange, isFirst, isLast }: RowProps) {
+  const atMin = value <= spec.min;
+  const atMax = value >= spec.max;
+  const nudge = (delta: number) => {
+    const next = Math.min(spec.max, Math.max(spec.min, value + delta));
+    if (next !== value) onChange(next);
+  };
+  const stepBtn = (
+    delta: -1 | 1,
+    label: string,
+    disabled: boolean,
+  ) => (
+    <button
+      type="button"
+      onClick={() => nudge(delta)}
+      disabled={disabled}
+      aria-label={label}
+      className={[
+        'shrink-0 size-11 rounded-full border border-[var(--color-line)] bg-white select-none',
+        'flex items-center justify-center text-2xl font-light text-[var(--color-text-strong)]',
+        'motion-safe:transition-[transform,background-color,box-shadow] motion-safe:duration-150',
+        'motion-safe:active:scale-90',
+        disabled
+          ? 'opacity-30 cursor-not-allowed'
+          : 'hover:bg-[var(--color-paper-warm)] hover:border-[var(--color-text-muted)] cursor-pointer',
+      ].join(' ')}
+    >
+      {delta < 0 ? '−' : '+'}
+    </button>
+  );
+
   return (
     <div
       className={[
@@ -102,15 +132,21 @@ function NumericRow({ spec, value, onChange, isFirst, isLast }: RowProps) {
           )}
         </span>
       </div>
-      <HorizontalWheelPicker
-        min={spec.min}
-        max={spec.max}
-        value={value}
-        onChange={onChange}
-        visibleCols={3}
-        colWidth={56}
-        height={68}
-      />
+      <div className="flex items-center gap-2">
+        {stepBtn(-1, `Намали ${spec.label.toLowerCase()}`, atMin)}
+        <div className="flex-1 min-w-0">
+          <HorizontalWheelPicker
+            min={spec.min}
+            max={spec.max}
+            value={value}
+            onChange={onChange}
+            visibleCols={3}
+            colWidth={56}
+            height={68}
+          />
+        </div>
+        {stepBtn(1, `Увеличи ${spec.label.toLowerCase()}`, atMax)}
+      </div>
     </div>
   );
 }
