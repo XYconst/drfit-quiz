@@ -81,6 +81,12 @@ export interface StepSpec {
    *  Use for static assets like real before/after testimonial photos that should
    *  not vary by character. */
   imageUrl?: string;
+  /** Per-gender attribution caption, rendered on top of the interstitial photo
+   *  (e.g. "Иван, 34 · март 2024"). Not shown when absent. */
+  testimonialByGender?: { male: string; female: string };
+  /** When true, renders the App Store + Google Play badges with a star rating
+   *  underneath the body text. Use on social-proof interstitials. */
+  showStoreBadges?: boolean;
 }
 
 const img = (step: string, opt: string) => `/images/quiz/${step}/${opt}.svg`;
@@ -207,6 +213,10 @@ export const STEPS: StepSpec[] = [
     bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-1.jpg',
+    testimonialByGender: {
+      male: 'Стоян, 28 · март 2024',
+      female: 'Мария, 35 · март 2024',
+    },
   },
   {
     step: 8,
@@ -323,6 +333,11 @@ export const STEPS: StepSpec[] = [
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът. Сега го имаш в джоба си.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-2.jpg',
+    testimonialByGender: {
+      male: 'Иван, 34 · февруари 2024',
+      female: 'Петя, 42 · юли 2024',
+    },
+    showStoreBadges: true,
   },
   {
     step: 15,
@@ -407,6 +422,10 @@ export const STEPS: StepSpec[] = [
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-3.jpg',
+    testimonialByGender: {
+      male: 'Димитър, 31 · юни 2024',
+      female: 'Галина, 30 · октомври 2024',
+    },
   },
   {
     step: 21,
@@ -464,6 +483,11 @@ export const STEPS: StepSpec[] = [
     bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-4.jpg',
+    testimonialByGender: {
+      male: 'Александър, 38 · септември 2024',
+      female: 'Светлана, 39 · април 2024',
+    },
+    showStoreBadges: true,
   },
   {
     step: 24,

@@ -260,12 +260,17 @@ export function QuizContainer() {
       : step.splitPhotoSlot
         ? characterImagePath(character, step.splitPhotoSlot)
         : undefined;
+    const caption = step.testimonialByGender
+      ? step.testimonialByGender[gender ?? 'male']
+      : undefined;
     content = (
       <InterstitialCard
         headline={genderize(step.headline ?? '', gender)}
         body={genderize(step.bodyBg ?? '', gender)}
         ctaLabel={step.ctaBg ?? 'Продължи'}
         imageSrc={imageSrc}
+        caption={caption}
+        showStoreBadges={step.showStoreBadges}
         onContinue={onContinue}
       />
     );
