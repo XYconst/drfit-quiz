@@ -161,14 +161,15 @@ export function SplitPhotoSelect(props: Props) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
-          className="flex-1 min-h-0 flex items-end justify-center pointer-events-none -mb-8 overflow-hidden"
+          className="fixed left-1/2 -translate-x-1/2 bottom-0 w-full max-w-md flex justify-center items-end pointer-events-none"
+          style={{ height: 'calc(100dvh - 360px)' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
-            className="block w-auto object-contain object-bottom"
-            style={{ maxHeight: 'calc(100dvh - 420px)', objectPosition: cropForSrc(imageSrc) }}
+            className="block h-full w-auto object-contain object-bottom"
+            style={{ objectPosition: cropForSrc(imageSrc) }}
           />
         </motion.div>
       ) : null}
