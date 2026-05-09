@@ -85,8 +85,13 @@ export function SplitPhotoSelect(props: Props) {
   const showPhoto = imageOk && Boolean(imageSrc);
   const isMulti = props.mode === 'multi';
 
+  // With 5+ options the option grid alone takes 3 rows; drop the photo entirely
+  // to keep everything inside the mobile viewport.
+  const tallGrid = options.length >= 5;
+  const photoCapClass = tallGrid ? 'hidden' : 'max-h-[220px]';
+
   return (
-    <div className="flex flex-col h-full gap-4">
+    <div className="flex flex-col h-full gap-4 min-h-0">
       <motion.div
         className="grid grid-cols-2 gap-2.5"
         variants={grid}
@@ -157,14 +162,14 @@ export function SplitPhotoSelect(props: Props) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
-          className="flex-1 min-h-[180px] flex items-end justify-center pointer-events-none"
+          className={`${photoCapClass} flex-1 min-h-0 flex items-end justify-center pointer-events-none`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
             alt={imageAlt}
-            className="max-h-full w-auto h-full object-contain"
-            style={{ objectPosition: cropForSrc(imageSrc) }}
+            className="block w-auto object-contain"
+            style={{ maxHeight: '220px', height: '220px', objectPosition: cropForSrc(imageSrc) }}
           />
         </motion.div>
       ) : null}
