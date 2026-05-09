@@ -99,6 +99,39 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
+    step: 2,
+    id: 'age',
+    type: 'single-select',
+    headline: 'На колко си?',
+    cardVariant: 'square',
+    optionsByGender: {
+      male: [
+        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/m1.png' },
+        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/m2.png' },
+        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/m3.png' },
+        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/m4.png' },
+      ],
+      female: [
+        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/f1.png' },
+        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/f2.png' },
+        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/f3.png' },
+        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/f4.png' },
+      ],
+    },
+  },
+  {
+    step: 3,
+    id: 'metrics',
+    type: 'numeric-combo',
+    headline: 'Височина и тегло',
+    subheadline: 'За да изчислим индекса и калоричността ти.',
+    inputs: [
+      { name: 'height', label: 'Височина', min: 140, max: 220, default: 170, suffix: 'см' },
+      { name: 'weight', label: 'Тегло сега', min: 40, max: 200, default: 80, suffix: 'кг' },
+      { name: 'targetWeight', label: 'Целево тегло', min: 40, max: 200, default: 70, suffix: 'кг' },
+    ],
+  },
+  {
     step: 4,
     id: 'goal',
     type: 'single-select',
@@ -136,27 +169,6 @@ export const STEPS: StepSpec[] = [
         { id: 'skinny-fat', label: 'Стройна, но не стегната', value: 'skinny-fat', imageUrl: '/images/photo/body-type/{char}-skinny-fat.png' },
         { id: 'underweight', label: 'С ниско тегло', value: 'underweight', imageUrl: '/images/photo/body-type/{char}-underweight.png' },
         { id: 'perfect', label: 'В перфектна форма съм', value: 'perfect', imageUrl: '/images/photo/body-type/{char}-perfect.png' },
-      ],
-    },
-  },
-  {
-    step: 2,
-    id: 'age',
-    type: 'single-select',
-    headline: 'На колко си?',
-    cardVariant: 'square',
-    optionsByGender: {
-      male: [
-        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/m1.png' },
-        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/m2.png' },
-        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/m3.png' },
-        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/m4.png' },
-      ],
-      female: [
-        { id: '18-29', label: '18-29', value: '18-29', imageUrl: '/images/photo/ref/f1.png' },
-        { id: '30-39', label: '30-39', value: '30-39', imageUrl: '/images/photo/ref/f2.png' },
-        { id: '40-49', label: '40-49', value: '40-49', imageUrl: '/images/photo/ref/f3.png' },
-        { id: '50+', label: '50+', value: '50+', imageUrl: '/images/photo/ref/f4.png' },
       ],
     },
   },
@@ -449,18 +461,6 @@ export const STEPS: StepSpec[] = [
     bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-4.jpg',
-  },
-  {
-    step: 3,
-    id: 'metrics',
-    type: 'numeric-combo',
-    headline: 'Височина и тегло',
-    subheadline: 'За да изчислим индекса и калоричността ти.',
-    inputs: [
-      { name: 'height', label: 'Височина', min: 140, max: 220, default: 170, suffix: 'см' },
-      { name: 'weight', label: 'Тегло сега', min: 40, max: 200, default: 80, suffix: 'кг' },
-      { name: 'targetWeight', label: 'Целево тегло', min: 40, max: 200, default: 70, suffix: 'кг' },
-    ],
   },
   {
     step: 24,

@@ -232,18 +232,14 @@ export function CalculatingScreen({
             />
           </svg>
 
-          {/* Character photo inside the ring */}
-          <div
-            className="absolute inset-0 flex items-end justify-center"
-            style={{ paddingBottom: 12 }}
-          >
+          {/* Character photo inside the ring — circular portrait, head+shoulders */}
+          <div className="absolute inset-0 flex items-center justify-center">
             <div
-              className="relative overflow-hidden"
+              className="relative overflow-hidden rounded-full"
               style={{
-                width: 232,
-                height: 264,
-                borderRadius: '50% / 42%',
-                background: 'radial-gradient(70% 70% at 50% 60%, rgba(229,9,20,0.18) 0%, rgba(229,9,20,0) 70%)',
+                width: 240,
+                height: 240,
+                background: 'radial-gradient(70% 70% at 50% 55%, rgba(229,9,20,0.18) 0%, rgba(229,9,20,0) 70%)',
               }}
             >
               {characterImageSrc ? (
@@ -252,7 +248,7 @@ export function CalculatingScreen({
                   src={characterImageSrc}
                   alt=""
                   className="absolute inset-0 w-full h-full"
-                  style={{ objectFit: 'contain', objectPosition: 'center bottom' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center 18%' }}
                 />
               ) : null}
             </div>
