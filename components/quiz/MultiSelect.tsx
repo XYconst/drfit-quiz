@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import type { OptionSpec, CardVariant } from '@/lib/questions';
 import { OptionCard } from './OptionCard';
 import { OptionRow } from './OptionRow';
+import { PhotoRow } from './PhotoRow';
 import { SplitPhotoSelect } from './SplitPhotoSelect';
 import { ArrowRightIcon, resolveIcon } from '@/components/icons';
 
@@ -63,9 +64,19 @@ export function MultiSelect({
     );
   }
 
+  const usePhotoRow =
+    options.length === 3 &&
+    (variant === 'portrait' || variant === 'square') &&
+    options.every((o) => Boolean(o.imageUrl));
+
   return (
     <>
-      <motion.div className={gridClass(variant)} variants={container} initial="hidden" animate="show">
+      <motion.div
+        className={usePhotoRow ? 'flex flex-col gap-3 mb-6' : gridClass(variant)}
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
         {options.map((opt) => {
           const isOn = selected.includes(opt.value);
           const disabled = atCap && !isOn;
@@ -77,6 +88,16 @@ export function MultiSelect({
                   label={opt.label}
                   sub={opt.sub}
                   tone={opt.tone}
+                  selected={isOn}
+                  disabled={disabled}
+                  onClick={() => onToggle(opt.value)}
+                />
+              ) : usePhotoRow ? (
+                <PhotoRow
+                  imageUrl={opt.imageUrl ?? ''}
+                  imageAlt={opt.label}
+                  label={opt.label}
+                  sub={opt.sub}
                   selected={isOn}
                   disabled={disabled}
                   onClick={() => onToggle(opt.value)}

@@ -45,16 +45,13 @@ export function OptionCard({
       className={[
         'group relative w-full text-left rounded-2xl overflow-hidden bg-[var(--color-paper-warm)]',
         'border-2',
-        'motion-safe:transition-[transform,border-color,background-color,box-shadow] motion-safe:duration-200 motion-safe:ease-out',
-        'motion-safe:hover:-translate-y-[2px] motion-safe:hover:shadow-[0_10px_24px_-12px_rgba(165,0,21,0.18)]',
-        'motion-safe:active:scale-[0.97] motion-safe:active:duration-100',
+        'motion-safe:transition-[border-color,background-color] motion-safe:duration-200 motion-safe:ease-out',
+        'motion-safe:active:scale-[0.99] motion-safe:active:duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2',
         selected
           ? 'border-[var(--color-brand-red)] bg-[var(--color-brand-red-tint)]'
           : 'border-[var(--color-line)] hover:border-[var(--color-text-muted)]',
-        disabled
-          ? 'opacity-50 cursor-not-allowed motion-safe:hover:translate-y-0 motion-safe:hover:shadow-none motion-safe:active:scale-100'
-          : 'cursor-pointer',
+        disabled ? 'opacity-50 cursor-not-allowed motion-safe:active:scale-100' : 'cursor-pointer',
       ].join(' ')}
     >
       <div className={[ASPECT[variant], 'w-full bg-[var(--color-surface-100)] overflow-hidden'].join(' ')}>
