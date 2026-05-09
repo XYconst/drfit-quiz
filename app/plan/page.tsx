@@ -21,20 +21,14 @@ const GENDER_BY_AVATAR: Record<AvatarId, Gender> = {
 
 const PLANS: PricingPlan[] = [
   {
-    id: 'week',
-    label: '1 седмица',
-    durationLabel: 'Тест',
-    oldPrice: 13.99,
-    price: 6.93,
-    perDay: 0.99,
-  },
-  {
     id: 'month',
     label: '4 седмици',
     durationLabel: 'Стандартен месец',
     oldPrice: 39.99,
     price: 19.99,
     perDay: 0.71,
+    tagLabel: 'Най-често избиран',
+    tone: 'slate',
   },
   {
     id: 'quarter',
@@ -44,6 +38,18 @@ const PLANS: PricingPlan[] = [
     price: 49.0,
     perDay: 0.54,
     recommended: true,
+    tagLabel: 'Най-изгоден',
+    tone: 'red',
+  },
+  {
+    id: 'week',
+    label: '1 седмица',
+    durationLabel: 'Тест',
+    oldPrice: 13.99,
+    price: 6.93,
+    perDay: 0.99,
+    tagLabel: 'Най-евтин',
+    tone: 'emerald',
   },
 ];
 

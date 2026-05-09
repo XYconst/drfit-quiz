@@ -242,6 +242,8 @@ function FullPlanContent({
             <SmallStat label="Цел" value={targetKg ? `${targetKg}` : '··'} suffix="кг" />
             <SmallStat label="Срок" value={targetDateLabel || '90 дни'} suffix="" />
           </div>
+
+          <BmiExplainer bmi={bmi} />
         </div>
       </section>
 
@@ -250,6 +252,7 @@ function FullPlanContent({
         <CurrentToTarget
           character={character}
           currentBodyType={currentBodyType}
+          heightCm={heightCm}
           currentKg={currentKg}
           targetKg={targetKg}
           days={goalDays}
@@ -337,6 +340,103 @@ function FullPlanContent({
           <a href="/impressum" className="hover:text-[var(--color-text-body)] transition-colors">Impressum</a>
         </span>
       </footer>
+    </div>
+  );
+}
+
+function BmiExplainer({ bmi }: { bmi?: number }) {
+  const cat = bmi
+    ? bmi < 18.5
+      ? { label: 'поднормено тегло', color: '#2563EB' }
+      : bmi < 25
+        ? { label: 'здравословно тегло', color: '#047857' }
+        : bmi < 30
+          ? { label: 'наднормено тегло', color: '#B45309' }
+          : { label: 'затлъстяване', color: '#A50015' }
+    : null;
+
+  // Map BMI 15..35 to 0..100% so the marker has a sensible scale.
+  const BMI_MIN = 15;
+  const BMI_MAX = 35;
+  const markerPct = bmi
+    ? Math.min(100, Math.max(0, ((bmi - BMI_MIN) / (BMI_MAX - BMI_MIN)) * 100))
+    : null;
+
+  // Segment widths in % of the [15..35] scale: 18.5/25/30 → 17.5/32.5/25/25
+  const segments = [
+    { color: '#2563EB', width: ((18.5 - 15) / 20) * 100 }, // под 18.5
+    { color: '#047857', width: ((25 - 18.5) / 20) * 100 },
+    { color: '#B45309', width: ((30 - 25) / 20) * 100 },
+    { color: '#A50015', width: ((35 - 30) / 20) * 100 },
+  ];
+
+  return (
+    <div className="mt-4 pt-4 border-t border-black/5">
+      <div className="flex items-center gap-2 mb-2">
+        <span aria-hidden className="size-1 rounded-full" style={{ background: cat?.color ?? 'var(--color-text-muted)' }} />
+        <p
+          className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
+          style={{ letterSpacing: '0.22em' }}
+        >
+          Какво е BMI
+        </p>
+      </div>
+      <p className="text-[12.5px] text-[var(--color-text-body)] leading-snug">
+        Индекс на телесната маса — показва дали теглото ти е здравословно за височината ти.
+        {cat && (
+          <>
+            {' '}
+            Твоят е{' '}
+            <span className="font-extrabold tabular-nums" style={{ color: cat.color }}>
+              {bmi!.toFixed(1)}
+            </span>{' '}
+            <span className="font-bold" style={{ color: cat.color }}>({cat.label})</span>.
+          </>
+        )}
+      </p>
+
+      {/* Segmented scale with marker */}
+      {markerPct !== null && (
+        <div className="mt-3">
+          <div className="relative">
+            <div className="flex h-2 rounded-full overflow-hidden">
+              {segments.map((s, i) => (
+                <span key={i} style={{ width: `${s.width}%`, background: s.color, opacity: 0.85 }} />
+              ))}
+            </div>
+            {/* Marker */}
+            <span
+              aria-hidden
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-3.5 rounded-full bg-white"
+              style={{
+                left: `${markerPct}%`,
+                boxShadow: `0 0 0 3px ${cat?.color ?? '#1F2937'}, 0 2px 8px rgba(0,0,0,0.18)`,
+              }}
+            />
+          </div>
+          <div className="relative mt-2 h-4 text-[10px] font-bold tabular-nums text-[var(--color-text-muted)]">
+            {[
+              { v: '15', pct: 0, anchor: 'left' as const },
+              { v: '18,5', pct: 17.5, anchor: 'center' as const },
+              { v: '25', pct: 50, anchor: 'center' as const },
+              { v: '30', pct: 75, anchor: 'center' as const },
+              { v: '35', pct: 100, anchor: 'right' as const },
+            ].map((t) => (
+              <span
+                key={t.v}
+                className="absolute top-0"
+                style={{
+                  left: t.anchor === 'right' ? undefined : `${t.pct}%`,
+                  right: t.anchor === 'right' ? '0' : undefined,
+                  transform: t.anchor === 'center' ? 'translateX(-50%)' : undefined,
+                }}
+              >
+                {t.v}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

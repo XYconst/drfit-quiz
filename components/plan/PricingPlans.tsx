@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckIcon } from '@/components/icons';
 
+export type PricingTone = 'slate' | 'red' | 'emerald';
+
 export interface PricingPlan {
   id: string;
   label: string;
@@ -11,6 +13,10 @@ export interface PricingPlan {
   price: number;
   perDay: number;
   recommended?: boolean;
+  /** Short uppercase ribbon, e.g. "Най-често избиран". */
+  tagLabel?: string;
+  /** Color treatment of the card + ribbon. */
+  tone?: PricingTone;
 }
 
 interface Props {
@@ -19,8 +25,47 @@ interface Props {
   onChange?: (id: string) => void;
 }
 
-const fmt = (n: number) =>
-  n.toFixed(2).replace('.', ',');
+const fmt = (n: number) => n.toFixed(2).replace('.', ',');
+
+interface ToneStyles {
+  ribbon: string; // CSS gradient
+  ringOn: string; // border + bg when selected
+  ringOff: string; // border + bg when idle
+  tintOff: string; // subtle background tint when idle
+  radio: string; // selected radio fill
+  price: string; // price color
+  shadow: string; // soft shadow when selected
+}
+
+const TONES: Record<PricingTone, ToneStyles> = {
+  slate: {
+    ribbon: 'linear-gradient(135deg, #2B3138 0%, #4B5563 100%)',
+    ringOn: 'border-[#2B3138]',
+    ringOff: 'border-[var(--color-line)]',
+    tintOff: 'linear-gradient(160deg, #FFFFFF 0%, #F6F7F9 100%)',
+    radio: '#2B3138',
+    price: '#1F2937',
+    shadow: '0 16px 30px -22px rgba(43,49,56,0.45)',
+  },
+  red: {
+    ribbon: 'linear-gradient(135deg, #E50914 0%, #A50015 100%)',
+    ringOn: 'border-[var(--color-brand-red)]',
+    ringOff: 'border-[var(--color-line)]',
+    tintOff: 'linear-gradient(160deg, #FFFFFF 0%, #FFF5F6 100%)',
+    radio: 'var(--color-brand-red)',
+    price: 'var(--color-brand-red)',
+    shadow: '0 18px 34px -22px rgba(165,0,21,0.55)',
+  },
+  emerald: {
+    ribbon: 'linear-gradient(135deg, #047857 0%, #059669 100%)',
+    ringOn: 'border-[#047857]',
+    ringOff: 'border-[var(--color-line)]',
+    tintOff: 'linear-gradient(160deg, #FFFFFF 0%, #F1FAF5 100%)',
+    radio: '#047857',
+    price: '#047857',
+    shadow: '0 16px 30px -22px rgba(4,120,87,0.45)',
+  },
+};
 
 export function PricingPlans({ plans, defaultId, onChange }: Props) {
   const [selected, setSelected] = useState<string>(
@@ -33,9 +78,10 @@ export function PricingPlans({ plans, defaultId, onChange }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {plans.map((p) => {
         const isOn = selected === p.id;
+        const tone = TONES[p.tone ?? 'red'];
         return (
           <button
             key={p.id}
@@ -45,30 +91,35 @@ export function PricingPlans({ plans, defaultId, onChange }: Props) {
             className={[
               'relative w-full text-left rounded-2xl border-2 px-5 py-4',
               'flex items-center justify-between gap-3',
-              'motion-safe:transition-[border-color,background-color] motion-safe:duration-150',
-              isOn
-                ? 'border-[var(--color-brand-red)] bg-[var(--color-brand-red-tint)]'
-                : 'border-[var(--color-line)] bg-white hover:border-[var(--color-text-muted)]',
+              'motion-safe:transition-[border-color,box-shadow,transform] motion-safe:duration-200',
+              isOn ? tone.ringOn : `${tone.ringOff} hover:border-[var(--color-text-muted)]`,
             ].join(' ')}
-            style={{ transformOrigin: 'center' }}
+            style={{
+              background: isOn ? '#FFFFFF' : tone.tintOff,
+              boxShadow: isOn ? tone.shadow : 'none',
+              transformOrigin: 'center',
+            }}
           >
-            {p.recommended && (
+            {p.tagLabel && (
               <span
-                className="absolute -top-2.5 left-5 inline-flex items-center gap-1.5 rounded-full bg-brand-gradient text-white px-2.5 py-0.5 text-[10px] font-extrabold uppercase shadow-brand-red"
-                style={{ letterSpacing: '0.18em' }}
+                className="absolute -top-2.5 left-5 inline-flex items-center gap-1.5 rounded-full text-white px-2.5 py-0.5 text-[10px] font-extrabold uppercase"
+                style={{
+                  letterSpacing: '0.18em',
+                  background: tone.ribbon,
+                  boxShadow: tone.shadow,
+                }}
               >
-                Препоръчан
+                {p.tagLabel}
               </span>
             )}
             <div className="flex items-center gap-3 min-w-0">
               <span
                 aria-hidden
-                className={[
-                  'shrink-0 size-6 rounded-full border-2 grid place-items-center',
-                  isOn
-                    ? 'border-[var(--color-brand-red)] bg-[var(--color-brand-red)]'
-                    : 'border-[var(--color-line)] bg-transparent',
-                ].join(' ')}
+                className="shrink-0 size-6 rounded-full border-2 grid place-items-center"
+                style={{
+                  borderColor: isOn ? tone.radio : 'var(--color-line)',
+                  background: isOn ? tone.radio : 'transparent',
+                }}
               >
                 {isOn && (
                   <motion.span
@@ -93,7 +144,10 @@ export function PricingPlans({ plans, defaultId, onChange }: Props) {
               <p className="text-[10px] text-[var(--color-text-muted)] line-through tabular-nums">
                 {fmt(p.oldPrice)} EUR
               </p>
-              <p className="text-[22px] font-extrabold text-[var(--color-brand-red)] tabular-nums leading-tight">
+              <p
+                className="text-[22px] font-extrabold tabular-nums leading-tight"
+                style={{ color: tone.price }}
+              >
                 {fmt(p.perDay)}
                 <span className="text-[11px] font-semibold text-[var(--color-text-muted)] ml-1">EUR/ден</span>
               </p>

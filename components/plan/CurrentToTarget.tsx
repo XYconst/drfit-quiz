@@ -5,12 +5,22 @@ import { ArrowRightIcon } from '@/components/icons';
 interface Props {
   /** Character code, e.g. "f2" or "m3". Drives which body-type photo we render. */
   character: string;
-  /** Current body-type the user picked: 'overweight' | 'skinny-fat' | 'underweight' | 'perfect'. */
+  /** Quiz-picked body type — used as fallback when we cannot compute BMI. */
   currentBodyType: string;
+  /** Height in cm — drives BMI-based body-type selection. */
+  heightCm: number;
   currentKg: number;
   targetKg: number;
   /** Total days the user wants to take to reach the goal. */
   days: number;
+}
+
+/** Map a BMI value to one of our body-type photo slugs. */
+function bodyTypeForBmi(bmi: number): 'overweight' | 'skinny-fat' | 'perfect' | 'underweight' {
+  if (bmi >= 27) return 'overweight';
+  if (bmi >= 25) return 'skinny-fat';
+  if (bmi >= 18.5) return 'perfect';
+  return 'underweight';
 }
 
 /**
@@ -19,7 +29,7 @@ interface Props {
  * if achievable at <=1 kg/week (loss) or <=0.5 kg/week (gain), red warning
  * otherwise with a recommended longer timeline.
  */
-export function CurrentToTarget({ character, currentBodyType, currentKg, targetKg, days }: Props) {
+export function CurrentToTarget({ character, currentBodyType, heightCm, currentKg, targetKg, days }: Props) {
   const delta = currentKg - targetKg; // positive = losing, negative = gaining
   const losing = delta > 0;
   const gaining = delta < 0;
@@ -33,8 +43,17 @@ export function CurrentToTarget({ character, currentBodyType, currentKg, targetK
   const safeDays = Math.ceil((totalKg / safeRate) * 7);
   const safeWeeks = Math.ceil(totalKg / safeRate);
 
-  const currentImg = `/images/photo/body-type/${character}-${currentBodyType}.png`;
-  const targetImg = `/images/photo/body-type/${character}-perfect.png`;
+  // BMI-driven photo selection. If we don't have a height, fall back to the
+  // quiz pick so the card still renders something sensible.
+  const heightM = heightCm / 100;
+  const currentBmi = heightM > 0 && currentKg > 0 ? currentKg / (heightM * heightM) : null;
+  const targetBmi = heightM > 0 && targetKg > 0 ? targetKg / (heightM * heightM) : null;
+
+  const currentSlug = currentBmi ? bodyTypeForBmi(currentBmi) : currentBodyType;
+  const targetSlug = targetBmi ? bodyTypeForBmi(targetBmi) : 'perfect';
+
+  const currentImg = `/images/photo/body-type/${character}-${currentSlug}.png`;
+  const targetImg = `/images/photo/body-type/${character}-${targetSlug}.png`;
 
   return (
     <section className="rounded-2xl bg-white border border-[var(--color-line)] p-5">
