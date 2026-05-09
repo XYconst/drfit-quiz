@@ -74,7 +74,7 @@ export function DateStep({ initial, onContinue }: Props) {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="font-extrabold text-[var(--color-text-headline)] tabular-nums"
               style={{
-                fontFamily: 'var(--font-display)',
+                fontFamily: 'var(--font-sans)',
                 fontSize: 'clamp(4rem, 18vw, 6rem)',
                 lineHeight: 0.95,
                 letterSpacing: '-0.04em',
@@ -83,11 +83,11 @@ export function DateStep({ initial, onContinue }: Props) {
               {day}
             </motion.span>
             <span
-              className="font-semibold text-[var(--color-text-strong)] capitalize"
+              className="font-extrabold text-[var(--color-text-strong)] capitalize"
               style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1.25rem, 5vw, 1.625rem)',
-                letterSpacing: '-0.01em',
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(1.5rem, 5.5vw, 1.875rem)',
+                letterSpacing: '-0.02em',
               }}
             >
               {month}
