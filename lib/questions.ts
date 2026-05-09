@@ -254,6 +254,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Въглехидратите не са враг',
     bodyBg: 'Carb-Cycling редува дни с високи и ниски въглехидрати, за да задържи метаболизма ти буден. Никаква диета, никакво сбогом с любимата храна.',
     ctaBg: 'Продължи',
+    imageUrl: '/images/photo/interstitials/building-1.png',
   },
   {
     step: 10,
@@ -370,6 +371,7 @@ export const STEPS: StepSpec[] = [
     headline: '30 минути работят повече от 2 часа във фитнеса',
     bodyBg: 'Time-Under-Tension и AfterBurn ефектът — кратки, бавни тренировки, които горят калории часове след като си приключил/-а. Без зала, без апаратура.',
     ctaBg: 'Продължи',
+    imageUrl: '/images/photo/interstitials/building-2.png',
   },
   {
     step: 18,
@@ -429,6 +431,7 @@ export const STEPS: StepSpec[] = [
     headline: '„Не вярвах, че е възможно без личен треньор"',
     bodyBg: 'Иван свали 14 кг за 4 месеца, по 30 минути на ден у дома. Над 10 000 души вече следват Dr.Fit. 9 от 10 виждат резултат в първите 30 дни.',
     ctaBg: 'Продължи',
+    imageUrl: '/images/photo/interstitials/building-3.png',
   },
   {
     step: 22,
