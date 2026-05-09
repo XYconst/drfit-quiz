@@ -22,29 +22,29 @@ const MOTIVATION_LABELS: Record<string, string> = {
 
 const PLANS: PricingPlan[] = [
   {
-    id: 'monthly',
-    label: '1 месец',
-    durationLabel: 'Старт',
-    oldPrice: 39.99,
-    price: 19.99,
-    perDay: 0.67,
+    id: 'week',
+    label: '1 седмица',
+    durationLabel: 'Тест',
+    oldPrice: 13.99,
+    price: 6.93,
+    perDay: 0.99,
   },
   {
-    id: 'quarterly',
+    id: 'month',
+    label: '4 седмици',
+    durationLabel: 'Стандартен месец',
+    oldPrice: 39.99,
+    price: 19.99,
+    perDay: 0.71,
+  },
+  {
+    id: 'quarter',
     label: '3 месеца',
     durationLabel: 'Целият 90-дневен план',
     oldPrice: 99.0,
     price: 49.0,
     perDay: 0.54,
     recommended: true,
-  },
-  {
-    id: 'yearly',
-    label: '12 месеца',
-    durationLabel: 'Най-изгодно',
-    oldPrice: 199.0,
-    price: 99.0,
-    perDay: 0.27,
   },
 ];
 
