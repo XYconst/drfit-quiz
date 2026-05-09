@@ -7,6 +7,7 @@ import { PricingPlans, type PricingPlan } from './PricingPlans';
 import { PaymentMethods } from './PaymentMethods';
 import { EscalationModal } from './EscalationModal';
 import { CurrentToTarget } from './CurrentToTarget';
+import { ActiveDiscountStrip } from './ActiveDiscountStrip';
 import { CheckIcon, LockIcon } from '@/components/icons';
 
 interface CurrentState {
@@ -141,6 +142,7 @@ export function PlanFlow({
               currentBodyType={currentBodyType}
               goalDays={goalDays}
               discountPercent={discountPercent}
+              discountCode={discountCode}
             />
           </motion.div>
         )}
@@ -168,6 +170,7 @@ interface FullProps {
   currentBodyType: string;
   goalDays: number;
   discountPercent: string;
+  discountCode: string;
 }
 
 function FullPlanContent({
@@ -182,11 +185,17 @@ function FullPlanContent({
   currentBodyType,
   goalDays,
   discountPercent,
+  discountCode,
 }: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   return (
     <div className="flex flex-col gap-7">
+      <ActiveDiscountStrip
+        percent={discountPercent}
+        code={discountCode}
+        initialSeconds={9 * 60 + 42}
+      />
       {/* Hero */}
       <header>
         <span
@@ -283,24 +292,24 @@ function FullPlanContent({
             className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
             style={{ letterSpacing: '0.22em' }}
           >
-            Общо днес
+            Цена на ден
           </span>
           <span className="text-[12px] text-[var(--color-text-muted)] line-through tabular-nums">
-            {fmt(selected.oldPrice)} EUR
+            {fmt(selected.oldPrice)} EUR общо
           </span>
         </div>
         <div className="mt-1 flex items-baseline gap-2">
           <span
-            className="text-[44px] font-extrabold tabular-nums text-[var(--color-text-headline)]"
+            className="text-[52px] font-extrabold tabular-nums text-[var(--color-brand-red)]"
             style={{ letterSpacing: '-0.03em', lineHeight: 1 }}
           >
-            {fmt(selected.price)}
+            {fmt(selected.perDay)}
           </span>
-          <span className="text-[16px] font-bold text-[var(--color-text-strong)]">EUR</span>
-          <span className="ml-auto text-[12px] text-[var(--color-text-muted)] tabular-nums">
-            {fmt(selected.perDay)} EUR / ден
-          </span>
+          <span className="text-[15px] font-bold text-[var(--color-text-strong)]">EUR/ден</span>
         </div>
+        <p className="mt-2 text-[13px] text-[var(--color-text-muted)] tabular-nums">
+          Общо <span className="font-bold text-[var(--color-text-strong)]">{fmt(selected.price)} EUR</span> за {selected.label.toLowerCase()}
+        </p>
 
         <a
           href={checkoutHref}

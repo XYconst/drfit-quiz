@@ -90,14 +90,15 @@ export function PricingPlans({ plans, defaultId, onChange }: Props) {
               </div>
             </div>
             <div className="text-right shrink-0">
-              <p className="text-[11px] text-[var(--color-text-muted)] line-through tabular-nums">
+              <p className="text-[10px] text-[var(--color-text-muted)] line-through tabular-nums">
                 {fmt(p.oldPrice)} EUR
               </p>
-              <p className="text-[18px] font-extrabold text-[var(--color-text-headline)] tabular-nums leading-tight">
-                {fmt(p.price)} EUR
+              <p className="text-[22px] font-extrabold text-[var(--color-brand-red)] tabular-nums leading-tight">
+                {fmt(p.perDay)}
+                <span className="text-[11px] font-semibold text-[var(--color-text-muted)] ml-1">EUR/ден</span>
               </p>
-              <p className="text-[11px] text-[var(--color-brand-red)] font-bold tabular-nums">
-                {fmt(p.perDay)} EUR / ден
+              <p className="text-[11px] text-[var(--color-text-muted)] tabular-nums">
+                общо {fmt(p.price)} EUR
               </p>
             </div>
           </button>
