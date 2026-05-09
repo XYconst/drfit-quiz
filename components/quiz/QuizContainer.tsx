@@ -304,13 +304,10 @@ export function QuizContainer() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={step.id}
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{
-              x: { duration: 0.24, ease: [0.22, 0.61, 0.36, 1] },
-              opacity: { duration: 0.18, ease: 'easeOut' },
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             className="flex flex-col flex-1"
           >
             {content}

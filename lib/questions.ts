@@ -236,6 +236,14 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
+    step: 100,
+    id: 'building-1',
+    type: 'interstitial',
+    headline: 'Сглобяваме твоя ритъм',
+    bodyBg: 'Сън, движение и стрес влизат в плана. Само още няколко въпроса за енергията ти.',
+    ctaBg: 'Продължи',
+  },
+  {
     step: 10,
     id: 'stress',
     type: 'single-select',
@@ -344,6 +352,14 @@ export const STEPS: StepSpec[] = [
     ],
   },
   {
+    step: 101,
+    id: 'building-2',
+    type: 'interstitial',
+    headline: 'Анализираме симптомите',
+    bodyBg: 'Виждаме къде метаболизмът ти буксува. Още малко въпроси и сглобяваме картината.',
+    ctaBg: 'Продължи',
+  },
+  {
     step: 18,
     id: 'bloating',
     type: 'single-select',
@@ -393,6 +409,14 @@ export const STEPS: StepSpec[] = [
       { id: 'event', label: 'Имам конкретно събитие', sub: 'Сватба, ваканция, рожден ден', value: 'event', icon: 'calendar' },
       { id: 'fed-up', label: 'Стига вече', sub: 'Готов/-а съм за промяна', value: 'fed-up', icon: 'flag' },
     ],
+  },
+  {
+    step: 102,
+    id: 'building-3',
+    type: 'interstitial',
+    headline: 'Скоро готов е твоят план',
+    bodyBg: 'Остава да затворим целта и сглобяваме програмата, скроена само за теб.',
+    ctaBg: 'Продължи',
   },
   {
     step: 22,

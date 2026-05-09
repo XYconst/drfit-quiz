@@ -158,9 +158,9 @@ export function SplitPhotoSelect(props: Props) {
       {showPhoto && !tallGrid ? (
         <motion.div
           aria-hidden
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
           className="fixed left-1/2 -translate-x-1/2 bottom-0 w-full max-w-md flex justify-center items-end pointer-events-none"
           style={{ height: 'calc(100dvh - 360px)' }}
         >
