@@ -71,49 +71,95 @@ export function CurrentToTarget({ character, currentBodyType, currentKg, targetK
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.32, delay: 0.1 }}
         className={[
-          'mt-5 rounded-xl p-4 flex items-start gap-3',
+          'mt-5 rounded-2xl p-4',
           isSafe
             ? 'bg-[var(--color-success-50)] border border-[var(--color-success-600)]/30'
             : 'bg-[var(--color-amber-bg)] border border-[var(--color-amber-text)]/30',
         ].join(' ')}
+        style={{ fontFamily: 'var(--font-sans)' }}
       >
-        <span
-          aria-hidden
-          className={[
-            'shrink-0 size-8 rounded-full grid place-items-center',
-            isSafe ? 'bg-[var(--color-success-600)] text-white' : 'bg-[var(--color-amber-text)] text-white',
-          ].join(' ')}
-        >
-          {isSafe ? <CircleCheckIcon width={18} height={18} /> : <ShieldAlertIcon width={18} height={18} />}
-        </span>
-        <div className="flex-1 min-w-0">
-          {isSafe ? (
-            <>
-              <p className="text-[14px] font-extrabold text-[var(--color-success-700)] leading-tight">
-                Реалистична цел
-              </p>
-              <p className="mt-1 text-[12px] text-[var(--color-text-body)] leading-snug">
-                {totalKg.toFixed(0)} кг за {Math.round(weeks)} седмици · около{' '}
-                {perWeek.toFixed(2).replace('.', ',')} кг/седмица. В безопасния диапазон.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-[14px] font-extrabold text-[var(--color-amber-text)] leading-tight">
-                {gaining ? 'Прекалено бърза цел' : 'Прекалено бърза загуба'}
-              </p>
-              <p className="mt-1 text-[12px] text-[var(--color-text-body)] leading-snug">
-                {totalKg.toFixed(0)} кг за {Math.round(weeks)} седмици означава{' '}
-                {perWeek.toFixed(2).replace('.', ',')} кг/седмица. Това изисква екстремен дефицит,
-                който не препоръчваме (риск за здравето и тонуса). Удължи срока до поне{' '}
-                <span className="font-bold whitespace-nowrap">{safeWeeks} седмици</span>{' '}
-                ({Math.round(safeDays / 30)} мес.) за здравословно темпо ({losing ? '~1' : '~0,5'} кг/седмица).
-              </p>
-            </>
-          )}
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden
+            className={[
+              'shrink-0 size-8 rounded-full grid place-items-center',
+              isSafe ? 'bg-[var(--color-success-600)] text-white' : 'bg-[var(--color-amber-text)] text-white',
+            ].join(' ')}
+          >
+            {isSafe ? <CircleCheckIcon width={18} height={18} /> : <ShieldAlertIcon width={18} height={18} />}
+          </span>
+          <p
+            className={[
+              'text-[15px] font-extrabold leading-tight',
+              isSafe ? 'text-[var(--color-success-700)]' : 'text-[var(--color-amber-text)]',
+            ].join(' ')}
+            style={{ letterSpacing: '-0.01em' }}
+          >
+            {isSafe ? 'Реалистична цел' : gaining ? 'Прекалено бърза цел' : 'Прекалено бързо темпо'}
+          </p>
         </div>
+
+        <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
+          <Pill label={losing ? 'Сваляш' : 'Качваш'} value={`${totalKg.toFixed(0)} кг`} />
+          <Pill label="Срок" value={`${Math.round(weeks)} седм.`} />
+          <Pill
+            label="Темпо"
+            value={`${perWeek.toFixed(2).replace('.', ',')} кг/седм.`}
+            warn={!isSafe}
+          />
+        </dl>
+
+        {!isSafe && (
+          <div className="mt-4 rounded-xl bg-white/60 border border-[var(--color-amber-text)]/20 px-3 py-2.5">
+            <p
+              className="text-[10px] font-extrabold uppercase text-[var(--color-amber-text)]"
+              style={{ letterSpacing: '0.18em' }}
+            >
+              Препоръчваме
+            </p>
+            <p className="mt-1 text-[14px] font-bold text-[var(--color-text-strong)] leading-snug">
+              <span className="tabular-nums">{safeWeeks} седмици</span> ({Math.round(safeDays / 30)} мес.)
+              за здравословно темпо около <span className="tabular-nums">{losing ? '1' : '0,5'} кг/седм.</span>
+            </p>
+          </div>
+        )}
+
+        {isSafe && (
+          <p className="mt-3 text-[13px] text-[var(--color-text-body)] leading-snug">
+            В безопасния диапазон. Можем да го направим устойчиво.
+          </p>
+        )}
       </motion.div>
     </section>
+  );
+}
+
+function Pill({ label, value, warn = false }: { label: string; value: string; warn?: boolean }) {
+  return (
+    <div
+      className={[
+        'rounded-xl px-2 py-2 border',
+        warn
+          ? 'bg-[var(--color-amber-text)]/8 border-[var(--color-amber-text)]/30'
+          : 'bg-white/70 border-[var(--color-line)]',
+      ].join(' ')}
+    >
+      <p
+        className="text-[9px] font-bold uppercase text-[var(--color-text-muted)]"
+        style={{ letterSpacing: '0.16em' }}
+      >
+        {label}
+      </p>
+      <p
+        className={[
+          'mt-0.5 text-[13px] font-extrabold tabular-nums leading-tight',
+          warn ? 'text-[var(--color-amber-text)]' : 'text-[var(--color-text-headline)]',
+        ].join(' ')}
+        style={{ letterSpacing: '-0.01em' }}
+      >
+        {value}
+      </p>
+    </div>
   );
 }
 

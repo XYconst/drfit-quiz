@@ -9,14 +9,50 @@ interface Props {
   gender: Gender;
 }
 
-/** Headline text that frames why we're showing the user this image. */
-const SLOT_COPY: Record<string, { eyebrow: string; line: string }> = {
-  health: { eyebrow: 'За здраве', line: 'По-добра форма, повече години активност.' },
-  partner: { eyebrow: 'За половинката си', line: 'Уверен/-а до човека, който обичаш.' },
-  photos: { eyebrow: 'За снимки и огледало', line: 'Тялото, което искаш да виждаш.' },
-  kids: { eyebrow: 'За децата', line: 'Силна/-силен пример, неуморен/-а в играта.' },
-  event: { eyebrow: 'За конкретното събитие', line: 'Готов/-а в деня, който очакваш.' },
-  prove: { eyebrow: 'Стига вече', line: 'Този път стига до края.' },
+/** Headline text per motivation, with gender-correct adjective forms. */
+const SLOT_COPY: Record<string, { eyebrow: string; line: Record<Gender, string> }> = {
+  health: {
+    eyebrow: 'За здраве',
+    line: {
+      male: 'По-добра форма, повече години активност.',
+      female: 'По-добра форма, повече години активност.',
+    },
+  },
+  partner: {
+    eyebrow: 'За половинката си',
+    line: {
+      male: 'Уверен до човека, който обичаш.',
+      female: 'Уверена до човека, който обичаш.',
+    },
+  },
+  photos: {
+    eyebrow: 'За снимки и огледало',
+    line: {
+      male: 'Тялото, което искаш да виждаш.',
+      female: 'Тялото, което искаш да виждаш.',
+    },
+  },
+  kids: {
+    eyebrow: 'За децата',
+    line: {
+      male: 'Силен пример. Неуморен в играта.',
+      female: 'Силен пример. Неуморна в играта.',
+    },
+  },
+  event: {
+    eyebrow: 'За конкретното събитие',
+    line: {
+      male: 'Готов в деня, който очакваш.',
+      female: 'Готова в деня, който очакваш.',
+    },
+  },
+  prove: {
+    eyebrow: 'Стига вече',
+    line: {
+      male: 'Този път стига до края.',
+      female: 'Този път стига до края.',
+    },
+  },
 };
 
 const KNOWN = new Set(Object.keys(SLOT_COPY));
@@ -78,7 +114,7 @@ export function MotivationVisuals({ codes, gender }: Props) {
                     textShadow: '0 1px 12px rgba(0,0,0,0.55)',
                   }}
                 >
-                  {copy.line}
+                  {copy.line[gender]}
                 </p>
               </div>
             </motion.article>
