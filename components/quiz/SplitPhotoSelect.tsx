@@ -108,6 +108,9 @@ export function SplitPhotoSelect(props: Props) {
           const isSelected = isMulti
             ? props.selectedMulti.includes(opt.value)
             : props.selected === opt.value;
+          // In single-column (stack) mode, lay icon + text out horizontally so
+          // there's no dead vertical whitespace inside the card. In 2-col grid
+          // mode, keep the stacked layout because the cards are narrower.
           return (
             <motion.button
               type="button"
@@ -122,8 +125,10 @@ export function SplitPhotoSelect(props: Props) {
               }}
               aria-pressed={isSelected}
               className={[
-                'relative rounded-2xl border-2 p-3 text-left',
-                'min-h-[80px] flex flex-col justify-between gap-2',
+                'relative rounded-2xl border-2 text-left',
+                stack
+                  ? 'px-4 py-3 min-h-[56px] flex items-center gap-3'
+                  : 'p-3 min-h-[80px] flex flex-col justify-between gap-2',
                 'motion-safe:transition-[transform,border-color,background-color] motion-safe:duration-200',
                 'motion-safe:active:scale-[0.97]',
                 isSelected
@@ -133,18 +138,19 @@ export function SplitPhotoSelect(props: Props) {
             >
               <span
                 className={[
-                  'shrink-0 grid place-items-center size-7 rounded-full',
+                  'shrink-0 grid place-items-center rounded-full',
+                  stack ? 'size-9' : 'size-7',
                   isSelected ? 'bg-white text-[var(--color-brand-red)]' : 'bg-[var(--color-surface-100)] text-[var(--color-text-strong)]',
                 ].join(' ')}
               >
                 {resolveIcon(opt.icon)}
               </span>
-              <span className="block">
+              <span className={stack ? 'min-w-0 flex-1' : 'block'}>
                 <span className="block font-semibold text-[14px] leading-tight text-[var(--color-text-headline)]">
                   {opt.label}
                 </span>
                 {opt.sub && (
-                  <span className="block mt-0.5 text-[11px] leading-snug text-[var(--color-text-muted)] line-clamp-2">
+                  <span className="block mt-0.5 text-[12px] leading-snug text-[var(--color-text-muted)] line-clamp-2">
                     {opt.sub}
                   </span>
                 )}
@@ -152,7 +158,10 @@ export function SplitPhotoSelect(props: Props) {
               {isSelected && (
                 <span
                   aria-hidden
-                  className="absolute top-2 right-2 size-5 rounded-md bg-[var(--color-brand-red)] grid place-items-center"
+                  className={[
+                    'absolute size-5 rounded-md bg-[var(--color-brand-red)] grid place-items-center',
+                    stack ? 'top-1/2 right-3 -translate-y-1/2' : 'top-2 right-2',
+                  ].join(' ')}
                 >
                   <CheckIcon width={12} height={12} className="text-white" />
                 </span>
