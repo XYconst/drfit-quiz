@@ -52,7 +52,10 @@ export function CurrentToTarget({ character, currentBodyType, heightCm, currentK
   const currentSlug = currentBmi ? bodyTypeForBmi(currentBmi) : currentBodyType;
   const targetSlug = targetBmi ? bodyTypeForBmi(targetBmi) : 'perfect';
 
-  const currentImg = `/images/photo/body-type/${character}-${currentSlug}.png`;
+  // For high BMI, prefer the dramatic shirtless "before" asset so the body
+  // composition actually reads. Falls back to the regular slug if BMI is mid.
+  const currentAsset = currentSlug === 'overweight' ? 'overweight-shirtless' : currentSlug;
+  const currentImg = `/images/photo/body-type/${character}-${currentAsset}.png`;
   const targetImg = `/images/photo/body-type/${character}-${targetSlug}.png`;
 
   return (
