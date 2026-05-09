@@ -1,5 +1,6 @@
 'use client';
 import { useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import type { Gender } from '@/lib/avatars';
 import { PricingPlans, type PricingPlan } from './PricingPlans';
 import { PaymentMethods } from './PaymentMethods';
@@ -108,29 +109,50 @@ export function PlanFlow({
   };
 
   return (
-    <div className="max-w-md mx-auto px-5 pt-6 pb-32 flex flex-col gap-6">
-      <ScrubReveal
-        greeting={greeting}
-        percent={initialDiscountPercent}
-        code={discountCode}
-        initialSeconds={9 * 60 + 42}
-        onClaim={() => setSliderClaimed(true)}
-        onClose={sliderClaimed ? undefined : onSliderClose}
-      />
+    <div className="max-w-md mx-auto px-5 pt-6 pb-32">
+      {/* Stage 1 — focus on the discount: scratch card centered in viewport */}
+      {!sliderClaimed && (
+        <div className="min-h-[80vh] flex flex-col justify-center">
+          <ScrubReveal
+            greeting={greeting}
+            percent={initialDiscountPercent}
+            code={discountCode}
+            initialSeconds={9 * 60 + 42}
+            onClaim={() => setSliderClaimed(true)}
+            onClose={onSliderClose}
+          />
+          <p className="mt-6 text-center text-[12px] text-[var(--color-text-muted)] max-w-[34ch] mx-auto">
+            Изтрий покритието с пръст или мишка. След това ще видиш плана си с
+            всички детайли.
+          </p>
+        </div>
+      )}
 
-      <FullPlanContent
-        greeting={greeting}
-        currentState={currentState}
-        motivationCodes={motivationCodes}
-        gender={gender}
-        plans={plans}
-        selected={selected}
-        onSelect={setSelectedId}
-        onCta={onCta}
-        character={character}
-        currentBodyType={currentBodyType}
-        goalDays={goalDays}
-      />
+      {/* Stage 2 — full plan reveals after the code is unlocked */}
+      <AnimatePresence>
+        {sliderClaimed && (
+          <motion.div
+            key="full"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+          >
+            <FullPlanContent
+              greeting={greeting}
+              currentState={currentState}
+              motivationCodes={motivationCodes}
+              gender={gender}
+              plans={plans}
+              selected={selected}
+              onSelect={setSelectedId}
+              onCta={onCta}
+              character={character}
+              currentBodyType={currentBodyType}
+              goalDays={goalDays}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <PreCheckoutModal
         open={stage === 'initial'}
