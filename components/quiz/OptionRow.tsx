@@ -33,7 +33,7 @@ export function OptionRow({ icon, label, sub, selected = false, disabled = false
       style={{ transformOrigin: 'center' }}
       className={[
         'group relative w-full text-left rounded-2xl bg-[var(--color-paper-warm)]',
-        'border-2 px-5 py-4 min-h-[68px] flex items-center gap-4',
+        'border-2 px-4 py-3 min-h-[56px] flex items-center gap-3',
         'motion-safe:transition-[transform,border-color,background-color,box-shadow] motion-safe:duration-200 motion-safe:ease-out',
         'motion-safe:hover:-translate-y-[2px] motion-safe:hover:shadow-[0_10px_24px_-12px_rgba(165,0,21,0.18)]',
         'motion-safe:active:scale-[0.98] motion-safe:active:duration-100',
@@ -47,16 +47,16 @@ export function OptionRow({ icon, label, sub, selected = false, disabled = false
       <span
         aria-hidden
         className={[
-          'shrink-0 grid place-items-center size-11 rounded-full',
+          'shrink-0 grid place-items-center size-9 rounded-full',
           selected ? 'bg-white text-[var(--color-brand-red)]' : TONE_CLASSES[tone],
         ].join(' ')}
       >
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-[16px] leading-snug text-[var(--color-text-headline)]">{label}</p>
+        <p className="font-semibold text-[15px] leading-tight text-[var(--color-text-headline)]">{label}</p>
         {sub && (
-          <p className="mt-0.5 text-[13px] leading-snug text-[var(--color-text-muted)]">{sub}</p>
+          <p className="mt-0.5 text-[12.5px] leading-snug text-[var(--color-text-muted)]">{sub}</p>
         )}
       </div>
       <span

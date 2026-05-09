@@ -19,7 +19,7 @@ interface Props {
 }
 
 function gridClass(variant: CardVariant): string {
-  if (variant === 'icon-row') return 'flex flex-col gap-3 mb-6';
+  if (variant === 'icon-row') return 'flex flex-col gap-2.5 mb-6';
   if (variant === 'wide') return 'grid grid-cols-1 gap-3 mb-6';
   // 2-col grids: when the option count is odd, the trailing single card centers
   // itself at the same width as a regular column.

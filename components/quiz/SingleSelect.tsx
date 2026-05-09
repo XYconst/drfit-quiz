@@ -67,7 +67,7 @@ export function SingleSelect({ options, selected, variant, splitPhotoSrc, onPick
 
   const gridClassValue =
     variant === 'icon-row'
-      ? 'flex flex-col gap-3'
+      ? 'flex flex-col gap-2.5'
       : variant === 'wide'
         ? 'grid grid-cols-1 gap-3'
         : 'grid grid-cols-2 gap-3 [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:w-[calc(50%-0.375rem)] [&>:last-child:nth-child(odd)]:justify-self-center';
