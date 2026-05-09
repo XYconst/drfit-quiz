@@ -88,11 +88,18 @@ export function SplitPhotoSelect(props: Props) {
   // With 5+ options the option grid alone takes 3 rows; drop the photo entirely
   // to keep everything inside the mobile viewport.
   const tallGrid = options.length >= 5;
+  // Odd option counts read better as a single stacked column than as a 2-col
+  // grid with a lonely centered last card.
+  const stack = options.length % 2 === 1;
 
   return (
     <div className="flex flex-col h-full gap-4 min-h-0">
       <motion.div
-        className="grid grid-cols-2 gap-2.5 [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:w-[calc(50%-0.3125rem)] [&>:last-child:nth-child(odd)]:justify-self-center"
+        className={
+          stack
+            ? 'flex flex-col gap-2.5'
+            : 'grid grid-cols-2 gap-2.5 [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:w-[calc(50%-0.3125rem)] [&>:last-child:nth-child(odd)]:justify-self-center'
+        }
         variants={grid}
         initial="hidden"
         animate="show"
