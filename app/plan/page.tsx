@@ -1,4 +1,4 @@
-import { AVATARS, type AvatarId } from '@/lib/avatars';
+import { AVATARS, type AvatarId, type Gender } from '@/lib/avatars';
 import { buildCheckoutUrl } from '@/lib/checkout';
 import { PlanFlow } from '@/components/plan/PlanFlow';
 import type { PricingPlan } from '@/components/plan/PricingPlans';
@@ -11,13 +11,12 @@ function isAvatar(s: string | undefined): s is AvatarId {
   return !!s && ['01', '02', '03', '04', '05'].includes(s);
 }
 
-const MOTIVATION_LABELS: Record<string, string> = {
-  health: 'За здраве',
-  partner: 'За половинката си',
-  photos: 'Уверен/-а на снимки',
-  kids: 'За децата',
-  event: 'Конкретно събитие',
-  prove: 'Стига вече',
+const GENDER_BY_AVATAR: Record<AvatarId, Gender> = {
+  '01': 'male',
+  '02': 'female',
+  '03': 'male',
+  '04': 'female',
+  '05': 'male',
 };
 
 const PLANS: PricingPlan[] = [
@@ -82,9 +81,7 @@ export default async function PlanPage({ searchParams }: PageProps) {
   const goalDays = Math.max(7, Number(sp.days) || 90);
 
   const motivationCodes = sp.mot ? sp.mot.split(',').map((s) => s.trim()).filter(Boolean) : [];
-  const goalLabels = motivationCodes
-    .map((code) => MOTIVATION_LABELS[code])
-    .filter((v): v is string => Boolean(v));
+  const gender = GENDER_BY_AVATAR[avatarId];
 
   const character = sp.char && VALID_CHARS.has(sp.char) ? sp.char : DEFAULT_CHARACTER_BY_AVATAR[avatarId];
   const currentBodyType =
@@ -115,7 +112,8 @@ export default async function PlanPage({ searchParams }: PageProps) {
       <PlanFlow
         greeting={greeting}
         currentState={{ heightCm, currentKg, targetKg, bmi, targetDateLabel }}
-        goalLabels={goalLabels}
+        motivationCodes={motivationCodes}
+        gender={gender}
         plans={PLANS}
         checkoutBaseUrl={checkoutUrl}
         discountCode={discountCode}

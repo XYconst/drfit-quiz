@@ -1,6 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { Gender } from '@/lib/avatars';
 import { ScrubReveal } from './ScrubReveal';
 import { PlanLoading } from './PlanLoading';
 import { PricingPlans, type PricingPlan } from './PricingPlans';
@@ -8,7 +9,8 @@ import { PaymentMethods } from './PaymentMethods';
 import { EscalationModal } from './EscalationModal';
 import { CurrentToTarget } from './CurrentToTarget';
 import { ActiveDiscountStrip } from './ActiveDiscountStrip';
-import { CheckIcon, LockIcon } from '@/components/icons';
+import { MotivationVisuals } from './MotivationVisuals';
+import { LockIcon } from '@/components/icons';
 
 interface CurrentState {
   heightCm: number;
@@ -21,7 +23,10 @@ interface CurrentState {
 interface Props {
   greeting: string;
   currentState: CurrentState;
-  goalLabels: string[];
+  /** Motivation codes the user picked in the quiz (e.g. ['kids','photos']). */
+  motivationCodes: string[];
+  /** Gender — picks which gender-aware motivation visual to render. */
+  gender: Gender;
   plans: PricingPlan[];
   defaultPlanId?: string;
   checkoutBaseUrl: string;
@@ -42,7 +47,8 @@ interface Props {
 export function PlanFlow({
   greeting,
   currentState,
-  goalLabels,
+  motivationCodes,
+  gender,
   plans,
   defaultPlanId,
   checkoutBaseUrl,
@@ -131,7 +137,8 @@ export function PlanFlow({
             <FullPlanContent
               greeting={greeting}
               currentState={currentState}
-              goalLabels={goalLabels}
+              motivationCodes={motivationCodes}
+              gender={gender}
               plans={plans}
               selected={selected}
               onSelect={setSelectedId}
@@ -141,6 +148,9 @@ export function PlanFlow({
               goalDays={goalDays}
               discountPercent={discountPercent}
               discountCode={discountCode}
+              bumpedDiscountPercent={bumpedDiscountPercent}
+              escalationDone={escalationDone}
+              onRequestBump={() => setEscalationOpen(true)}
             />
           </motion.div>
         )}
@@ -159,7 +169,8 @@ export function PlanFlow({
 interface FullProps {
   greeting: string;
   currentState: CurrentState;
-  goalLabels: string[];
+  motivationCodes: string[];
+  gender: Gender;
   plans: PricingPlan[];
   selected: PricingPlan;
   onSelect: (id: string) => void;
@@ -169,12 +180,16 @@ interface FullProps {
   goalDays: number;
   discountPercent: string;
   discountCode: string;
+  bumpedDiscountPercent: string;
+  escalationDone: boolean;
+  onRequestBump: () => void;
 }
 
 function FullPlanContent({
   greeting,
   currentState,
-  goalLabels,
+  motivationCodes,
+  gender,
   plans,
   selected,
   onSelect,
@@ -184,6 +199,9 @@ function FullPlanContent({
   goalDays,
   discountPercent,
   discountCode,
+  bumpedDiscountPercent,
+  escalationDone,
+  onRequestBump,
 }: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
@@ -246,27 +264,9 @@ function FullPlanContent({
         />
       )}
 
-      {/* Goals */}
-      {goalLabels.length > 0 && (
-        <section className="rounded-2xl bg-white border border-[var(--color-line)] p-5">
-          <p
-            className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-3"
-            style={{ letterSpacing: '0.22em' }}
-          >
-            Какво искаш да постигнеш
-          </p>
-          <ul className="flex flex-wrap gap-2">
-            {goalLabels.map((g) => (
-              <li
-                key={g}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-brand-red)]/30 bg-[var(--color-brand-red-tint)] px-3 py-1 text-[12px] font-semibold text-[var(--color-brand-red)]"
-              >
-                <CheckIcon width={11} height={11} />
-                {g}
-              </li>
-            ))}
-          </ul>
-        </section>
+      {/* Motivation visuals — replaces the previous chip list */}
+      {motivationCodes.length > 0 && (
+        <MotivationVisuals codes={motivationCodes} gender={gender} />
       )}
 
       {/* Pricing plans */}
@@ -285,6 +285,22 @@ function FullPlanContent({
 
       {/* Selected plan summary + CTA */}
       <section className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] p-5">
+        {/* Savings band — loud confirmation that the discount is applied */}
+        <div className="-mx-5 -mt-5 mb-4 px-5 py-2.5 bg-gradient-to-r from-[var(--color-brand-red)] to-[#FF3B47] text-white rounded-t-2xl flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <span aria-hidden className="size-1.5 rounded-full bg-white animate-pulse" />
+            <span
+              className="text-[11px] font-extrabold uppercase"
+              style={{ letterSpacing: '0.2em' }}
+            >
+              {discountPercent} активирана
+            </span>
+          </span>
+          <span className="text-[12px] font-bold tabular-nums">
+            спестяваш {fmt(selected.oldPrice - selected.price)} EUR
+          </span>
+        </div>
+
         <div className="flex items-baseline justify-between gap-3">
           <span
             className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
@@ -326,6 +342,16 @@ function FullPlanContent({
           Сигурно плащане през Stripe
         </p>
         <PaymentMethods className="mt-3" />
+
+        {!escalationDone && (
+          <button
+            type="button"
+            onClick={onRequestBump}
+            className="mt-4 w-full text-center text-[12px] font-bold text-[var(--color-brand-red)] underline underline-offset-4 decoration-dashed hover:no-underline"
+          >
+            Не ти стига? Активирай {bumpedDiscountPercent} еднократна оферта
+          </button>
+        )}
       </section>
 
       {/* Disclaimer + privacy */}
