@@ -2,7 +2,6 @@
 import type { NumericInputSpec } from '@/lib/questions';
 import { useState } from 'react';
 import { ArrowRightIcon } from '@/components/icons';
-import { WheelPicker } from './WheelPicker';
 
 interface Props {
   inputs: NumericInputSpec[];
@@ -22,33 +21,88 @@ export function NumericCombo({ inputs, initial, onContinue }: Props) {
     return Number.isFinite(v) && v >= inp.min && v <= inp.max;
   });
 
+  const set = (name: string, v: number, min: number, max: number) =>
+    setValues((p) => ({ ...p, [name]: Math.min(max, Math.max(min, Math.round(v))) }));
+
   return (
     <>
-      <div className="flex flex-col gap-3">
-        {inputs.map((inp) => (
-          <div
-            key={inp.name}
-            className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-4 py-3"
-          >
-            <div className="flex items-baseline justify-between">
-              <span className="text-sm font-semibold text-[var(--color-text-strong)]">{inp.label}</span>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--color-text-muted)] font-bold">
-                {inp.min}–{inp.max} {inp.suffix}
+      <div className="flex flex-col">
+        {inputs.map((inp, idx) => {
+          const v = values[inp.name];
+          const atMin = v <= inp.min;
+          const atMax = v >= inp.max;
+          return (
+            <div
+              key={inp.name}
+              className={[
+                'py-7',
+                idx === 0 ? 'pt-3' : '',
+                idx === inputs.length - 1 ? '' : 'border-b border-[var(--color-line)]',
+              ].join(' ')}
+            >
+              <span
+                className="block text-[11px] uppercase font-bold text-[var(--color-text-muted)] mb-3"
+                style={{ letterSpacing: '0.22em' }}
+              >
+                {inp.label}
               </span>
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => set(inp.name, v - 1, inp.min, inp.max)}
+                  disabled={atMin}
+                  aria-label={`Намали ${inp.label.toLowerCase()}`}
+                  className={[
+                    'size-12 rounded-full border border-[var(--color-line)]',
+                    'flex items-center justify-center text-2xl font-light text-[var(--color-text-strong)]',
+                    'motion-safe:transition-[transform,background-color] motion-safe:duration-150',
+                    'motion-safe:active:scale-90',
+                    atMin
+                      ? 'opacity-30 cursor-not-allowed'
+                      : 'hover:bg-[var(--color-paper-warm)] cursor-pointer',
+                  ].join(' ')}
+                >
+                  −
+                </button>
+                <div className="flex items-baseline gap-1.5 tabular-nums">
+                  <span
+                    className="font-extrabold text-[var(--color-text-headline)]"
+                    style={{
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: 'clamp(2.75rem, 12vw, 3.75rem)',
+                      lineHeight: 1,
+                      letterSpacing: '-0.03em',
+                    }}
+                  >
+                    {v}
+                  </span>
+                  {inp.suffix && (
+                    <span className="text-[15px] font-semibold text-[var(--color-text-muted)] uppercase">
+                      {inp.suffix}
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => set(inp.name, v + 1, inp.min, inp.max)}
+                  disabled={atMax}
+                  aria-label={`Увеличи ${inp.label.toLowerCase()}`}
+                  className={[
+                    'size-12 rounded-full border border-[var(--color-line)]',
+                    'flex items-center justify-center text-2xl font-light text-[var(--color-text-strong)]',
+                    'motion-safe:transition-[transform,background-color] motion-safe:duration-150',
+                    'motion-safe:active:scale-90',
+                    atMax
+                      ? 'opacity-30 cursor-not-allowed'
+                      : 'hover:bg-[var(--color-paper-warm)] cursor-pointer',
+                  ].join(' ')}
+                >
+                  +
+                </button>
+              </div>
             </div>
-            <div className="-mx-1 mt-1">
-              <WheelPicker
-                min={inp.min}
-                max={inp.max}
-                value={values[inp.name]}
-                suffix={inp.suffix}
-                onChange={(v) => setValues((p) => ({ ...p, [inp.name]: v }))}
-                visibleRows={1}
-                rowHeight={42}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="mt-6 pt-2 sticky bottom-0 bg-[var(--color-brand-bg)]">
         <button
