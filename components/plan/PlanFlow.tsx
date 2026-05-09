@@ -1,15 +1,11 @@
 'use client';
 import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import type { Gender } from '@/lib/avatars';
-import { ScrubReveal } from './ScrubReveal';
-import { PlanLoading } from './PlanLoading';
 import { PricingPlans, type PricingPlan } from './PricingPlans';
 import { PaymentMethods } from './PaymentMethods';
-import { EscalationModal } from './EscalationModal';
 import { CurrentToTarget } from './CurrentToTarget';
-import { ActiveDiscountStrip } from './ActiveDiscountStrip';
 import { MotivationVisuals } from './MotivationVisuals';
+import { PreCheckoutModal } from './PreCheckoutModal';
 import { LockIcon } from '@/components/icons';
 
 interface CurrentState {
@@ -30,11 +26,11 @@ interface Props {
   plans: PricingPlan[];
   defaultPlanId?: string;
   checkoutBaseUrl: string;
-  /** Personal redemption code shown on the scrub-to-reveal banner. */
+  /** Personal redemption code — kept in props for back-compat / analytics. */
   discountCode: string;
-  /** Initial discount percentage label (e.g. "30%"). */
+  /** Initial discount percentage label revealed on CTA click (e.g. "30%"). */
   initialDiscountPercent: string;
-  /** Bumped percentage offered when the user closes the banner (e.g. "50%"). */
+  /** Bumped percentage offered when the user closes the initial modal (e.g. "50%"). */
   bumpedDiscountPercent: string;
   /** Character code (m1-m4 / f1-f4) used for the current/target body visuals. */
   character: string;
@@ -44,6 +40,8 @@ interface Props {
   goalDays: number;
 }
 
+type ModalStage = 'none' | 'initial' | 'bumped';
+
 export function PlanFlow({
   greeting,
   currentState,
@@ -52,115 +50,96 @@ export function PlanFlow({
   plans,
   defaultPlanId,
   checkoutBaseUrl,
-  discountCode,
   initialDiscountPercent,
   bumpedDiscountPercent,
   character,
   currentBodyType,
   goalDays,
 }: Props) {
-  const [phase, setPhase] = useState<'swipe' | 'loading' | 'full'>('swipe');
-  const [discountPercent, setDiscountPercent] = useState<string>(initialDiscountPercent);
-  const [escalationOpen, setEscalationOpen] = useState(false);
-  const [escalationDone, setEscalationDone] = useState(false);
   const [selectedId, setSelectedId] = useState<string>(
     defaultPlanId ?? plans.find((p) => p.recommended)?.id ?? plans[0].id,
   );
+  const [stage, setStage] = useState<ModalStage>('none');
+  const [bumpSeen, setBumpSeen] = useState(false);
 
   const selected = useMemo(() => plans.find((p) => p.id === selectedId) ?? plans[0], [plans, selectedId]);
 
-  const checkoutHref = `${checkoutBaseUrl}${checkoutBaseUrl.includes('?') ? '&' : '?'}plan=${selected.id}`;
+  const fmtEur = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR`;
+  const fmtPerDay = (n: number) => `${n.toFixed(2).replace('.', ',')} EUR/ден`;
 
-  const handleClose = () => {
-    if (escalationDone) {
-      // User already saw the bump; let them dismiss the banner straight to the full plan.
-      setPhase('loading');
-    } else {
-      setEscalationOpen(true);
+  // Page price = "30% off" tier. Bumped = "50% off" — apply the ratio (5/7) so
+  // the second offer is a real, visible drop from the first.
+  const bumpRatio = 0.5 / 0.7;
+  const initialPrice = selected.price;
+  const initialPerDay = selected.perDay;
+  const bumpedPrice = selected.price * bumpRatio;
+  const bumpedPerDay = selected.perDay * bumpRatio;
+
+  const buildCheckoutHref = (disc: '30' | '50') => {
+    const sep = checkoutBaseUrl.includes('?') ? '&' : '?';
+    return `${checkoutBaseUrl}${sep}plan=${selected.id}&disc=${disc}`;
+  };
+
+  const onCta = () => setStage('initial');
+
+  const onCloseInitial = () => {
+    if (bumpSeen) {
+      setStage('none');
+      return;
     }
+    setBumpSeen(true);
+    setStage('bumped');
   };
-  const acceptBump = () => {
-    setDiscountPercent(bumpedDiscountPercent);
-    setEscalationDone(true);
-    setEscalationOpen(false);
+
+  const onAcceptInitial = () => {
+    window.location.href = buildCheckoutHref('30');
   };
-  const declineBump = () => {
-    setEscalationDone(true);
-    setEscalationOpen(false);
-    setPhase('loading');
+  const onAcceptBumped = () => {
+    window.location.href = buildCheckoutHref('50');
   };
 
   return (
     <div className="max-w-md mx-auto px-5 pt-6 pb-32">
-      <AnimatePresence mode="wait">
-        {phase === 'swipe' && (
-          <motion.div
-            key="swipe"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.32, ease: 'easeOut' }}
-          >
-            <ScrubReveal
-              greeting={greeting}
-              percent={discountPercent}
-              code={discountCode}
-              initialSeconds={9 * 60 + 42}
-              onClaim={() => setPhase('loading')}
-              onClose={handleClose}
-            />
-            <p className="mt-6 text-center text-[13px] text-[var(--color-text-muted)] max-w-[36ch] mx-auto">
-              Отстъпката е резервирана за теб въз основа на отговорите ти. Плъзни, за да я отключиш и да видиш плана си.
-            </p>
-          </motion.div>
-        )}
+      <FullPlanContent
+        greeting={greeting}
+        currentState={currentState}
+        motivationCodes={motivationCodes}
+        gender={gender}
+        plans={plans}
+        selected={selected}
+        onSelect={setSelectedId}
+        onCta={onCta}
+        character={character}
+        currentBodyType={currentBodyType}
+        goalDays={goalDays}
+      />
 
-        {phase === 'loading' && (
-          <motion.div
-            key="loading"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
-          >
-            <PlanLoading durationMs={1800} onDone={() => setPhase('full')} />
-          </motion.div>
-        )}
+      <PreCheckoutModal
+        open={stage === 'initial'}
+        eyebrow="Лична оферта"
+        percent={`-${initialDiscountPercent}`}
+        headline="активирай отстъпката си"
+        body="Запази персонализираната си цена за следващите 10 минути."
+        fromPrice={fmtEur(selected.oldPrice)}
+        toPrice={fmtEur(initialPrice)}
+        perDay={fmtPerDay(initialPerDay)}
+        acceptLabel="Активирай и плати"
+        onAccept={onAcceptInitial}
+        onClose={onCloseInitial}
+      />
 
-        {phase === 'full' && (
-          <motion.div
-            key="full"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
-          >
-            <FullPlanContent
-              greeting={greeting}
-              currentState={currentState}
-              motivationCodes={motivationCodes}
-              gender={gender}
-              plans={plans}
-              selected={selected}
-              onSelect={setSelectedId}
-              checkoutHref={checkoutHref}
-              character={character}
-              currentBodyType={currentBodyType}
-              goalDays={goalDays}
-              discountPercent={discountPercent}
-              discountCode={discountCode}
-              bumpedDiscountPercent={bumpedDiscountPercent}
-              escalationDone={escalationDone}
-              onRequestBump={() => setEscalationOpen(true)}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <EscalationModal
-        open={escalationOpen}
-        bumpedPercent={bumpedDiscountPercent}
-        onAccept={acceptBump}
-        onDecline={declineBump}
+      <PreCheckoutModal
+        open={stage === 'bumped'}
+        eyebrow="Изчакай малко"
+        percent={`-${bumpedDiscountPercent}`}
+        headline="последна оферта за теб"
+        body="Сваляме още 20%. Това е най-добрата цена, която ще видиш."
+        fromPrice={fmtEur(selected.oldPrice)}
+        toPrice={fmtEur(bumpedPrice)}
+        perDay={fmtPerDay(bumpedPerDay)}
+        acceptLabel="Заключи отстъпката"
+        onAccept={onAcceptBumped}
+        onClose={() => setStage('none')}
       />
     </div>
   );
@@ -174,15 +153,10 @@ interface FullProps {
   plans: PricingPlan[];
   selected: PricingPlan;
   onSelect: (id: string) => void;
-  checkoutHref: string;
+  onCta: () => void;
   character: string;
   currentBodyType: string;
   goalDays: number;
-  discountPercent: string;
-  discountCode: string;
-  bumpedDiscountPercent: string;
-  escalationDone: boolean;
-  onRequestBump: () => void;
 }
 
 function FullPlanContent({
@@ -193,25 +167,15 @@ function FullPlanContent({
   plans,
   selected,
   onSelect,
-  checkoutHref,
+  onCta,
   character,
   currentBodyType,
   goalDays,
-  discountPercent,
-  discountCode,
-  bumpedDiscountPercent,
-  escalationDone,
-  onRequestBump,
 }: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
   return (
     <div className="flex flex-col gap-7">
-      <ActiveDiscountStrip
-        percent={discountPercent}
-        code={discountCode}
-        initialSeconds={9 * 60 + 42}
-      />
       {/* Hero */}
       <header>
         <span
@@ -271,36 +235,17 @@ function FullPlanContent({
 
       {/* Pricing plans */}
       <section>
-        <div className="flex items-baseline justify-between mb-4">
-          <p
-            className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
-            style={{ letterSpacing: '0.22em' }}
-          >
-            Избери план
-          </p>
-          <span className="text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums">−{discountPercent}</span>
-        </div>
+        <p
+          className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-4"
+          style={{ letterSpacing: '0.22em' }}
+        >
+          Избери план
+        </p>
         <PricingPlans plans={plans} defaultId={selected.id} onChange={onSelect} />
       </section>
 
       {/* Selected plan summary + CTA */}
       <section className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] p-5">
-        {/* Savings band — loud confirmation that the discount is applied */}
-        <div className="-mx-5 -mt-5 mb-4 px-5 py-2.5 bg-gradient-to-r from-[var(--color-brand-red)] to-[#FF3B47] text-white rounded-t-2xl flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <span aria-hidden className="size-1.5 rounded-full bg-white animate-pulse" />
-            <span
-              className="text-[11px] font-extrabold uppercase"
-              style={{ letterSpacing: '0.2em' }}
-            >
-              {discountPercent} активирана
-            </span>
-          </span>
-          <span className="text-[12px] font-bold tabular-nums">
-            спестяваш {fmt(selected.oldPrice - selected.price)} EUR
-          </span>
-        </div>
-
         <div className="flex items-baseline justify-between gap-3">
           <span
             className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
@@ -325,8 +270,9 @@ function FullPlanContent({
           Общо <span className="font-bold text-[var(--color-text-strong)]">{fmt(selected.price)} EUR</span> за {selected.label.toLowerCase()}
         </p>
 
-        <a
-          href={checkoutHref}
+        <button
+          type="button"
+          onClick={onCta}
           className={[
             'mt-5 w-full h-14 rounded-full font-extrabold text-white bg-brand-gradient shadow-brand-red',
             'flex items-center justify-center gap-2',
@@ -336,22 +282,12 @@ function FullPlanContent({
           ].join(' ')}
         >
           Вземи плана сега
-        </a>
+        </button>
         <p className="mt-3 flex items-center justify-center gap-1.5 text-[12px] text-[var(--color-text-muted)]">
           <LockIcon width={12} height={12} aria-hidden />
           Сигурно плащане през Stripe
         </p>
         <PaymentMethods className="mt-3" />
-
-        {!escalationDone && (
-          <button
-            type="button"
-            onClick={onRequestBump}
-            className="mt-4 w-full text-center text-[12px] font-bold text-[var(--color-brand-red)] underline underline-offset-4 decoration-dashed hover:no-underline"
-          >
-            Не ти стига? Активирай {bumpedDiscountPercent} еднократна оферта
-          </button>
-        )}
       </section>
 
       {/* Disclaimer + privacy */}
