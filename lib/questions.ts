@@ -194,7 +194,7 @@ export const STEPS: StepSpec[] = [
     headline: '8 от 10 души идват при нас със същите зони',
     bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
+    imageUrl: '/images/photo/testimonials/{gender}-1.jpg',
   },
   {
     step: 8,
@@ -301,7 +301,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Над 10 000 души преминаха същия път с Dr.Fit',
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
+    imageUrl: '/images/photo/testimonials/{gender}-2.jpg',
   },
   {
     step: 15,
@@ -376,7 +376,7 @@ export const STEPS: StepSpec[] = [
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
+    imageUrl: '/images/photo/testimonials/{gender}-3.jpg',
   },
   {
     step: 21,
@@ -424,7 +424,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Виждаме точно къде си заседнал/-а. И как да продължиш',
     bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{char}-transformation.jpg',
+    imageUrl: '/images/photo/testimonials/{gender}-4.jpg',
   },
   {
     step: 3,
