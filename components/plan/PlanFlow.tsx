@@ -6,6 +6,7 @@ import { PaymentMethods } from './PaymentMethods';
 import { CurrentToTarget } from './CurrentToTarget';
 import { MotivationVisuals } from './MotivationVisuals';
 import { PreCheckoutModal } from './PreCheckoutModal';
+import { ScrubReveal } from './ScrubReveal';
 import { LockIcon } from '@/components/icons';
 
 interface CurrentState {
@@ -50,6 +51,7 @@ export function PlanFlow({
   plans,
   defaultPlanId,
   checkoutBaseUrl,
+  discountCode,
   initialDiscountPercent,
   bumpedDiscountPercent,
   character,
@@ -61,6 +63,7 @@ export function PlanFlow({
   );
   const [stage, setStage] = useState<ModalStage>('none');
   const [bumpSeen, setBumpSeen] = useState(false);
+  const [sliderClaimed, setSliderClaimed] = useState(false);
 
   const selected = useMemo(() => plans.find((p) => p.id === selectedId) ?? plans[0], [plans, selectedId]);
 
@@ -98,8 +101,23 @@ export function PlanFlow({
     window.location.href = buildCheckoutHref('50');
   };
 
+  const onSliderClose = () => {
+    if (bumpSeen) return;
+    setBumpSeen(true);
+    setStage('bumped');
+  };
+
   return (
-    <div className="max-w-md mx-auto px-5 pt-6 pb-32">
+    <div className="max-w-md mx-auto px-5 pt-6 pb-32 flex flex-col gap-6">
+      <ScrubReveal
+        greeting={greeting}
+        percent={initialDiscountPercent}
+        code={discountCode}
+        initialSeconds={9 * 60 + 42}
+        onClaim={() => setSliderClaimed(true)}
+        onClose={sliderClaimed ? undefined : onSliderClose}
+      />
+
       <FullPlanContent
         greeting={greeting}
         currentState={currentState}
