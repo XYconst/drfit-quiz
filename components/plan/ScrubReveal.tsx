@@ -7,10 +7,6 @@ interface Props {
   greeting: string;
   /** Discount percentage label, e.g. "50%". */
   percent: string;
-  /** Pre-discount price, e.g. "99 EUR". */
-  fromPrice: string;
-  /** Post-discount price, e.g. "49 EUR". */
-  toPrice: string;
   /** Personal redemption code, e.g. "DRFIT-MARIA-50". */
   code: string;
   /** Seconds remaining before the offer expires (drives the countdown header). */
@@ -34,8 +30,6 @@ function pad(n: number) {
 export function ScrubReveal({
   greeting,
   percent,
-  fromPrice,
-  toPrice,
   code,
   initialSeconds,
   onClaim,
@@ -132,14 +126,9 @@ export function ScrubReveal({
           {percent} <span className="text-[var(--color-brand-red)]">отстъпка</span>
         </h2>
 
-        <div className="mt-3 flex items-baseline gap-3">
-          <span className="text-[15px] text-[var(--color-text-muted)] line-through tabular-nums">
-            {fromPrice}
-          </span>
-          <span className="text-[28px] font-extrabold tabular-nums text-[var(--color-text-headline)]">
-            {toPrice}
-          </span>
-        </div>
+        <p className="mt-2 text-[13px] text-[var(--color-text-muted)] leading-snug max-w-[34ch]">
+          Личният ти код е активен. Отключи го, за да видиш плана и крайната цена.
+        </p>
 
         <p
           className="mt-5 mb-2 text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"

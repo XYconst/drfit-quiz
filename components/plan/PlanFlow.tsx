@@ -98,8 +98,6 @@ export function PlanFlow({
             <ScrubReveal
               greeting={greeting}
               percent={discountPercent}
-              fromPrice="99 EUR"
-              toPrice={`${selected.price.toFixed(2).replace('.', ',')} EUR`}
               code={discountCode}
               initialSeconds={9 * 60 + 42}
               onClaim={() => setPhase('loading')}
