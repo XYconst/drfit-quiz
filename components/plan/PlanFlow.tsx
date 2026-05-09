@@ -1,5 +1,5 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Gender } from '@/lib/avatars';
 import { PricingPlans, type PricingPlan } from './PricingPlans';
@@ -86,14 +86,8 @@ export function PlanFlow({
 
   const onCta = () => setStage('initial');
 
-  const onCloseInitial = () => {
-    if (bumpSeen) {
-      setStage('none');
-      return;
-    }
-    setBumpSeen(true);
-    setStage('bumped');
-  };
+  // 30% popup X — just dismiss. The 50% bump now fires on exit intent.
+  const onCloseInitial = () => setStage('none');
 
   const onAcceptInitial = () => {
     window.location.href = buildCheckoutHref('30');
@@ -102,11 +96,51 @@ export function PlanFlow({
     window.location.href = buildCheckoutHref('50');
   };
 
-  const onSliderClose = () => {
-    if (bumpSeen) return;
-    setBumpSeen(true);
-    setStage('bumped');
-  };
+  // Slider X — skip the scratch step and reveal the plan straight away.
+  const onSliderClose = () => setSliderClaimed(true);
+
+  // Exit-intent: fire the 50% bump exactly once when the user actually tries
+  // to leave the page. Desktop signal = pointer leaves the top of the
+  // viewport. Mobile signal = back button (we push a sentinel state on mount
+  // and intercept popstate). Only armed once the plan is visible — no point
+  // showing a "wait" offer to someone who never engaged.
+  useEffect(() => {
+    if (!sliderClaimed || bumpSeen) return;
+    if (typeof window === 'undefined') return;
+
+    const trigger = () => {
+      setBumpSeen(true);
+      setStage('bumped');
+    };
+
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && stage !== 'bumped') trigger();
+    };
+
+    // Push a sentinel history state once so the next back press fires our
+    // popstate handler (which shows the bump) instead of leaving the page.
+    const sentinel = { drfitExitIntent: true };
+    try {
+      window.history.pushState(sentinel, '');
+    } catch {
+      /* no-op */
+    }
+    const onPopState = () => {
+      trigger();
+      try {
+        window.history.pushState(sentinel, '');
+      } catch {
+        /* no-op */
+      }
+    };
+
+    document.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      document.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, [sliderClaimed, bumpSeen, stage]);
 
   return (
     <div className="max-w-md mx-auto px-5 pt-6 pb-32">
