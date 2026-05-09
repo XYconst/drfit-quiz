@@ -194,7 +194,7 @@ function PlanTeaser() {
           className="text-[13px] text-[var(--color-text-body)] font-medium text-center max-w-[28ch]"
           style={{ textWrap: 'pretty' }}
         >
-          Профил, BMI проекция и седмична програма — отключи всичко с email-а си.
+          Профил, BMI проекция и седмична програма. Отключи всичко с email-а си.
         </p>
       </motion.div>
     </div>

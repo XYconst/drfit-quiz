@@ -134,7 +134,7 @@ export function BmiProjection({ heightCm, currentKg, targetKg, targetDate, avata
             className="text-3xl font-semibold leading-none text-[var(--color-text-headline)]"
             style={{ fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }}
           >
-            {bmi ? bmi.toFixed(1) : '—'}
+            {bmi ? bmi.toFixed(1) : '··'}
           </p>
         </div>
 
