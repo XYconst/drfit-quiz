@@ -325,7 +325,7 @@ function FullPlanContent({
         </h1>
       </header>
 
-      {/* Current state card — height/weight/BMI */}
+      {/* Current state card — height/weight/BMI + goal/deadline */}
       <section
         className="relative rounded-[22px] overflow-hidden p-5"
         style={{
@@ -369,9 +369,12 @@ function FullPlanContent({
             <SmallStat label="Цел" value={targetKg ? `${targetKg}` : '··'} suffix="кг" />
             <SmallStat label="Срок" value={targetDateLabel || '90 дни'} suffix="" />
           </div>
-
-          <BmiExplainer bmi={bmi} />
         </div>
+      </section>
+
+      {/* BMI explainer — its own card so the stats above can breathe */}
+      <section className="rounded-2xl bg-white border border-[var(--color-line)] p-5">
+        <BmiExplainer bmi={bmi} />
       </section>
 
       {/* Current → Target visual + realism check */}
@@ -405,7 +408,7 @@ function FullPlanContent({
             style={{ letterSpacing: '0.18em' }}
           >
             <span aria-hidden className="size-1 rounded-full bg-white" />
-            −{discountPct}% активирана
+            Отстъпка активирана
           </span>
         </div>
         <PricingPlans plans={plans} defaultId={selected.id} onChange={onSelect} />
@@ -418,7 +421,7 @@ function FullPlanContent({
             className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
             style={{ letterSpacing: '0.22em' }}
           >
-            Цена на ден
+            Избран план · {selected.label}
           </span>
           <span className="text-[12px] text-[var(--color-text-muted)] line-through tabular-nums">
             {fmt(selected.oldPrice)} EUR общо
@@ -434,7 +437,7 @@ function FullPlanContent({
           <span className="text-[15px] font-bold text-[var(--color-text-strong)]">EUR/ден</span>
         </div>
         <p className="mt-2 text-[13px] text-[var(--color-text-muted)] tabular-nums">
-          Общо <span className="font-bold text-[var(--color-text-strong)]">{fmt(selected.price)} EUR</span> за {selected.label.toLowerCase()}
+          Общо <span className="font-bold text-[var(--color-text-strong)]">{fmt(selected.price)} EUR</span> за {selected.label.toLowerCase()} ({selected.durationLabel.toLowerCase()})
         </p>
 
         <button
@@ -507,7 +510,7 @@ function BmiExplainer({ bmi }: { bmi?: number }) {
   ];
 
   return (
-    <div className="mt-4 pt-4 border-t border-black/5">
+    <div>
       <div className="flex items-center gap-2 mb-2">
         <span aria-hidden className="size-1 rounded-full" style={{ background: cat?.color ?? 'var(--color-text-muted)' }} />
         <p
