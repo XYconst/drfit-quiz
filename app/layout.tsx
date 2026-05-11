@@ -1,20 +1,17 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import localFont from 'next/font/local';
-import { Playfair_Display, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Playfair_Display, Geist_Mono } from 'next/font/google';
 import { META_PIXEL_ID } from '@/lib/pixel';
 import './globals.css';
 
-// Gilroy — only the two weights we have licensed (Type Mafia free pair).
-// Body copy maps to Light (300); everything semibold/bold rounds up to ExtraBold (800).
-const gilroy = localFont({
-  src: [
-    { path: '../public/fonts/Gilroy-Light.otf', weight: '300', style: 'normal' },
-    { path: '../public/fonts/Gilroy-ExtraBold.otf', weight: '800', style: 'normal' },
-  ],
+// Gilroy is paid; Plus Jakarta Sans is the closest free family with the full
+// weight range (200–800). Swap to a local Gilroy when a licensed copy is
+// dropped into public/fonts/.
+const sans = Plus_Jakarta_Sans({
+  subsets: ['latin', 'cyrillic-ext'],
   variable: '--font-sans-runtime',
   display: 'swap',
-  fallback: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+  weight: ['300', '400', '500', '600', '700', '800'],
 });
 const playfair = Playfair_Display({
   subsets: ['latin', 'cyrillic'],
@@ -45,7 +42,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bg" className={`${gilroy.variable} ${playfair.variable} ${geistMono.variable}`}>
+    <html lang="bg" className={`${sans.variable} ${playfair.variable} ${geistMono.variable}`}>
       <body className="min-h-screen bg-brand-bg">
         {children}
 

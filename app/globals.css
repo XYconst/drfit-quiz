@@ -34,9 +34,9 @@
   --color-amber-text: #92400E;
 
   /* Fonts — runtime variables resolved by next/font in app/layout.tsx.
-     Sans = Gilroy (Light + ExtraBold loaded locally). Body weight is 300 so
-     paragraph text gets actual Gilroy Light instead of the synthesized 400. */
-  --font-sans: var(--font-sans-runtime), "Manrope", "DM Sans", system-ui, -apple-system, sans-serif;
+     Sans = Plus Jakarta Sans (Google, full weight range), the closest free
+     stand-in for Gilroy. Swap to local Gilroy if/when a licensed copy lands. */
+  --font-sans: var(--font-sans-runtime), "Plus Jakarta Sans", "Manrope", system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display-runtime), "Playfair Display", Georgia, serif;
   --font-mono: var(--font-mono-runtime), ui-monospace, "Geist Mono", "JetBrains Mono", monospace;
 }
@@ -47,7 +47,6 @@
     background: var(--color-brand-bg);
     color: var(--color-text-body);
     font-family: var(--font-sans);
-    font-weight: 300; /* Gilroy Light is our true regular */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
