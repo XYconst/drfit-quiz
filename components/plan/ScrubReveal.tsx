@@ -230,7 +230,7 @@ export function ScrubReveal({
         </h2>
 
         <p className="mt-2 text-[13px] text-[var(--color-text-muted)] leading-snug max-w-[34ch]">
-          Изтрий лотарийното покритие, за да видиш личния си код и плана си.
+          Изтрий полето, за да отключиш кода и плана си.
         </p>
 
         <div className="mt-5">
