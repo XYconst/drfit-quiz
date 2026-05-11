@@ -489,7 +489,6 @@ export const STEPS: StepSpec[] = [
       male: 'Александър, 38 · август 2024',
       female: 'Светлана, 39 · януари 2025',
     },
-    showStoreBadges: true,
   },
   {
     step: 24,
