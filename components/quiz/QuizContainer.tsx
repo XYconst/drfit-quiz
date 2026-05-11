@@ -118,8 +118,13 @@ export function QuizContainer() {
   const onEmailSubmit = async (values: Record<string, string>) => {
     dispatch({ type: 'answer', stepId: step.id, value: values });
     if (!avatar || avatar === 'blocked') return;
-    const m = (state.answers.metrics ?? {}) as Record<string, number>;
-    const kg = Math.abs(Math.round((m.weight ?? 0) - (m.targetWeight ?? 0)));
+    const heightAns = (state.answers.height ?? {}) as Record<string, number>;
+    const weightAns = (state.answers.weight ?? {}) as Record<string, number>;
+    const targetWeightAns = (state.answers.targetWeight ?? {}) as Record<string, number>;
+    const heightCm = heightAns.height ?? 0;
+    const weightKg = weightAns.weight ?? 0;
+    const targetKg = targetWeightAns.targetWeight ?? 0;
+    const kg = Math.abs(Math.round(weightKg - targetKg));
     await fetch('/api/lead', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -142,9 +147,9 @@ export function QuizContainer() {
     if (past && past.length) params.set('past', past.join(','));
     if (blockers && blockers.length) params.set('blockers', blockers.join(','));
     if (motivation && motivation.length) params.set('mot', motivation.join(','));
-    if (m.height) params.set('h', String(m.height));
-    if (m.weight) params.set('w', String(m.weight));
-    if (m.targetWeight) params.set('tw', String(m.targetWeight));
+    if (heightCm) params.set('h', String(heightCm));
+    if (weightKg) params.set('w', String(weightKg));
+    if (targetKg) params.set('tw', String(targetKg));
     const td = targetDate?.label || targetDate?.date;
     if (td) params.set('td', td);
     if (character) params.set('char', character);
@@ -248,10 +253,12 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'projection') {
-    const m = (state.answers.metrics ?? {}) as Record<string, number>;
-    const heightCm = m.height ?? 170;
-    const currentKg = m.weight ?? 80;
-    const targetKg = m.targetWeight ?? 70;
+    const h = (state.answers.height ?? {}) as Record<string, number>;
+    const w = (state.answers.weight ?? {}) as Record<string, number>;
+    const tw = (state.answers.targetWeight ?? {}) as Record<string, number>;
+    const heightCm = h.height ?? 170;
+    const currentKg = w.weight ?? 80;
+    const targetKg = tw.targetWeight ?? 70;
     const kgDelta = currentKg - targetKg;
     const td = state.answers.targetDate as { date?: string; label?: string } | undefined;
     const targetDateLabel = td?.label || td?.date;

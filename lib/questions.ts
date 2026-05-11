@@ -127,13 +127,31 @@ export const STEPS: StepSpec[] = [
   },
   {
     step: 3,
-    id: 'metrics',
+    id: 'height',
     type: 'numeric-combo',
-    headline: 'Височина и тегло',
-    subheadline: 'За да изчислим индекса и калоричността ти.',
+    headline: 'Каква е височината ти?',
+    subheadline: 'Използваме я, за да изчислим BMI и калоричността.',
     inputs: [
       { name: 'height', label: 'Височина', min: 140, max: 220, default: 170, suffix: 'см' },
+    ],
+  },
+  {
+    step: 3,
+    id: 'weight',
+    type: 'numeric-combo',
+    headline: 'Колко тежиш сега?',
+    subheadline: 'Без срам — числото е само за плана, не го споделяме.',
+    inputs: [
       { name: 'weight', label: 'Тегло сега', min: 40, max: 200, default: 80, suffix: 'кг' },
+    ],
+  },
+  {
+    step: 3,
+    id: 'targetWeight',
+    type: 'numeric-combo',
+    headline: 'Какво е целевото ти тегло?',
+    subheadline: 'Това е числото, към което ще те водим.',
+    inputs: [
       { name: 'targetWeight', label: 'Целево тегло', min: 40, max: 200, default: 70, suffix: 'кг' },
     ],
   },
