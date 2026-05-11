@@ -205,7 +205,7 @@ export function PlanFlow({
           <PlanLoading durationMs={5000} onDone={() => setView('plan')} />
           <p className="text-center text-[12px] text-[var(--color-text-muted)] max-w-[36ch] mx-auto">
             Кодът <span className="font-bold text-[var(--color-brand-red)]">{discountCode}</span> е
-            активиран — прилагаме {initialDiscountPercent} към всички планове.
+            активиран — прилагаме личната ти отстъпка към всички планове.
           </p>
         </div>
       )}
@@ -240,8 +240,8 @@ export function PlanFlow({
       <PreCheckoutModal
         open={stage === 'initial'}
         eyebrow="Лична оферта"
-        percent={`-${initialDiscountPercent}`}
-        headline="активирай отстъпката си"
+        percent=""
+        headline="Активирай личната си отстъпка"
         body="Запази персонализираната си цена за следващите 10 минути."
         fromPrice={fmtEur(selected.oldPrice)}
         toPrice={fmtEur(selected.price)}
@@ -254,9 +254,9 @@ export function PlanFlow({
       <PreCheckoutModal
         open={stage === 'bumped'}
         eyebrow="Изчакай малко"
-        percent={`-${bumpedDiscountPercent}`}
-        headline="последна оферта за теб"
-        body="Сваляме още 20%. Това е най-добрата цена, която ще видиш."
+        percent=""
+        headline="Последна оферта за теб"
+        body="Сваляме цената още повече. Това е най-добрата цена, която ще видиш."
         fromPrice={fmtEur(selected.oldPrice)}
         toPrice={fmtEur(bumpedSelectedPrice)}
         perDay={fmtPerDay(bumpedSelectedPerDay)}

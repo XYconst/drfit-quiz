@@ -116,7 +116,12 @@ export default async function PlanPage({ searchParams }: PageProps) {
         .slice(0, 8)
     : '';
   const slug = fromEmail || fromName || `AV${avatarId}`;
-  const discountCode = `DRFIT-${slug}-50`;
+  // Validity stamp: MMM YY (e.g. "MAY26"). Anchors the code in time so it
+  // feels personal-and-expiring without quoting a discount percentage.
+  const MONTHS_EN = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const now = new Date();
+  const validity = `${MONTHS_EN[now.getMonth()]}${String(now.getFullYear()).slice(-2)}`;
+  const discountCode = `DRFIT-${slug}-${validity}`;
 
   return (
     <main>

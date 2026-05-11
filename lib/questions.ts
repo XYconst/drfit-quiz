@@ -210,7 +210,7 @@ export const STEPS: StepSpec[] = [
     step: 7,
     id: 'interstitial-early',
     type: 'interstitial',
-    headline: '8 от 10 души идват при нас със същите зони',
+    headline: 'Много хора идват при нас със същите зони като теб',
     bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-1.jpg',
@@ -227,7 +227,7 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'icon-row',
     options: [
       { id: 'sedentary', label: 'Почти не се движа', sub: 'Седяща работа, без спорт', value: 'sedentary', icon: 'armchair' },
-      { id: 'light', label: 'Лек активен/-на', sub: 'Рядко тренировки', value: 'light', icon: 'footprints' },
+      { id: 'light', label: 'Леко активен/-на', sub: 'Рядко тренировки', value: 'light', icon: 'footprints' },
       { id: 'moderate', label: 'Умерено', sub: '2-3 тренировки седмично', value: 'moderate', icon: 'dumbbell' },
       { id: 'high', label: 'Много активен/-на', sub: '4+ тренировки седмично', value: 'high', icon: 'mountain' },
     ],
@@ -489,6 +489,7 @@ export const STEPS: StepSpec[] = [
       male: 'Александър, 38 · август 2024',
       female: 'Светлана, 39 · януари 2025',
     },
+    showStoreBadges: true,
   },
   {
     step: 24,
@@ -522,6 +523,17 @@ export const STEPS: StepSpec[] = [
           { id: 'morning', label: 'Сутрин', value: 'morning' },
           { id: 'midday', label: 'Обед', value: 'midday' },
           { id: 'evening', label: 'Вечер', value: 'evening' },
+        ],
+      },
+      {
+        id: 'workoutDuration',
+        atProgress: 0.65,
+        headline: 'Колко време имаш за тренировка на ден?',
+        options: [
+          { id: '15', label: 'До 15 минути', value: '15' },
+          { id: '30', label: '15-30 минути', value: '30' },
+          { id: '45', label: '30-45 минути', value: '45' },
+          { id: '60+', label: 'Над 45 минути', value: '60+' },
         ],
       },
     ],

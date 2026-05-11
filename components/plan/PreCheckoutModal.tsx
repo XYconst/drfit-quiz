@@ -85,7 +85,13 @@ export function PreCheckoutModal({
                   letterSpacing: '-0.025em',
                 }}
               >
-                {percent} <span className="text-[var(--color-brand-red)]">{headline}</span>
+                {percent ? (
+                  <>
+                    {percent} <span className="text-[var(--color-brand-red)]">{headline}</span>
+                  </>
+                ) : (
+                  <span className="text-[var(--color-brand-red)]">{headline}</span>
+                )}
               </h3>
 
               <div className="mt-5 rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-4 py-3 flex items-baseline justify-between gap-3">

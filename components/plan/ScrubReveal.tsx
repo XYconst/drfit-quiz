@@ -226,7 +226,7 @@ export function ScrubReveal({
             letterSpacing: '-0.025em',
           }}
         >
-          {percent} <span className="text-[var(--color-brand-red)]">отстъпка</span>
+          <span className="text-[var(--color-brand-red)]">Лична отстъпка</span> само за теб
         </h2>
 
         <p className="mt-2 text-[13px] text-[var(--color-text-muted)] leading-snug max-w-[34ch]">
@@ -259,7 +259,7 @@ export function ScrubReveal({
                 className="mt-2 text-[11px] font-bold text-[var(--color-text-strong)]"
                 style={{ letterSpacing: '0.06em' }}
               >
-                {percent} отстъпка активирана
+                Личната ти отстъпка е активирана
               </span>
             </div>
 
