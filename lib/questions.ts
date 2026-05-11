@@ -161,6 +161,7 @@ export const STEPS: StepSpec[] = [
     id: 'bodyType',
     type: 'single-select',
     headline: 'Кое тяло описва теб днес?',
+    subheadline: 'Не търсим точно копие — избери това, което се чувства най-близо до теб сега.',
     cardVariant: 'portrait',
     optionsByGender: {
       male: [
@@ -262,7 +263,7 @@ export const STEPS: StepSpec[] = [
     id: 'building-1',
     type: 'interstitial',
     headline: '„Спя по-малко, а имам повече енергия"',
-    bodyBg: 'Радина върна силите си за 8 седмици с Dr.Fit. Метаболизмът, сънят и стресът работят заедно, затова те питаме точно за тях.',
+    bodyBg: 'За 8 седмици с Dr.Fit метаболизмът, сънят и стресът се балансират. Затова те питаме точно за тях.',
     ctaBg: 'Продължи',
     imageUrl: '/images/photo/testimonials/{gender}-5.jpg',
     testimonialByGender: {

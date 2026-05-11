@@ -25,6 +25,7 @@ export function TestimonialCard({ testimonial: t, imgSrc }: Props) {
             width={112}
             height={112}
             className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: 'right center' }}
             loading="lazy"
           />
         ) : (
