@@ -194,8 +194,7 @@ export function PlanFlow({
             onClose={onSliderClose}
           />
           <p className="mt-6 text-center text-[12px] text-[var(--color-text-muted)] max-w-[34ch] mx-auto">
-            Изтрий покритието с пръст или мишка. След това ще видиш плана си с
-            всички детайли.
+            Изтрий с пръст или мишка. Кодът се появява и планът е твой.
           </p>
         </div>
       )}

@@ -25,12 +25,25 @@ export function QuestionShell({ progress, onBack, children, headline, subheadlin
           >
             <ChevronLeftIcon width={22} height={22} />
           </button>
-          <span
-            className="text-[13px] uppercase font-bold text-[var(--color-text-headline)]"
-            style={{ letterSpacing: '0.18em' }}
+          <a
+            href="/"
+            aria-label="Dr.Fit"
+            className="inline-flex items-center gap-1.5 text-[var(--color-text-headline)]"
           >
-            DR.FIT
-          </span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <circle cx="12" cy="12" r="10" fill="var(--color-brand-red)" />
+              <path d="M9 7v10M9 12h6M15 7v10" stroke="white" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+            <span
+              className="text-[15px] font-extrabold tabular-nums"
+              style={{
+                fontFamily: 'var(--font-sans)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Dr.<span className="text-[var(--color-brand-red)]">Fit</span>
+            </span>
+          </a>
           <span className="size-10" aria-hidden />
         </div>
         <ProgressBar value={progress} />
