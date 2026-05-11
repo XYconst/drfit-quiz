@@ -20,7 +20,7 @@ export interface Testimonial {
   kgChange: number; // negative = lost, positive = gained
   days: number;
   /** One of the brand mechanism IP terms most relevant to this transformation. */
-  mechanism?: 'Carb-Cycling' | 'TUT' | 'AfterBurn';
+  mechanism?: 'Въглехидратна ротация' | 'TUT' | 'AfterBurn';
   /** REPLACE before launch. Short BG quote, 1-2 sentences. */
   quote?: string;
 }
@@ -48,7 +48,7 @@ export const TESTIMONIALS: Testimonial[] = [
     bodyType: 'skinny-fat',
     kgChange: -7,
     days: 90,
-    mechanism: 'Carb-Cycling',
+    mechanism: 'Въглехидратна ротация',
     afterImg: '/images/photo/testimonials/male-3.jpg',
   },
   {
@@ -85,7 +85,7 @@ export const TESTIMONIALS: Testimonial[] = [
     bodyType: 'skinny-fat',
     kgChange: -5,
     days: 90,
-    mechanism: 'Carb-Cycling',
+    mechanism: 'Въглехидратна ротация',
     afterImg: '/images/photo/testimonials/female-3.jpg',
   },
   {

@@ -139,81 +139,97 @@ export function CurrentToTarget({ character, currentBodyType, heightCm, currentK
             </p>
           </div>
 
-          {/* Hero number — current pace */}
-          <div className="mt-3 flex items-baseline gap-2">
-            <span
-              className="font-extrabold tabular-nums leading-none"
-              style={{
-                fontSize: 'clamp(2.625rem, 12vw, 3.5rem)',
-                letterSpacing: '-0.045em',
-                background: isSafe
-                  ? 'linear-gradient(180deg, #047857 0%, #065F46 100%)'
-                  : 'linear-gradient(180deg, #E50914 0%, #A50015 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              {perWeek.toFixed(2).replace('.', ',')}
-            </span>
-            <span
-              className="font-bold text-[var(--color-text-strong)] leading-tight"
-              style={{ fontSize: 'clamp(0.8125rem, 3.4vw, 0.9375rem)', letterSpacing: '-0.01em' }}
-            >
-              кг<br />на седмица
-            </span>
-          </div>
-
-          {/* Stat strip */}
-          <div className="mt-4 grid grid-cols-2 gap-0 rounded-2xl bg-white/70 border border-black/5 backdrop-blur-[2px] divide-x divide-black/5">
-            <Stat label={losing ? 'Сваляш общо' : 'Качваш общо'} value={`${totalKg.toFixed(0)} кг`} />
-            <Stat label="За" value={`${Math.round(weeks)} седм.`} />
-          </div>
-
-          {!isSafe && (
-            <div
-              className="mt-4 rounded-2xl px-4 py-3.5 relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,243,236,0.85) 100%)',
-                boxShadow: 'inset 0 0 0 1px rgba(165,0,21,0.12)',
-              }}
-            >
-              <div className="flex items-center gap-2">
+          {isSafe ? (
+            <>
+              {/* Hero number — current pace (safe, reassuring) */}
+              <div className="mt-3 flex items-baseline gap-2">
                 <span
-                  aria-hidden
-                  className="size-1 rounded-full"
-                  style={{ background: '#A50015' }}
-                />
-                <p
-                  className="text-[10px] font-extrabold uppercase"
-                  style={{ letterSpacing: '0.22em', color: '#A50015' }}
+                  className="font-extrabold tabular-nums leading-none"
+                  style={{
+                    fontSize: 'clamp(2.625rem, 12vw, 3.5rem)',
+                    letterSpacing: '-0.045em',
+                    background: 'linear-gradient(180deg, #047857 0%, #065F46 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                  }}
                 >
-                  Препоръчваме
+                  {perWeek.toFixed(2).replace('.', ',')}
+                </span>
+                <span
+                  className="font-bold text-[var(--color-text-strong)] leading-tight"
+                  style={{ fontSize: 'clamp(0.8125rem, 3.4vw, 0.9375rem)', letterSpacing: '-0.01em' }}
+                >
+                  кг<br />на седмица
+                </span>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-0 rounded-2xl bg-white/70 border border-black/5 backdrop-blur-[2px] divide-x divide-black/5">
+                <Stat label={losing ? 'Сваляш общо' : 'Качваш общо'} value={`${totalKg.toFixed(0)} кг`} />
+                <Stat label="За" value={`${Math.round(weeks)} седм.`} />
+              </div>
+
+              <p className="mt-3 text-[13px] text-[var(--color-text-body)] leading-snug">
+                В безопасния диапазон. Темпото е устойчиво и реалистично.
+              </p>
+            </>
+          ) : (
+            <>
+              {/* Hero — the SAFE recommendation, not the user's aggressive input */}
+              <div className="mt-3 flex items-baseline gap-2">
+                <span
+                  className="font-extrabold tabular-nums leading-none"
+                  style={{
+                    fontSize: 'clamp(2.625rem, 12vw, 3.5rem)',
+                    letterSpacing: '-0.045em',
+                    background: 'linear-gradient(180deg, #047857 0%, #065F46 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                  }}
+                >
+                  {safeWeeks}
+                </span>
+                <span
+                  className="font-bold text-[var(--color-text-strong)] leading-tight"
+                  style={{ fontSize: 'clamp(0.8125rem, 3.4vw, 0.9375rem)', letterSpacing: '-0.01em' }}
+                >
+                  седмици<br />здравословно
+                </span>
+              </div>
+              <p className="mt-2 text-[12.5px] text-[var(--color-text-body)] leading-snug">
+                За {totalKg.toFixed(0)} кг при безопасно темпо{' '}
+                <span className="font-bold tabular-nums text-[var(--color-text-strong)]">
+                  {losing ? '~1' : '~0,5'} кг/седм.
+                </span>{' '}
+                ({Math.round(safeDays / 30)} мес.).
+              </p>
+
+              <div
+                className="mt-4 rounded-2xl px-4 py-3 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,243,236,0.9) 100%)',
+                  boxShadow: 'inset 0 0 0 1px rgba(165,0,21,0.14)',
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span aria-hidden className="size-1 rounded-full" style={{ background: '#A50015' }} />
+                  <p
+                    className="text-[10px] font-extrabold uppercase"
+                    style={{ letterSpacing: '0.22em', color: '#A50015' }}
+                  >
+                    Твоят срок е твърде кратък
+                  </p>
+                </div>
+                <p className="mt-1.5 text-[12.5px] text-[var(--color-text-body)] leading-snug">
+                  Поиска {totalKg.toFixed(0)} кг за {Math.round(weeks)} седм. — това{' '}
+                  <span className="font-bold text-[var(--color-text-strong)]">не е безопасно</span>{' '}
+                  и не го обещаваме. Ще те водим към здравословното темпо горе.
                 </p>
               </div>
-              <p
-                className="mt-1.5 font-extrabold leading-tight text-[var(--color-text-headline)]"
-                style={{ fontSize: 'clamp(0.9375rem, 4vw, 1.0625rem)', letterSpacing: '-0.018em' }}
-              >
-                <span className="tabular-nums">{safeWeeks} седмици</span>{' '}
-                <span className="text-[var(--color-text-muted)] font-semibold">
-                  ({Math.round(safeDays / 30)} мес.)
-                </span>
-              </p>
-              <p className="mt-1 text-[12.5px] text-[var(--color-text-body)]">
-                Здравословно темпо около{' '}
-                <span className="font-bold tabular-nums text-[var(--color-text-strong)]">
-                  {losing ? '1' : '0,5'} кг/седм.
-                </span>
-              </p>
-            </div>
-          )}
-
-          {isSafe && (
-            <p className="mt-3 text-[13px] text-[var(--color-text-body)] leading-snug">
-              В безопасния диапазон. Темпото е устойчиво и реалистично.
-            </p>
+            </>
           )}
         </div>
       </motion.div>
