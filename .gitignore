@@ -13,3 +13,5 @@ build/
 .tmp-screens/
 __pycache__/
 .vercel
+# Local-only photo backups created before regen
+public/images/photo/**/.bak/
