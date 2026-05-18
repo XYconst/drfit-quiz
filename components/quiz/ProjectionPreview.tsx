@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRightIcon } from '@/components/icons';
 import { MiniProjectionChart } from './MiniProjectionChart';
 import { TestimonialCard } from './TestimonialCard';
-import { pickProjectionTestimonial } from '@/lib/testimonials';
+import { pickProjectionTestimonials } from '@/lib/testimonials';
 import type { Gender } from '@/lib/avatars';
 
 interface Props {
@@ -64,7 +64,7 @@ export function ProjectionPreview({
   const heroVerb = isLoss ? 'Свали' : 'Качи';
   const heroDate = formatDateShort(targetDateLabel);
 
-  const testimonial = pickProjectionTestimonial(gender, kgDelta);
+  const testimonials = pickProjectionTestimonials(gender, kgDelta, 3);
 
   return (
     <motion.div
@@ -130,16 +130,34 @@ export function ProjectionPreview({
         />
       </motion.div>
 
-      {/* Testimonial — anchors the abstract curve to a real face */}
-      {testimonial && (
+      {/* Testimonial carousel — anchors the abstract curve to real faces.
+          Big cards, snap-scroll left-to-right; "closest to you" comes first. */}
+      {testimonials.length > 0 && (
         <motion.div variants={item}>
-          <p
-            className="mb-2 text-[11px] font-extrabold uppercase text-[var(--color-text-strong)]"
-            style={{ letterSpacing: '0.16em' }}
+          <div className="flex items-baseline justify-between mb-2">
+            <p
+              className="text-[11px] font-extrabold uppercase text-[var(--color-text-strong)]"
+              style={{ letterSpacing: '0.16em' }}
+            >
+              Като теб са успели
+            </p>
+            <p className="text-[11px] text-[var(--color-text-muted)] font-medium">
+              {testimonials.length > 1 ? 'плъзни →' : ''}
+            </p>
+          </div>
+          <div
+            className="-mx-5 px-5 flex gap-3 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-2"
+            style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
           >
-            Като теб са успели
-          </p>
-          <TestimonialCard testimonial={testimonial} imgSrc={testimonial.afterImg} />
+            {testimonials.map((t) => (
+              <div
+                key={t.id}
+                className="shrink-0 w-[88%] sm:w-[78%] snap-center"
+              >
+                <TestimonialCard testimonial={t} imgSrc={t.afterImg} />
+              </div>
+            ))}
+          </div>
         </motion.div>
       )}
 

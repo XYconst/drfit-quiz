@@ -145,25 +145,42 @@ export function pickProjectionTestimonial(
   gender: TestimonialGender,
   kgDelta: number,
 ): Testimonial | null {
-  if (TESTIMONIALS.length === 0) return null;
-  const sameGender = TESTIMONIALS.filter((t) => t.gender === gender);
-  if (sameGender.length === 0) return TESTIMONIALS[0];
+  const all = pickProjectionTestimonials(gender, kgDelta);
+  return all[0] ?? null;
+}
 
-  // Direction match: user kgDelta > 0 means losing → testimonial.kgChange < 0.
-  // user kgDelta < 0 means gaining → testimonial.kgChange > 0.
+/**
+ * Pick up to N testimonials matching the user's gender and the direction of
+ * their goal (loss vs gain). Ordered by how closely their kgChange magnitude
+ * matches the user's target — best match first, gentler matches after, so
+ * a horizontal carousel reads as "closest to you → less close" left-to-right.
+ */
+export function pickProjectionTestimonials(
+  gender: TestimonialGender,
+  kgDelta: number,
+  limit = 3,
+): Testimonial[] {
+  if (TESTIMONIALS.length === 0) return [];
+  const sameGender = TESTIMONIALS.filter((t) => t.gender === gender);
+  if (sameGender.length === 0) return TESTIMONIALS.slice(0, limit);
+
   const wantsLoss = kgDelta > 0;
   const directionMatch = sameGender.filter((t) => (wantsLoss ? t.kgChange < 0 : t.kgChange > 0));
-
   const pool = directionMatch.length > 0 ? directionMatch : sameGender;
-  const targetMagnitude = Math.abs(kgDelta);
-  let best = pool[0];
-  let bestDistance = Math.abs(Math.abs(best.kgChange) - targetMagnitude);
-  for (const t of pool) {
-    const d = Math.abs(Math.abs(t.kgChange) - targetMagnitude);
-    if (d < bestDistance) {
-      best = t;
-      bestDistance = d;
+  const target = Math.abs(kgDelta);
+  const ranked = [...pool].sort(
+    (a, b) =>
+      Math.abs(Math.abs(a.kgChange) - target) - Math.abs(Math.abs(b.kgChange) - target),
+  );
+
+  // Fill from the same-gender pool if we don't have enough direction-matches.
+  const seen = new Set(ranked.map((t) => t.id));
+  for (const t of sameGender) {
+    if (ranked.length >= limit) break;
+    if (!seen.has(t.id)) {
+      ranked.push(t);
+      seen.add(t.id);
     }
   }
-  return best;
+  return ranked.slice(0, limit);
 }

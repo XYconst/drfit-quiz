@@ -246,7 +246,6 @@ export function QuizContainer() {
     content = (
       <DateStep
         initial={prev?.date}
-        characterImageSrc={characterImagePath(character, 'goal')}
         onContinue={(date, label) => {
           dispatch({ type: 'answer', stepId: step.id, value: { date, label } });
           setTimeout(onContinue, 100);
