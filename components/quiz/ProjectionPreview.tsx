@@ -91,34 +91,81 @@ export function ProjectionPreview({
         </motion.p>
       )}
 
-      {/* Hero metric — the kg-delta and date as a single decisive line */}
+      {/* Hero "goal pinned note" — slightly rotated cream card with a thumbtack,
+          drop shadow, brand-red accent. Reads like a sticky reminder pinned
+          to a corkboard rather than a sterile metric tile. */}
       <motion.div
         variants={item}
-        className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-warm)] px-5 py-5 text-center"
+        className="relative mx-auto mt-4 mb-2"
+        style={{ width: '94%', maxWidth: 360 }}
       >
-        <p
-          className="text-[10px] font-extrabold uppercase text-[var(--color-brand-red)]"
-          style={{ letterSpacing: '0.22em' }}
-        >
-          Твоят път
-        </p>
-        <p
-          className="mt-2 font-extrabold text-[var(--color-text-headline)] tabular-nums"
+        <div
+          className="relative px-6 pt-9 pb-6 text-center"
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'clamp(1.625rem, 6.5vw, 2.25rem)',
-            lineHeight: 1.1,
-            letterSpacing: '-0.03em',
+            background:
+              'linear-gradient(170deg, #FFFCEF 0%, #FFF6D8 60%, #FFEFB8 100%)',
+            borderRadius: 12,
+            transform: 'rotate(-1.8deg)',
+            transformOrigin: 'top center',
+            boxShadow:
+              '0 18px 36px -18px rgba(82,52,0,0.45), 0 2px 0 rgba(255,255,255,0.65) inset, 0 -10px 24px -16px rgba(82,52,0,0.18) inset',
           }}
         >
-          {heroVerb} {kgAbs} кг
-          {heroDate ? <span className="text-[var(--color-text-strong)]"> · {heroDate}</span> : null}
-        </p>
-        <p className="mt-1 text-[13px] text-[var(--color-text-muted)] font-medium">
-          {isLoss
-            ? 'Постижимо при съответен дефицит и активност.'
-            : 'Постижимо при контролиран профицит и тренировки.'}
-        </p>
+          {/* Thumbtack */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{ top: -8 }}
+          >
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <ellipse cx="11" cy="11" rx="7" ry="7" fill="#A50015" />
+              <ellipse cx="9" cy="9" rx="2.4" ry="2" fill="#FF8A91" opacity="0.85" />
+              <circle cx="11" cy="11" r="7" stroke="#7A000F" strokeWidth="0.75" />
+              <path d="M11 18 L11 21" stroke="#5a0010" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </span>
+
+          <p
+            className="text-[10px] font-extrabold uppercase text-[var(--color-brand-red)]"
+            style={{
+              letterSpacing: '0.22em',
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+            }}
+          >
+            Твоята цел
+          </p>
+
+          <p
+            className="mt-2 font-extrabold text-[var(--color-text-headline)] tabular-nums"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: 'clamp(1.875rem, 8vw, 2.625rem)',
+              lineHeight: 1.05,
+              letterSpacing: '-0.035em',
+            }}
+          >
+            {heroVerb} {kgAbs} кг
+          </p>
+          {heroDate && (
+            <p
+              className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-white/70 border border-[var(--color-brand-red)]/25 px-3 py-1 text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              <span aria-hidden className="size-1 rounded-full bg-[var(--color-brand-red)]" />
+              {heroDate}
+            </p>
+          )}
+
+          <p
+            className="mt-3 text-[13px] text-[var(--color-text-body)] font-medium leading-snug"
+            style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
+          >
+            {isLoss
+              ? '"Постижимо при съответен дефицит и активност."'
+              : '"Постижимо при контролиран профицит и тренировки."'}
+          </p>
+        </div>
       </motion.div>
 
       {/* Mini projection curve */}
