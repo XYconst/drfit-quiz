@@ -1,6 +1,5 @@
 'use client';
 import { motion } from 'framer-motion';
-import { ArrowRightIcon } from '@/components/icons';
 
 interface Props {
   /** Character code, e.g. "f2" or "m3". Drives which body-type photo we render. */
@@ -67,23 +66,31 @@ export function CurrentToTarget({ character, currentBodyType, heightCm, currentK
         От · до
       </p>
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+      <div className="flex flex-col gap-3">
         <BodyCard
           label="Сега"
           kg={currentKg}
           imgSrc={currentImg}
           accent="muted"
+          stacked
         />
-        <ArrowRightIcon
-          width={22}
-          height={22}
-          className="text-[var(--color-brand-red)]"
-        />
+        <div className="flex items-center justify-center gap-3">
+          <span aria-hidden className="h-px flex-1 bg-[var(--color-line)]" />
+          <span
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-red-tint)] border border-[var(--color-brand-red)]/35 px-3 py-1 text-[11px] font-extrabold text-[var(--color-brand-red)] uppercase"
+            style={{ letterSpacing: '0.18em' }}
+          >
+            <span aria-hidden className="size-1.5 rounded-full bg-[var(--color-brand-red)]" />
+            до тук
+          </span>
+          <span aria-hidden className="h-px flex-1 bg-[var(--color-line)]" />
+        </div>
         <BodyCard
           label="Цел"
           kg={targetKg}
           imgSrc={targetImg}
           accent="brand"
+          stacked
         />
       </div>
 
@@ -261,11 +268,15 @@ function BodyCard({
   kg,
   imgSrc,
   accent,
+  stacked = false,
 }: {
   label: string;
   kg: number;
   imgSrc: string;
   accent: 'muted' | 'brand';
+  /** When true, the card spans the full row and uses a portrait 4:5 ratio so
+   *  the figure reads big. Use this in the vertical before/after layout. */
+  stacked?: boolean;
 }) {
   return (
     <div
@@ -276,7 +287,12 @@ function BodyCard({
           : 'border-[var(--color-line)]',
       ].join(' ')}
     >
-      <div className="relative aspect-[3/4] bg-[var(--color-surface-100)]">
+      <div
+        className={[
+          'relative bg-[var(--color-surface-100)]',
+          stacked ? 'aspect-[4/5]' : 'aspect-[3/4]',
+        ].join(' ')}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={imgSrc}
@@ -286,15 +302,29 @@ function BodyCard({
           loading="eager"
         />
       </div>
-      <div className="px-3 py-2 text-center">
+      <div
+        className={[
+          'flex items-baseline gap-2',
+          stacked ? 'px-4 py-3 justify-between' : 'px-3 py-2 justify-center text-center',
+        ].join(' ')}
+      >
         <p
-          className="text-[9px] uppercase font-bold text-[var(--color-text-muted)]"
+          className={[
+            'uppercase font-bold text-[var(--color-text-muted)]',
+            stacked ? 'text-[11px]' : 'text-[9px]',
+          ].join(' ')}
           style={{ letterSpacing: '0.2em' }}
         >
           {label}
         </p>
-        <p className="text-[16px] font-extrabold text-[var(--color-text-headline)] tabular-nums mt-0.5">
-          {kg} <span className="text-[11px] font-semibold text-[var(--color-text-muted)]">кг</span>
+        <p
+          className={[
+            'font-extrabold text-[var(--color-text-headline)] tabular-nums',
+            stacked ? 'text-[22px]' : 'text-[16px]',
+          ].join(' ')}
+          style={{ letterSpacing: '-0.02em' }}
+        >
+          {kg} <span className={stacked ? 'text-[13px] font-semibold text-[var(--color-text-muted)]' : 'text-[11px] font-semibold text-[var(--color-text-muted)]'}>кг</span>
         </p>
       </div>
     </div>

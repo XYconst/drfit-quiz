@@ -17,13 +17,21 @@ interface Props {
 }
 
 const SVG_W = 320;
-const SVG_H = 180;
+const SVG_H = 220;
 const PAD_L = 40;
 const PAD_R = 20;
 const PAD_T = 18;
-const PAD_B = 28;
+// Bigger bottom padding because we render a phase ribbon below the axis.
+const PAD_B = 64;
 const INNER_W = SVG_W - PAD_L - PAD_R;
 const INNER_H = SVG_H - PAD_T - PAD_B;
+
+/** Phases of a sane fat-loss program, mapped as fractions of the timeline. */
+const PHASES = [
+  { id: 'kickstart', label: 'Старт', from: 0, to: 0.2, color: '#E50914' },
+  { id: 'steady', label: 'Устойчиво', from: 0.2, to: 0.78, color: '#A50015' },
+  { id: 'stabilize', label: 'Стабилизация', from: 0.78, to: 1, color: '#2B3138' },
+] as const;
 
 export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props) {
   const dense = useMemo(() => denseProjection(currentKg, targetKg), [currentKg, targetKg]);
@@ -49,8 +57,33 @@ export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props
   const endX = xForDay(TOTAL_DAYS);
   const endY = yForKg(targetKg);
 
+  const totalKg = Math.abs(currentKg - targetKg);
+  const totalWeeks = TOTAL_DAYS / 7;
+  const perWeek = totalKg / totalWeeks;
+  const losing = currentKg > targetKg;
+  const verb = losing ? 'Темпо' : 'Темпо';
+  const directionWord = losing ? 'сваляне' : 'качване';
+
   return (
     <div className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-warm)] p-4">
+      {/* Ratio chip — surfaces the kg/week pace directly above the chart */}
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span
+          className="inline-flex items-center gap-2 rounded-full bg-white border border-[var(--color-line)] px-3 py-1 text-[11px] font-extrabold text-[var(--color-brand-red)] uppercase"
+          style={{ letterSpacing: '0.16em' }}
+        >
+          <span aria-hidden className="size-1.5 rounded-full bg-[var(--color-brand-red)]" />
+          {verb}{' '}
+          <span className="tabular-nums" style={{ fontFamily: 'var(--font-mono)' }}>
+            {perWeek.toFixed(2).replace('.', ',')}
+          </span>{' '}
+          кг/седмица
+        </span>
+        <span className="text-[11px] text-[var(--color-text-muted)] font-medium">
+          здравословно темпо на {directionWord}
+        </span>
+      </div>
+
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
         className="h-auto w-full"
@@ -152,6 +185,67 @@ export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props
           />
         ))}
 
+        {/* Phase bands behind the curve — subtle vertical tint for each phase */}
+        {PHASES.map((ph, i) => {
+          const x1 = xForDay(ph.from * TOTAL_DAYS);
+          const x2 = xForDay(ph.to * TOTAL_DAYS);
+          return (
+            <rect
+              key={`band-${ph.id}`}
+              x={x1}
+              y={PAD_T}
+              width={Math.max(0, x2 - x1)}
+              height={INNER_H}
+              fill={ph.color}
+              opacity={0.05 + i * 0.02}
+            />
+          );
+        })}
+
+        {/* Phase ribbon under the chart with the phase name + week range */}
+        {PHASES.map((ph) => {
+          const x1 = xForDay(ph.from * TOTAL_DAYS);
+          const x2 = xForDay(ph.to * TOTAL_DAYS);
+          const cx = (x1 + x2) / 2;
+          const ribbonY = PAD_T + INNER_H + 24;
+          const weekFrom = Math.round(ph.from * totalWeeks) || 1;
+          const weekTo = Math.round(ph.to * totalWeeks);
+          return (
+            <g key={`ribbon-${ph.id}`}>
+              <rect
+                x={x1 + 1}
+                y={ribbonY}
+                width={Math.max(0, x2 - x1 - 2)}
+                height={10}
+                rx={3}
+                fill={ph.color}
+                opacity={0.85}
+              />
+              <text
+                x={cx}
+                y={ribbonY + 24}
+                textAnchor="middle"
+                fontSize="9.5"
+                fontWeight="800"
+                fill={ph.color}
+                style={{ fontFamily: 'var(--font-sans)', letterSpacing: '0.06em' }}
+              >
+                {ph.label.toUpperCase()}
+              </text>
+              <text
+                x={cx}
+                y={ribbonY + 35}
+                textAnchor="middle"
+                fontSize="8.5"
+                fill="var(--color-text-muted)"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                {weekFrom === weekTo ? `седм. ${weekTo}` : `седм. ${weekFrom}-${weekTo}`}
+              </text>
+            </g>
+          );
+        })}
+
         {/* End-node pulse ring (signature touch — same beat as full BmiProjection) */}
         <motion.circle
           cx={endX}
@@ -172,6 +266,51 @@ export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props
           style={{ transformOrigin: `${endX}px ${endY}px` }}
         />
       </svg>
+
+      {/* Phase explainer — "how exactly are we going to do it" */}
+      <div className="mt-3 grid grid-cols-1 gap-2 text-[12px] leading-snug">
+        <PhaseLine
+          color={PHASES[0].color}
+          label="Старт"
+          body={
+            losing
+              ? 'Първите 2 седмици: бърз спад (вода + калориен дефицит), за да усетиш напредък.'
+              : 'Първите 2 седмици: лек профицит и техника на тренировка, за да задвижим мускула.'
+          }
+        />
+        <PhaseLine
+          color={PHASES[1].color}
+          label="Устойчиво"
+          body={
+            losing
+              ? 'Седмици 3-10: стабилен дефицит, AfterBurn тренировки, рефийд дни срещу плато.'
+              : 'Седмици 3-10: контролиран профицит, обемна работа, прогресивно натоварване.'
+          }
+        />
+        <PhaseLine
+          color={PHASES[2].color}
+          label="Стабилизация"
+          body="Последните 2-3 седмици: фиксираме навиците, отварят се калориите към поддръжка, теглото се задържа."
+        />
+      </div>
+    </div>
+  );
+}
+
+function PhaseLine({ color, label, body }: { color: string; label: string; body: string }) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <span
+        aria-hidden
+        className="mt-1 shrink-0 size-1.5 rounded-full"
+        style={{ background: color }}
+      />
+      <p className="text-[var(--color-text-body)]">
+        <span className="font-extrabold text-[var(--color-text-strong)]" style={{ color }}>
+          {label}.
+        </span>{' '}
+        {body}
+      </p>
     </div>
   );
 }
