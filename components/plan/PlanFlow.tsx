@@ -189,7 +189,14 @@ export function PlanFlow({
   }, [view, bumpSeen, stage]);
 
   return (
-    <div className="max-w-md mx-auto px-5 pt-6 pb-32">
+    <div className="max-w-md mx-auto px-5 pt-6 pb-32 relative">
+      {view === 'plan' && (
+        <StickyMobileCta
+          onCta={onCta}
+          priceLabel={fmtPerDay(selected.perDay)}
+          totalLabel={fmtEur(selected.price)}
+        />
+      )}
       {/* Stage 1 — scratch card centered in viewport */}
       {view === 'scratch' && (
         <div className="min-h-[80vh] flex flex-col justify-center">
@@ -491,7 +498,7 @@ function FullPlanContent({
       {/* Below-the-CTA: avatar-personalized hook, what-you-get, transformations,
           guarantee and FAQ. All copy is unique to this section — none of it is
           repeated from the pricing/realism/B-A blocks above. */}
-      <PlanExtras avatarId={avatarId} gender={gender} kgDelta={kgDelta} />
+      <PlanExtras avatarId={avatarId} gender={gender} kgDelta={kgDelta} onCta={onCta} />
 
       <footer className="mt-2 pt-6 border-t border-[var(--color-line)] text-[11px] text-[var(--color-text-muted)] flex flex-col items-center gap-3">
         <span style={{ fontFamily: 'var(--font-mono)' }}>© 2026 Thunder Digital</span>
@@ -503,6 +510,78 @@ function FullPlanContent({
         </span>
       </footer>
     </div>
+  );
+}
+
+function StickyMobileCta({
+  onCta,
+  priceLabel,
+  totalLabel,
+}: {
+  onCta: () => void;
+  priceLabel: string;
+  totalLabel: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onScroll = () => {
+      // Show once the user has scrolled past one viewport — i.e. they're
+      // past the main CTA. Hide if scrolled all the way to the bottom (the
+      // footer disclaimer is already visible, no need to nag).
+      const y = window.scrollY;
+      const max = (document.documentElement.scrollHeight || 0) - window.innerHeight;
+      const past = y > window.innerHeight * 0.6;
+      const nearBottom = max > 0 && y > max - 120;
+      setVisible(past && !nearBottom);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="sticky-cta"
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          transition={{ duration: 0.24, ease: 'easeOut' }}
+          className="fixed left-1/2 -translate-x-1/2 bottom-3 z-40 w-[calc(100%-1.5rem)] max-w-md sm:hidden"
+        >
+          <div
+            className="flex items-center gap-3 rounded-full bg-white border border-[var(--color-line)] pl-4 pr-1.5 py-1.5"
+            style={{ boxShadow: '0 18px 36px -16px rgba(25,33,38,0.45)' }}
+          >
+            <div className="flex-1 min-w-0">
+              <p
+                className="text-[12.5px] font-extrabold text-[var(--color-brand-red)] tabular-nums leading-tight"
+                style={{ letterSpacing: '-0.01em' }}
+              >
+                {priceLabel}
+              </p>
+              <p
+                className="text-[10px] text-[var(--color-text-muted)] tabular-nums leading-tight"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                общо {totalLabel}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onCta}
+              className="h-11 rounded-full px-5 bg-brand-gradient text-white font-extrabold text-[13px] shadow-brand-red flex items-center gap-1.5 motion-safe:active:scale-[0.97]"
+            >
+              <span>Вземи плана</span>
+              <LockIcon width={12} height={12} aria-hidden />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

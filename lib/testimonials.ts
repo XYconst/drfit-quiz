@@ -26,6 +26,38 @@ export interface Testimonial {
 }
 
 export const TESTIMONIALS: Testimonial[] = [
+  // Real before/after pairs (priority — these have actual photos, not just an
+  // after shot) so the picker surfaces them first when gender + bodyType matches.
+  {
+    id: 'viktoria',
+    name: 'Виктория',
+    city: 'Пловдив',
+    age: 29,
+    gender: 'female',
+    bodyType: 'overweight',
+    kgChange: -15,
+    days: 150,
+    mechanism: 'AfterBurn',
+    beforeImg: '/images/photo/testimonials/real/female_ba1_before.jpg',
+    afterImg: '/images/photo/testimonials/real/female_ba1_after.jpg',
+    quote:
+      'Качих 14 кг след бременността и не можех да ги сваля. За 5 месеца върнах формата си и за първи път от години се чувствам като себе си.',
+  },
+  {
+    id: 'nikolay',
+    name: 'Николай',
+    city: 'Велико Търново',
+    age: 33,
+    gender: 'male',
+    bodyType: 'overweight',
+    kgChange: -18,
+    days: 120,
+    mechanism: 'Въглехидратна ротация',
+    beforeImg: '/images/photo/testimonials/real/male_ba1_before.jpg',
+    afterImg: '/images/photo/testimonials/real/male_ba1_after.jpg',
+    quote:
+      'Цял живот съм бил по-пълен. Първата планина, на която се качих, беше след 4 месеца с Dr.Fit. Тогава осъзнах, че съм нов човек.',
+  },
   // Men
   {
     id: 'andrey',

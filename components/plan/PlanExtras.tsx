@@ -4,13 +4,25 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { AvatarId } from '@/lib/avatars';
 import { pickProjectionTestimonials, type Testimonial } from '@/lib/testimonials';
 import type { Gender } from '@/lib/avatars';
-import { StarIcon, CheckIcon, LockIcon } from '@/components/icons';
+import {
+  StarIcon,
+  LockIcon,
+  ArrowRightIcon,
+  TrendingUpIcon,
+  SaladIcon,
+  RepeatIcon,
+  SparklesIcon,
+  UtensilsIcon,
+  PersonStandingIcon,
+} from '@/components/icons';
 
 interface Props {
   avatarId: AvatarId;
   gender: Gender;
   /** Used to pick "closest to you" testimonials. positive = wants to lose */
   kgDelta: number;
+  /** Fires the discount popup. Same handler as the main CTA above. */
+  onCta: () => void;
 }
 
 /** The five VSL headlines verbatim (one per avatar) — surfaced as the user's
@@ -31,36 +43,36 @@ const AVATAR_HEADLINE: Record<AvatarId, string> = {
 const FEATURES = [
   {
     eyebrow: 'Прогресивни програми',
-    body:
-      '4 структурирани програми с над 120 тренировъчни шаблона. Всяка сесия надгражда предишната.',
+    body: '120+ тренировъчни шаблона, всяка сесия по-силна от предишната.',
+    Icon: TrendingUpIcon,
   },
   {
     eyebrow: 'Персонално хранене',
-    body:
-      'Дневни менюта с изчислени макроси, съобразени с тялото и целите ти — отслабване, мускулна маса или поддръжка.',
+    body: 'Дневни менюта с изчислени макроси, съобразени с твоята цел.',
+    Icon: SaladIcon,
   },
   {
     eyebrow: '28-дневни цикли',
-    body:
-      'Структурирани 28-дневни цикли с вградена прогресия. Правиш нова оценка и растеш с всяка следваща фаза.',
+    body: 'Нова оценка след всеки цикъл. Растеш с всяка следваща фаза.',
+    Icon: RepeatIcon,
   },
 ] as const;
 
 const DEEP_FEATURES = [
   {
-    title: 'Интелигентно генериране на тренировки',
-    body:
-      'Въвеждаш нивото си, целите и екипировката. Алгоритъмът избира от библиотека с над 100 упражнения и изгражда перфектната програма със загряване, целенасочени упражнения и вградена прогресия.',
+    title: 'Интелигентни тренировки',
+    body: '100+ упражнения, загряване и прогресия избрани за теб.',
+    Icon: SparklesIcon,
   },
   {
-    title: 'Хранене, което пасва на живота ти',
-    body:
-      'Без строги диети. Получаваш дневни менюта с истинска храна, изчислени макроси и насоки за порциите. Менюто се обновява всеки ден, за да имаш разнообразие без усилие.',
+    title: 'Хранене за реалния живот',
+    body: 'Истинска храна, без строги диети. Менюто се обновява всеки ден.',
+    Icon: UtensilsIcon,
   },
   {
-    title: 'Адаптира се към тялото ти',
-    body:
-      'Споделяш контузиите, екипировката и предпочитанията си. Приложението автоматично избягва неподходящите упражнения и вгражда безопасни алтернативи във всяка тренировка.',
+    title: 'Адаптира се към тялото',
+    body: 'Контузиите, екипировката и предпочитанията ти личат във всяка тренировка.',
+    Icon: PersonStandingIcon,
   },
 ] as const;
 
@@ -93,7 +105,7 @@ const FAQS = [
   },
 ];
 
-export function PlanExtras({ avatarId, gender, kgDelta }: Props) {
+export function PlanExtras({ avatarId, gender, kgDelta, onCta }: Props) {
   const testimonials = pickProjectionTestimonials(gender, kgDelta, 3);
   const headline = AVATAR_HEADLINE[avatarId];
 
@@ -101,11 +113,53 @@ export function PlanExtras({ avatarId, gender, kgDelta }: Props) {
     <div className="flex flex-col gap-8 mt-2">
       <PersonalHook headline={headline} />
       <FeaturesGrid />
+      <InlineCta onCta={onCta} label="Вземи плана сега" sub="30% активирана отстъпка" />
       <DeepFeatures />
       <WorkoutTags />
-      {testimonials.length > 0 && <TransformationStack testimonials={testimonials} />}
+      {testimonials.length > 0 && (
+        <>
+          <TransformationStack testimonials={testimonials} />
+          <InlineCta
+            onCta={onCta}
+            label="Започни своята трансформация"
+            sub="присъедини се към 10 000+ души"
+          />
+        </>
+      )}
       <GuaranteeBand />
       <FaqAccordion />
+      <InlineCta onCta={onCta} label="Вземи плана сега" sub="можеш да откажеш по всяко време" />
+    </div>
+  );
+}
+
+function InlineCta({
+  onCta,
+  label,
+  sub,
+}: {
+  onCta: () => void;
+  label: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <button
+        type="button"
+        onClick={onCta}
+        className={[
+          'w-full h-14 rounded-full font-extrabold text-white bg-brand-gradient shadow-brand-red',
+          'flex items-center justify-center gap-2',
+          'motion-safe:transition-[transform,box-shadow] motion-safe:duration-200',
+          'motion-safe:hover:-translate-y-[2px] motion-safe:active:scale-[0.98]',
+        ].join(' ')}
+      >
+        <span>{label}</span>
+        <ArrowRightIcon width={18} height={18} />
+      </button>
+      {sub && (
+        <p className="text-[11px] text-[var(--color-text-muted)] font-medium">{sub}</p>
+      )}
     </div>
   );
 }
@@ -165,28 +219,26 @@ function FeaturesGrid() {
       >
         Твоят треньор. Твоята програма. Твоите резултати.
       </h2>
-      <div className="flex flex-col gap-3">
-        {FEATURES.map((f) => (
+      <div className="grid grid-cols-1 gap-3">
+        {FEATURES.map(({ eyebrow, body, Icon }) => (
           <article
-            key={f.eyebrow}
-            className="rounded-2xl bg-white border border-[var(--color-line)] px-5 py-4"
+            key={eyebrow}
+            className="rounded-2xl bg-white border border-[var(--color-line)] px-5 py-4 flex items-start gap-3"
           >
-            <div className="flex items-start gap-3">
-              <span
-                aria-hidden
-                className="mt-0.5 shrink-0 size-9 rounded-full bg-[var(--color-brand-red-tint)] grid place-items-center text-[var(--color-brand-red)]"
+            <span
+              aria-hidden
+              className="mt-0.5 shrink-0 size-10 rounded-2xl bg-[var(--color-brand-red-tint)] grid place-items-center text-[var(--color-brand-red)]"
+            >
+              <Icon width={20} height={20} />
+            </span>
+            <div className="min-w-0">
+              <p
+                className="font-extrabold text-[14.5px] text-[var(--color-text-headline)] leading-tight"
+                style={{ letterSpacing: '-0.01em' }}
               >
-                <CheckIcon width={16} height={16} />
-              </span>
-              <div className="min-w-0">
-                <p
-                  className="font-extrabold text-[14px] text-[var(--color-text-headline)] leading-tight"
-                  style={{ letterSpacing: '-0.01em' }}
-                >
-                  {f.eyebrow}
-                </p>
-                <p className="mt-1 text-[13px] text-[var(--color-text-body)] leading-snug">{f.body}</p>
-              </div>
+                {eyebrow}
+              </p>
+              <p className="mt-1 text-[13px] text-[var(--color-text-body)] leading-snug">{body}</p>
             </div>
           </article>
         ))}
@@ -205,25 +257,35 @@ function DeepFeatures() {
       >
         Нищо излишно.
       </h2>
-      <div className="flex flex-col gap-4">
-        {DEEP_FEATURES.map((f, i) => (
+      <div className="flex flex-col gap-3">
+        {DEEP_FEATURES.map(({ title, body, Icon }, i) => (
           <article
-            key={f.title}
-            className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-5 py-4"
+            key={title}
+            className="rounded-2xl bg-[var(--color-paper-warm)] border border-[var(--color-line)] px-5 py-4 flex items-start gap-3"
           >
-            <p
-              className="text-[10px] font-extrabold uppercase text-[var(--color-text-muted)] mb-1.5"
-              style={{ letterSpacing: '0.22em', fontFamily: 'var(--font-mono)' }}
+            <span
+              aria-hidden
+              className="mt-0.5 shrink-0 size-10 rounded-2xl bg-white border border-[var(--color-line)] grid place-items-center text-[var(--color-brand-red)]"
             >
-              0{i + 1}
-            </p>
-            <p
-              className="font-extrabold text-[15.5px] text-[var(--color-text-headline)] leading-tight"
-              style={{ letterSpacing: '-0.015em' }}
-            >
-              {f.title}
-            </p>
-            <p className="mt-1.5 text-[13px] text-[var(--color-text-body)] leading-snug">{f.body}</p>
+              <Icon width={20} height={20} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <p
+                  className="font-extrabold text-[15px] text-[var(--color-text-headline)] leading-tight"
+                  style={{ letterSpacing: '-0.015em' }}
+                >
+                  {title}
+                </p>
+                <p
+                  className="shrink-0 text-[10px] font-extrabold text-[var(--color-text-muted)] tabular-nums"
+                  style={{ letterSpacing: '0.18em', fontFamily: 'var(--font-mono)' }}
+                >
+                  0{i + 1}
+                </p>
+              </div>
+              <p className="mt-1 text-[13px] text-[var(--color-text-body)] leading-snug">{body}</p>
+            </div>
           </article>
         ))}
       </div>
@@ -271,7 +333,40 @@ function TransformationStack({ testimonials }: { testimonials: Testimonial[] }) 
               key={t.id}
               className="rounded-2xl bg-white border border-[var(--color-line)] overflow-hidden"
             >
-              {t.afterImg && (
+              {t.beforeImg && t.afterImg ? (
+                <div className="relative grid grid-cols-2 bg-[var(--color-graphite)]">
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={t.beforeImg}
+                      alt={`${t.name} преди`}
+                      className="block w-full h-auto"
+                      loading="lazy"
+                    />
+                    <span
+                      className="absolute top-2 left-2 rounded-full bg-black/55 text-white px-2 py-0.5 text-[10px] font-extrabold uppercase backdrop-blur"
+                      style={{ letterSpacing: '0.18em' }}
+                    >
+                      Преди
+                    </span>
+                  </div>
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={t.afterImg}
+                      alt={`${t.name} след`}
+                      className="block w-full h-auto"
+                      loading="lazy"
+                    />
+                    <span
+                      className="absolute top-2 right-2 rounded-full bg-[var(--color-brand-red)] text-white px-2 py-0.5 text-[10px] font-extrabold uppercase shadow-brand-red"
+                      style={{ letterSpacing: '0.18em' }}
+                    >
+                      След
+                    </span>
+                  </div>
+                </div>
+              ) : t.afterImg ? (
                 <div className="relative w-full bg-[var(--color-graphite)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -281,7 +376,7 @@ function TransformationStack({ testimonials }: { testimonials: Testimonial[] }) 
                     loading="lazy"
                   />
                 </div>
-              )}
+              ) : null}
               <div className="px-5 py-4">
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-extrabold text-[15px] text-[var(--color-text-headline)]">
