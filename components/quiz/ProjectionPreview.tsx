@@ -216,13 +216,12 @@ function BigTestimonialCard({ testimonial: t }: { testimonial: Testimonial }) {
       />
 
       {t.afterImg && (
-        <div className="relative w-full aspect-[4/5] bg-[var(--color-graphite)]">
+        <div className="relative w-full bg-[var(--color-graphite)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={t.afterImg}
             alt={t.name}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center top' }}
+            className="block w-full h-auto"
             loading="lazy"
           />
         </div>
