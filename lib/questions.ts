@@ -20,7 +20,15 @@ export interface MidQuestionSpec {
   /** 0..1, the loading-progress threshold at which to pause and show this question. */
   atProgress: number;
   headline: string;
-  options: Array<{ id: string; label: string; value: string }>;
+  options: Array<{
+    id: string;
+    label: string;
+    value: string;
+    /** If set, picking this option shows the note (and a "continue anyway"
+     *  button) instead of advancing immediately. Use to softly tell the user
+     *  the product isn't a fit but let them through. */
+    disqualifyNote?: string;
+  }>;
 }
 
 /** Card layout variants for OptionCard. See components/quiz/OptionCard.tsx.
@@ -541,17 +549,25 @@ export const STEPS: StepSpec[] = [
           { id: 'morning', label: 'Сутрин', value: 'morning' },
           { id: 'midday', label: 'Обед', value: 'midday' },
           { id: 'evening', label: 'Вечер', value: 'evening' },
+          { id: 'anytime', label: 'Няма значение', value: 'anytime' },
         ],
       },
       {
         id: 'workoutDuration',
         atProgress: 0.65,
-        headline: 'Колко време имаш за тренировка на ден?',
+        headline: 'Колко време можеш да отделиш на ден за тренировка?',
         options: [
           { id: '15', label: 'До 15 минути', value: '15' },
           { id: '30', label: '15-30 минути', value: '30' },
           { id: '45', label: '30-45 минути', value: '45' },
           { id: '60+', label: 'Над 45 минути', value: '60+' },
+          {
+            id: 'none',
+            label: 'Не мога да отделя време',
+            value: 'none',
+            disqualifyNote:
+              'За съжаление без поне няколко минути на ден не можем да гарантираме резултат. Програмата работи на честота, не на дължина. Все пак можеш да продължиш и да видиш плана.',
+          },
         ],
       },
     ],

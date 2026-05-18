@@ -452,6 +452,11 @@ function FullPlanContent({
         >
           Вземи плана сега
         </button>
+
+        {/* Auto-renewal disclosure — required for the trial / short-period plans.
+            Always-visible so users can never claim they didn't see it. */}
+        <RenewalDisclosure planId={selected.id} />
+
         <p className="mt-3 flex items-center justify-center gap-1.5 text-[12px] text-[var(--color-text-muted)]">
           <LockIcon width={12} height={12} aria-hidden />
           Сигурно плащане през Stripe
@@ -466,7 +471,7 @@ function FullPlanContent({
         <a href="/refund" className="underline hover:text-[var(--color-text-body)]">Политиката за връщане</a>{' '}
         и{' '}
         <a href="/privacy" className="underline hover:text-[var(--color-text-body)]">Политиката за поверителност</a>.
-        Без скрити такси и без автоматично подновяване.
+        Можеш да откажеш подновяването с един клик в профила си.
       </p>
 
       <footer className="mt-2 pt-6 border-t border-[var(--color-line)] text-[11px] text-[var(--color-text-muted)] flex flex-col items-center gap-3">
@@ -479,6 +484,30 @@ function FullPlanContent({
         </span>
       </footer>
     </div>
+  );
+}
+
+function RenewalDisclosure({ planId }: { planId: string }) {
+  // Same renewal target across all entry tiers: a 3-month plan at 49 EUR.
+  // The wording adapts to the user's chosen tier so it reads naturally.
+  let body: string;
+  if (planId === 'week') {
+    body =
+      'След 7-дневния пробен период автоматично ще бъдеш записан/-а за 3-месечен план на цена 49 EUR (≈ 16,33 EUR / месец). Можеш да откажеш по всяко време от профила си.';
+  } else if (planId === 'month') {
+    body =
+      'След 4-седмичния период автоматично ще се поднови за 3 месеца на цена 49 EUR (≈ 16,33 EUR / месец). Можеш да откажеш по всяко време от профила си.';
+  } else {
+    body =
+      'След 3-месечния период автоматично ще се поднови за още 3 месеца на цена 49 EUR (≈ 16,33 EUR / месец). Можеш да откажеш по всяко време от профила си.';
+  }
+  return (
+    <p
+      className="mt-3 text-center text-[11px] leading-snug text-[var(--color-text-muted)] max-w-[42ch] mx-auto"
+      style={{ textWrap: 'pretty' }}
+    >
+      {body}
+    </p>
   );
 }
 

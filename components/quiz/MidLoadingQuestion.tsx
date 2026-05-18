@@ -1,11 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export interface MidQuestionOption {
   id: string;
   label: string;
   value: string;
+  /** If set, picking this option shows the note + a "continue anyway" CTA
+   *  instead of advancing immediately. Used to flag "this product probably
+   *  isn't for you" without hard-blocking the user. */
+  disqualifyNote?: string;
 }
 
 interface Props {
@@ -29,6 +34,16 @@ const item = {
 };
 
 export function MidLoadingQuestion({ headline, options, onAnswer }: Props) {
+  const [warned, setWarned] = useState<MidQuestionOption | null>(null);
+
+  const pick = (opt: MidQuestionOption) => {
+    if (opt.disqualifyNote && warned?.id !== opt.id) {
+      setWarned(opt);
+      return;
+    }
+    onAnswer(opt.value, opt.id);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -75,38 +90,73 @@ export function MidLoadingQuestion({ headline, options, onAnswer }: Props) {
           {headline}
         </h3>
 
-        <motion.div
-          className="flex flex-col gap-2.5"
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
-          {options.map((opt) => (
-            <motion.button
-              key={opt.id}
-              variants={item}
-              type="button"
-              onClick={() => onAnswer(opt.value, opt.id)}
-              style={{ transformOrigin: 'center' }}
-              className={[
-                'group w-full text-left rounded-2xl bg-white border-2 border-[var(--color-line)]',
-                'px-5 py-4 min-h-[60px] flex items-center justify-between gap-3',
-                'motion-safe:transition-[transform,border-color,box-shadow] motion-safe:duration-180 motion-safe:ease-out',
-                'motion-safe:hover:border-[var(--color-brand-red)] motion-safe:hover:-translate-y-[1px] motion-safe:hover:shadow-[0_8px_18px_-10px_rgba(165,0,21,0.35)]',
-                'motion-safe:active:scale-[0.98] motion-safe:active:duration-100',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2',
-              ].join(' ')}
+        {warned ? (
+          <div className="flex flex-col gap-3">
+            <div
+              className="rounded-2xl border border-[var(--color-amber-text)]/30 bg-[var(--color-amber-bg)] px-4 py-3.5"
             >
-              <span className="font-semibold text-[16px] text-[var(--color-text-headline)]">
-                {opt.label}
-              </span>
-              <span
-                aria-hidden
-                className="shrink-0 size-6 rounded-full border-2 border-[var(--color-line)] grid place-items-center motion-safe:transition-colors motion-safe:duration-180 group-hover:border-[var(--color-brand-red)]"
-              />
-            </motion.button>
-          ))}
-        </motion.div>
+              <p
+                className="text-[10px] font-extrabold uppercase text-[var(--color-amber-text)] mb-1.5"
+                style={{ letterSpacing: '0.2em' }}
+              >
+                Кратко предупреждение
+              </p>
+              <p className="text-[13px] leading-snug text-[var(--color-text-strong)]">
+                {warned.disqualifyNote}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => onAnswer(warned.value, warned.id)}
+              className="w-full h-12 rounded-full bg-brand-gradient text-white font-extrabold text-[14px] shadow-brand-red"
+            >
+              Все пак ми покажи плана
+            </button>
+            <button
+              type="button"
+              onClick={() => setWarned(null)}
+              className="w-full text-[12px] font-bold text-[var(--color-text-muted)] underline underline-offset-4 hover:no-underline"
+            >
+              Избери друг отговор
+            </button>
+          </div>
+        ) : (
+          <motion.div
+            className="flex flex-col gap-2.5"
+            variants={container}
+            initial="hidden"
+            animate="show"
+          >
+            {options.map((opt) => (
+              <motion.button
+                key={opt.id}
+                variants={item}
+                type="button"
+                onClick={() => pick(opt)}
+                style={{ transformOrigin: 'center' }}
+                className={[
+                  'group w-full text-left rounded-2xl bg-white border-2',
+                  opt.disqualifyNote
+                    ? 'border-[var(--color-amber-text)]/30'
+                    : 'border-[var(--color-line)]',
+                  'px-5 py-4 min-h-[60px] flex items-center justify-between gap-3',
+                  'motion-safe:transition-[transform,border-color,box-shadow] motion-safe:duration-180 motion-safe:ease-out',
+                  'motion-safe:hover:border-[var(--color-brand-red)] motion-safe:hover:-translate-y-[1px] motion-safe:hover:shadow-[0_8px_18px_-10px_rgba(165,0,21,0.35)]',
+                  'motion-safe:active:scale-[0.98] motion-safe:active:duration-100',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-red)] focus-visible:ring-offset-2',
+                ].join(' ')}
+              >
+                <span className="font-semibold text-[16px] text-[var(--color-text-headline)]">
+                  {opt.label}
+                </span>
+                <span
+                  aria-hidden
+                  className="shrink-0 size-6 rounded-full border-2 border-[var(--color-line)] grid place-items-center motion-safe:transition-colors motion-safe:duration-180 group-hover:border-[var(--color-brand-red)]"
+                />
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
       </motion.div>
     </motion.div>
   );
