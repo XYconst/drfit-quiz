@@ -14,10 +14,12 @@ interface FieldSpec {
 interface Props {
   fields: FieldSpec[];
   ctaLabel: string;
+  /** Optional cutout (PNG with alpha) — adds the matched character beside the lock teaser. */
+  characterImageSrc?: string;
   onSubmit: (values: Record<string, string>) => Promise<void> | void;
 }
 
-export function EmailGate({ fields, ctaLabel, onSubmit }: Props) {
+export function EmailGate({ fields, ctaLabel, characterImageSrc, onSubmit }: Props) {
   const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(fields.map((f) => [f.name, ''])));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,8 +28,8 @@ export function EmailGate({ fields, ctaLabel, onSubmit }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Blurred plan teaser */}
-      <PlanTeaser />
+      {/* Blurred plan teaser — with the matched character peeking from the side */}
+      <PlanTeaser characterImageSrc={characterImageSrc} />
 
       <form
         onSubmit={async (e) => {
@@ -101,7 +103,7 @@ export function EmailGate({ fields, ctaLabel, onSubmit }: Props) {
  * blur, surfaced behind a single lock + reveal CTA. Designed to read as "your plan
  * is ready behind this screen — drop your email to unlock it."
  */
-function PlanTeaser() {
+function PlanTeaser({ characterImageSrc }: { characterImageSrc?: string }) {
   return (
     <div className="relative">
       {/* Blurred mock content stack */}
@@ -197,6 +199,21 @@ function PlanTeaser() {
           Профил, BMI проекция и седмична програма. Отключи всичко с email-а си.
         </p>
       </motion.div>
+
+      {/* Matched character peeks from the right edge so the screen has a person */}
+      {characterImageSrc && (
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.42, delay: 0.2, ease: 'easeOut' }}
+          className="pointer-events-none absolute -right-6 -bottom-8 w-[42%] max-w-[170px]"
+          style={{ filter: 'drop-shadow(0 14px 22px rgba(25,33,38,0.18))' }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={characterImageSrc} alt="" className="block w-full h-auto object-contain" />
+        </motion.div>
+      )}
     </div>
   );
 }

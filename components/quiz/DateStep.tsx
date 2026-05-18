@@ -5,6 +5,8 @@ import { ArrowRightIcon } from '@/components/icons';
 
 interface Props {
   initial?: string;
+  /** Optional cutout (PNG with alpha) of the matched character — adds a person to an otherwise pure-UI screen. */
+  characterImageSrc?: string;
   onContinue: (isoDate: string, label: string) => void;
 }
 
@@ -37,7 +39,7 @@ function parts(iso: string) {
   return { day, month, year, diffDays, diffWeeks };
 }
 
-export function DateStep({ initial, onContinue }: Props) {
+export function DateStep({ initial, characterImageSrc, onContinue }: Props) {
   const [date, setDate] = useState(initial ?? addMonthsIso(3));
   const [chip, setChip] = useState<string | null>('3m');
 
@@ -177,6 +179,35 @@ export function DateStep({ initial, onContinue }: Props) {
           style={{ fontFamily: 'var(--font-mono)' }}
         />
       </label>
+
+      {characterImageSrc && (
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.36, delay: 0.12, ease: 'easeOut' }}
+          className="relative -mx-5 mt-2 pointer-events-none"
+          style={{ height: 'min(34dvh, 260px)' }}
+        >
+          {/* Soft radial behind the character so it doesn't float on raw bg */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 -translate-x-1/2 bottom-0 rounded-full"
+            style={{
+              width: '70%',
+              height: '36%',
+              background:
+                'radial-gradient(closest-side, rgba(165,0,21,0.10), transparent 75%)',
+            }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={characterImageSrc}
+            alt=""
+            className="absolute left-1/2 -translate-x-1/2 bottom-0 h-full w-auto object-contain object-bottom"
+          />
+        </motion.div>
+      )}
 
       <div className="mt-auto pt-4 sticky bottom-0 bg-[var(--color-brand-bg)]">
         <button

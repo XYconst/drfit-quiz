@@ -246,6 +246,7 @@ export function QuizContainer() {
     content = (
       <DateStep
         initial={prev?.date}
+        characterImageSrc={characterImagePath(character, 'goal')}
         onContinue={(date, label) => {
           dispatch({ type: 'answer', stepId: step.id, value: { date, label } });
           setTimeout(onContinue, 100);
@@ -302,6 +303,7 @@ export function QuizContainer() {
       <EmailGate
         fields={step.fields ?? []}
         ctaLabel={step.ctaBg ?? 'Продължи'}
+        characterImageSrc={characterImagePath(character, 'goal')}
         onSubmit={onEmailSubmit}
       />
     );
