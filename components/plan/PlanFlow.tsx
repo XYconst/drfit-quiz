@@ -9,7 +9,9 @@ import { MotivationVisuals } from './MotivationVisuals';
 import { PreCheckoutModal } from './PreCheckoutModal';
 import { ScrubReveal } from './ScrubReveal';
 import { PlanLoading } from './PlanLoading';
+import { PlanExtras } from './PlanExtras';
 import { LockIcon } from '@/components/icons';
+import type { AvatarId } from '@/lib/avatars';
 
 interface CurrentState {
   heightCm: number;
@@ -41,6 +43,10 @@ interface Props {
   currentBodyType: string;
   /** Total days to goal — drives the realism verdict. */
   goalDays: number;
+  /** Avatar id (01-05) — drives the personalized "why this is for you" hook. */
+  avatarId: AvatarId;
+  /** Signed kg delta (current - target). Used to pick relevant testimonials. */
+  kgDelta: number;
 }
 
 type ModalStage = 'none' | 'initial' | 'bumped';
@@ -68,6 +74,8 @@ export function PlanFlow({
   character,
   currentBodyType,
   goalDays,
+  avatarId,
+  kgDelta,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string>(
     defaultPlanId ?? basePlans.find((p) => p.recommended)?.id ?? basePlans[0].id,
@@ -232,6 +240,8 @@ export function PlanFlow({
               currentBodyType={currentBodyType}
               goalDays={goalDays}
               discountPct={discountPct}
+              avatarId={avatarId}
+              kgDelta={kgDelta}
             />
           </motion.div>
         )}
@@ -282,6 +292,8 @@ interface FullProps {
   goalDays: number;
   /** Active discount % currently applied to all tiers. */
   discountPct: number;
+  avatarId: AvatarId;
+  kgDelta: number;
 }
 
 function FullPlanContent({
@@ -297,6 +309,8 @@ function FullPlanContent({
   currentBodyType,
   goalDays,
   discountPct,
+  avatarId,
+  kgDelta,
 }: FullProps) {
   const { heightCm, currentKg, targetKg, bmi, targetDateLabel } = currentState;
   const fmt = (n: number) => n.toFixed(2).replace('.', ',');
@@ -473,6 +487,11 @@ function FullPlanContent({
         <a href="/privacy" className="underline hover:text-[var(--color-text-body)]">Политиката за поверителност</a>.
         Можеш да откажеш подновяването с един клик в профила си.
       </p>
+
+      {/* Below-the-CTA: avatar-personalized hook, what-you-get, transformations,
+          guarantee and FAQ. All copy is unique to this section — none of it is
+          repeated from the pricing/realism/B-A blocks above. */}
+      <PlanExtras avatarId={avatarId} gender={gender} kgDelta={kgDelta} />
 
       <footer className="mt-2 pt-6 border-t border-[var(--color-line)] text-[11px] text-[var(--color-text-muted)] flex flex-col items-center gap-3">
         <span style={{ fontFamily: 'var(--font-mono)' }}>© 2026 Thunder Digital</span>

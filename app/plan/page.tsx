@@ -138,6 +138,8 @@ export default async function PlanPage({ searchParams }: PageProps) {
         character={character}
         currentBodyType={currentBodyType}
         goalDays={goalDays}
+        avatarId={avatarId}
+        kgDelta={currentKg - targetKg}
       />
       <span className="hidden" aria-hidden data-avatar={avatar.id} />
     </main>
