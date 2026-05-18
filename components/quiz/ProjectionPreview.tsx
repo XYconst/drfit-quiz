@@ -17,8 +17,10 @@ interface Props {
   targetKg: number;
   /** signed: positive = user wants to lose, negative = user wants to gain */
   kgDelta: number;
-  /** End-date label from the targetDate step (e.g. "3 месеца" or "15 август 2026 г.") */
+  /** End-date label from the targetDate step (e.g. "3m" chip id or "15 август 2026 г.") */
   targetDateLabel?: string;
+  /** ISO date string for the goal date — used to render "Свали 10 кг до 17 август". */
+  targetDateIso?: string;
   gender: Gender;
   onContinue: () => void;
 }
@@ -56,13 +58,28 @@ export function ProjectionPreview({
   targetKg,
   kgDelta,
   targetDateLabel,
+  targetDateIso,
   gender,
   onContinue,
 }: Props) {
   const isLoss = kgDelta > 0;
   const kgAbs = Math.abs(kgDelta).toFixed(0);
   const heroVerb = isLoss ? 'Свали' : 'Качи';
-  const heroDate = formatDateShort(targetDateLabel);
+
+  // Real date in BG (e.g. "17 август"). Falls back to whatever label we got
+  // (chip id "3m" / "custom") only if no ISO date is present, but that should
+  // almost never happen since DateStep always emits an ISO.
+  const heroDateObj = targetDateIso ? new Date(targetDateIso) : null;
+  const heroDateText =
+    heroDateObj && !Number.isNaN(heroDateObj.getTime())
+      ? heroDateObj.toLocaleDateString('bg-BG', { day: 'numeric', month: 'long' })
+      : formatDateShort(targetDateLabel);
+  const daysLeft = heroDateObj
+    ? Math.max(0, Math.round((heroDateObj.getTime() - Date.now()) / 86400000))
+    : null;
+
+  // Tail used only as the small chart axis label
+  const chartEndLabel = heroDateText;
 
   const testimonials = pickProjectionTestimonials(gender, kgDelta, 3);
 
@@ -137,29 +154,42 @@ export function ProjectionPreview({
           </p>
 
           <p
-            className="mt-2 font-extrabold text-[var(--color-text-headline)] tabular-nums"
+            className="mt-1 text-[var(--color-text-headline)]"
             style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: 'clamp(1.875rem, 8vw, 2.625rem)',
+              fontFamily: 'var(--font-script)',
+              fontWeight: 700,
+              fontSize: 'clamp(2rem, 9vw, 2.75rem)',
               lineHeight: 1.05,
-              letterSpacing: '-0.035em',
+              letterSpacing: '-0.005em',
+              textWrap: 'balance',
             }}
           >
             {heroVerb} {kgAbs} кг
+            {heroDateText && (
+              <>
+                {' '}
+                <span className="text-[var(--color-brand-red)]">до {heroDateText}</span>
+              </>
+            )}
           </p>
-          {heroDate && (
+
+          {daysLeft !== null && (
             <p
-              className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-white/70 border border-[var(--color-brand-red)]/25 px-3 py-1 text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums"
+              className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/70 border border-[var(--color-brand-red)]/25 px-3 py-1 text-[12px] font-bold text-[var(--color-brand-red)] tabular-nums"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               <span aria-hidden className="size-1 rounded-full bg-[var(--color-brand-red)]" />
-              {heroDate}
+              приблизително {daysLeft} дни
             </p>
           )}
 
           <p
-            className="mt-3 text-[13px] text-[var(--color-text-body)] font-medium leading-snug"
-            style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
+            className="mt-3 text-[var(--color-text-body)] leading-snug"
+            style={{
+              fontFamily: 'var(--font-script)',
+              fontWeight: 500,
+              fontSize: 'clamp(1.0625rem, 4.4vw, 1.25rem)',
+            }}
           >
             {isLoss
               ? '"Постижимо при съответен дефицит и активност."'
@@ -173,7 +203,7 @@ export function ProjectionPreview({
         <MiniProjectionChart
           currentKg={currentKg}
           targetKg={targetKg}
-          endDateLabel={heroDate}
+          endDateLabel={chartEndLabel}
         />
       </motion.div>
 

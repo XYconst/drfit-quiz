@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Plus_Jakarta_Sans, Playfair_Display, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Playfair_Display, Geist_Mono, Caveat } from 'next/font/google';
 import { META_PIXEL_ID } from '@/lib/pixel';
 import './globals.css';
 
@@ -26,6 +26,14 @@ const geistMono = Geist_Mono({
   display: 'swap',
   weight: ['400', '500', '600'],
 });
+// Handwritten Cyrillic script — used for personal "pinned note" copy like the
+// goal-date hero on /quiz "Така изглежда твоят път".
+const script = Caveat({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-script-runtime',
+  display: 'swap',
+  weight: ['500', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'Dr.Fit: Твоят 90-дневен план',
@@ -42,7 +50,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bg" className={`${sans.variable} ${playfair.variable} ${geistMono.variable}`}>
+    <html lang="bg" className={`${sans.variable} ${playfair.variable} ${geistMono.variable} ${script.variable}`}>
       <body className="min-h-screen bg-brand-bg">
         {children}
 

@@ -39,6 +39,7 @@
   --font-sans: var(--font-sans-runtime), "Plus Jakarta Sans", "Manrope", system-ui, -apple-system, sans-serif;
   --font-display: var(--font-display-runtime), "Playfair Display", Georgia, serif;
   --font-mono: var(--font-mono-runtime), ui-monospace, "Geist Mono", "JetBrains Mono", monospace;
+  --font-script: var(--font-script-runtime), "Caveat", "Marker Felt", "Comic Sans MS", cursive;
 }
 
 @layer base {

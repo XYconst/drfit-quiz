@@ -273,6 +273,7 @@ export function QuizContainer() {
         targetKg={targetKg}
         kgDelta={kgDelta}
         targetDateLabel={targetDateLabel}
+        targetDateIso={td?.date}
         gender={gender ?? 'male'}
         onContinue={onContinue}
       />
