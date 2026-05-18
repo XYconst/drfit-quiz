@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion';
 import { ArrowRightIcon } from '@/components/icons';
 import { MiniProjectionChart } from './MiniProjectionChart';
-import { TestimonialCard } from './TestimonialCard';
-import { pickProjectionTestimonials } from '@/lib/testimonials';
+import { pickProjectionTestimonials, type Testimonial } from '@/lib/testimonials';
+import { StarIcon } from '@/components/icons';
 import type { Gender } from '@/lib/avatars';
 
 interface Props {
@@ -130,34 +130,20 @@ export function ProjectionPreview({
         />
       </motion.div>
 
-      {/* Testimonial carousel — anchors the abstract curve to real faces.
-          Big cards, snap-scroll left-to-right; "closest to you" comes first. */}
+      {/* Testimonials stacked vertically — full-bleed photos so each face
+          reads clearly; same gradient + hairline border treatment used on the
+          realism verdict card so the visual language stays consistent. */}
       {testimonials.length > 0 && (
-        <motion.div variants={item}>
-          <div className="flex items-baseline justify-between mb-2">
-            <p
-              className="text-[11px] font-extrabold uppercase text-[var(--color-text-strong)]"
-              style={{ letterSpacing: '0.16em' }}
-            >
-              Като теб са успели
-            </p>
-            <p className="text-[11px] text-[var(--color-text-muted)] font-medium">
-              {testimonials.length > 1 ? 'плъзни →' : ''}
-            </p>
-          </div>
-          <div
-            className="-mx-5 px-5 flex gap-3 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-2"
-            style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+        <motion.div variants={item} className="flex flex-col gap-4">
+          <p
+            className="text-[11px] font-extrabold uppercase text-[var(--color-text-strong)]"
+            style={{ letterSpacing: '0.16em' }}
           >
-            {testimonials.map((t) => (
-              <div
-                key={t.id}
-                className="shrink-0 w-[88%] sm:w-[78%] snap-center"
-              >
-                <TestimonialCard testimonial={t} imgSrc={t.afterImg} />
-              </div>
-            ))}
-          </div>
+            Като теб са успели
+          </p>
+          {testimonials.map((t) => (
+            <BigTestimonialCard key={t.id} testimonial={t} />
+          ))}
         </motion.div>
       )}
 
@@ -194,5 +180,107 @@ export function ProjectionPreview({
         />
       </motion.button>
     </motion.div>
+  );
+}
+
+/**
+ * Full-bleed vertical testimonial card. Same gradient surface + hairline
+ * gradient border as the realism verdict on the plan page, so the projection
+ * screen reads as the same visual family.
+ */
+function BigTestimonialCard({ testimonial: t }: { testimonial: Testimonial }) {
+  const isLoss = t.kgChange < 0;
+  const kgLabel = `${isLoss ? '−' : '+'}${Math.abs(t.kgChange)} кг · ${t.days} дни`;
+  return (
+    <article
+      className="relative rounded-[22px] overflow-hidden"
+      style={{
+        fontFamily: 'var(--font-sans)',
+        background: 'linear-gradient(160deg, #FFF1ED 0%, #FFFFFF 50%, #FFF6F1 100%)',
+        boxShadow:
+          '0 1px 0 rgba(165,0,21,0.10) inset, 0 14px 32px -22px rgba(165,0,21,0.35)',
+      }}
+    >
+      {/* Hairline gradient border */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[22px]"
+        style={{
+          padding: 1,
+          background:
+            'linear-gradient(135deg, rgba(229,9,20,0.45), rgba(165,0,21,0.08))',
+          WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
+        }}
+      />
+
+      {t.afterImg && (
+        <div className="relative w-full aspect-[4/5] bg-[var(--color-graphite)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={t.afterImg}
+            alt={t.name}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: 'center top' }}
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      <div className="relative px-5 pt-4 pb-5">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden
+            className="size-2 rounded-full"
+            style={{
+              background: '#E50914',
+              boxShadow: '0 0 0 4px rgba(229,9,20,0.18)',
+            }}
+          />
+          <p
+            className="text-[10px] font-extrabold uppercase"
+            style={{ letterSpacing: '0.22em', color: '#A50015' }}
+          >
+            {kgLabel}
+          </p>
+        </div>
+
+        <div className="mt-2 flex items-baseline justify-between gap-3">
+          <h3
+            className="font-extrabold text-[var(--color-text-headline)] leading-tight"
+            style={{
+              fontSize: 'clamp(1.125rem, 4.4vw, 1.3125rem)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {t.name}{' '}
+            <span className="font-bold text-[var(--color-text-muted)]">· {t.city}</span>
+          </h3>
+          <p
+            className="shrink-0 text-[12px] text-[var(--color-text-muted)] tabular-nums"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            {t.age} г.
+          </p>
+        </div>
+
+        <div className="mt-2 flex items-center gap-2">
+          <span aria-label="5 от 5" className="inline-flex gap-0.5 text-[var(--color-brand-red)]">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <StarIcon key={i} width={13} height={13} aria-hidden />
+            ))}
+          </span>
+          {t.mechanism && (
+            <span
+              className="text-[12px] text-[var(--color-text-body)]"
+              style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
+            >
+              · {t.mechanism}
+            </span>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
