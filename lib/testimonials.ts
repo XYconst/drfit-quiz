@@ -38,6 +38,8 @@ export const TESTIMONIALS: Testimonial[] = [
     days: 90,
     mechanism: 'AfterBurn',
     afterImg: '/images/photo/testimonials/male-1.jpg',
+    quote:
+      'Първите две седмици бяха тежки. После тялото свикна и теглото просто си тръгна. Спя по-добре, дишам по-леко.',
   },
   {
     id: 'gabriel',
@@ -47,9 +49,11 @@ export const TESTIMONIALS: Testimonial[] = [
     gender: 'male',
     bodyType: 'skinny-fat',
     kgChange: -7,
-    days: 90,
+    days: 120,
     mechanism: 'Въглехидратна ротация',
     afterImg: '/images/photo/testimonials/male-3.jpg',
+    quote:
+      'Не съм гладувал нито ден. Научих кога да ям въглехидрати и кога не и това промени всичко за корема ми.',
   },
   {
     id: 'misho',
@@ -58,10 +62,12 @@ export const TESTIMONIALS: Testimonial[] = [
     age: 28,
     gender: 'male',
     bodyType: 'skinny',
-    kgChange: 6,
-    days: 90,
+    kgChange: 22,
+    days: 180,
     mechanism: 'TUT',
     afterImg: '/images/photo/testimonials/male-4.jpg',
+    quote:
+      'Цял живот бях кльощав. За 6 месеца качих 22 кг, без шкембе. Само чиста маса и сила.',
   },
   // Women
   {
@@ -75,6 +81,8 @@ export const TESTIMONIALS: Testimonial[] = [
     days: 90,
     mechanism: 'AfterBurn',
     afterImg: '/images/photo/testimonials/female-2.jpg',
+    quote:
+      'Имам две деца и време почти нямам. Тренировките са кратки, но след всяка усещам, че тялото работи още часове.',
   },
   {
     id: 'ralitsa',
@@ -84,9 +92,11 @@ export const TESTIMONIALS: Testimonial[] = [
     gender: 'female',
     bodyType: 'skinny-fat',
     kgChange: -5,
-    days: 90,
+    days: 60,
     mechanism: 'Въглехидратна ротация',
     afterImg: '/images/photo/testimonials/female-3.jpg',
+    quote:
+      'Дрехите от миналото лято пак ми станаха. Не съм броила калории нито веднъж, просто следвах плана.',
   },
   {
     id: 'katerina',
@@ -99,6 +109,8 @@ export const TESTIMONIALS: Testimonial[] = [
     days: 90,
     mechanism: 'TUT',
     afterImg: '/images/photo/testimonials/female-1.jpg',
+    quote:
+      'Видях разлика още на третата седмица. Талията ми се появи отново, а ръцете ми се стегнаха.',
   },
 ];
 

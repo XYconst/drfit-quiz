@@ -317,15 +317,29 @@ function BigTestimonialCard({ testimonial: t }: { testimonial: Testimonial }) {
               <StarIcon key={i} width={13} height={13} aria-hidden />
             ))}
           </span>
-          {t.mechanism && (
-            <span
-              className="text-[12px] text-[var(--color-text-body)]"
-              style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
-            >
-              · {t.mechanism}
-            </span>
-          )}
         </div>
+
+        {t.quote && (
+          <p
+            className="mt-3 text-[14px] leading-snug text-[var(--color-text-body)]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              textWrap: 'pretty',
+            }}
+          >
+            &ldquo;{t.quote}&rdquo;
+          </p>
+        )}
+
+        {t.mechanism && (
+          <p
+            className="mt-3 text-[10px] font-extrabold uppercase text-[var(--color-text-muted)]"
+            style={{ letterSpacing: '0.2em' }}
+          >
+            Метод: {t.mechanism}
+          </p>
+        )}
       </div>
     </article>
   );
