@@ -61,32 +61,83 @@ export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props
   const totalWeeks = TOTAL_DAYS / 7;
   const perWeek = totalKg / totalWeeks;
   const losing = currentKg > targetKg;
-  const verb = losing ? 'Темпо' : 'Темпо';
-  const directionWord = losing ? 'сваляне' : 'качване';
 
   return (
-    <div className="rounded-2xl border border-[var(--color-line)] bg-[var(--color-paper-warm)] p-4">
-      {/* Ratio chip — surfaces the kg/week pace directly above the chart */}
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <span
-          className="inline-flex items-center gap-2 rounded-full bg-white border border-[var(--color-line)] px-3 py-1 text-[11px] font-extrabold text-[var(--color-brand-red)] uppercase"
-          style={{ letterSpacing: '0.16em' }}
-        >
-          <span aria-hidden className="size-1.5 rounded-full bg-[var(--color-brand-red)]" />
-          {verb}{' '}
-          <span className="tabular-nums" style={{ fontFamily: 'var(--font-mono)' }}>
+    <div
+      className="relative rounded-[22px] overflow-hidden p-5"
+      style={{
+        fontFamily: 'var(--font-sans)',
+        background:
+          'linear-gradient(160deg, #FFF1ED 0%, #FFFFFF 50%, #FFF6F1 100%)',
+        boxShadow:
+          '0 1px 0 rgba(165,0,21,0.10) inset, 0 14px 32px -22px rgba(165,0,21,0.35)',
+      }}
+    >
+      {/* Hairline gradient border — same treatment as the realism verdict */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[22px]"
+        style={{
+          padding: 1,
+          background:
+            'linear-gradient(135deg, rgba(229,9,20,0.45), rgba(165,0,21,0.08))',
+          WebkitMask: 'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
+        }}
+      />
+
+      <div className="relative">
+        {/* Pace hero — eyebrow with dot + big gradient number + кг на седмица */}
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden
+            className="relative inline-flex size-2 rounded-full"
+            style={{
+              background: '#E50914',
+              boxShadow: '0 0 0 4px rgba(229,9,20,0.18)',
+            }}
+          />
+          <p
+            className="text-[10px] font-extrabold uppercase"
+            style={{ letterSpacing: '0.22em', color: '#A50015' }}
+          >
+            {losing ? 'Темпо на сваляне' : 'Темпо на качване'}
+          </p>
+        </div>
+        <div className="mt-2 flex items-baseline gap-2">
+          <span
+            className="font-extrabold tabular-nums leading-none"
+            style={{
+              fontSize: 'clamp(2.625rem, 12vw, 3.5rem)',
+              letterSpacing: '-0.045em',
+              background: 'linear-gradient(180deg, #E50914 0%, #A50015 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
+          >
             {perWeek.toFixed(2).replace('.', ',')}
-          </span>{' '}
-          кг/седмица
-        </span>
-        <span className="text-[11px] text-[var(--color-text-muted)] font-medium">
-          здравословно темпо на {directionWord}
-        </span>
+          </span>
+          <span
+            className="font-bold text-[var(--color-text-strong)] leading-tight"
+            style={{ fontSize: 'clamp(0.8125rem, 3.4vw, 0.9375rem)', letterSpacing: '-0.01em' }}
+          >
+            кг<br />на седмица
+          </span>
+        </div>
+
+        <p className="mt-2 text-[12.5px] text-[var(--color-text-body)] leading-snug">
+          {losing
+            ? 'В здравословния диапазон — устойчиво темпо без шок и без отскок.'
+            : 'Контролиран профицит — растеж на чиста мускулна маса, без излишни мазнини.'}
+        </p>
       </div>
 
       <svg
         viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-        className="h-auto w-full"
+        className="relative h-auto w-full mt-4"
         role="img"
         aria-label={`Прогноза: от ${currentKg.toFixed(0)} кг до ${targetKg.toFixed(0)} кг`}
       >
@@ -268,7 +319,7 @@ export function MiniProjectionChart({ currentKg, targetKg, endDateLabel }: Props
       </svg>
 
       {/* Phase explainer — "how exactly are we going to do it" */}
-      <div className="mt-3 grid grid-cols-1 gap-2 text-[12px] leading-snug">
+      <div className="relative mt-3 grid grid-cols-1 gap-2 text-[12px] leading-snug">
         <PhaseLine
           color={PHASES[0].color}
           label="Старт"
