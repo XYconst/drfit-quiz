@@ -13,7 +13,7 @@ const TONE_CLASSES: Record<OptionRowTone, string> = {
 };
 
 export interface OptionRowProps {
-  icon: ReactNode;
+  icon?: ReactNode;
   label: string;
   sub?: string;
   selected?: boolean;
@@ -44,15 +44,17 @@ export function OptionRow({ icon, label, sub, selected = false, disabled = false
         disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
       ].join(' ')}
     >
-      <span
-        aria-hidden
-        className={[
-          'shrink-0 grid place-items-center size-9 rounded-full',
-          selected ? 'bg-white text-[var(--color-brand-red)]' : TONE_CLASSES[tone],
-        ].join(' ')}
-      >
-        {icon}
-      </span>
+      {icon && (
+        <span
+          aria-hidden
+          className={[
+            'shrink-0 grid place-items-center size-9 rounded-full',
+            selected ? 'bg-white text-[var(--color-brand-red)]' : TONE_CLASSES[tone],
+          ].join(' ')}
+        >
+          {icon}
+        </span>
+      )}
       <div className="min-w-0 flex-1">
         <p className="font-semibold text-[15px] leading-tight text-[var(--color-text-headline)]">{label}</p>
         {sub && (

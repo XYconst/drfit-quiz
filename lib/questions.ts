@@ -35,7 +35,7 @@ export interface MidQuestionSpec {
  *  'split-photo' renders a hero photo of the user's matched character above the
  *  stacked option list (BetterMe-style). When this variant is set, splitPhotoSlot
  *  must point at a character pose folder under public/images/photo/. */
-export type CardVariant = 'portrait' | 'square' | 'wide' | 'icon-row' | 'split-photo';
+export type CardVariant = 'portrait' | 'square' | 'wide' | 'icon-row' | 'text-row' | 'split-photo';
 
 export interface OptionSpec {
   id: string;
@@ -212,23 +212,23 @@ export const STEPS: StepSpec[] = [
     headline: 'Кои зони те притесняват най-много?',
     minSelect: 1,
     maxSelect: 6,
-    cardVariant: 'icon-row',
+    cardVariant: 'text-row',
     optionsByGender: {
       male: [
-        { id: 'belly', label: 'Корем', value: 'belly', icon: 'target' },
-        { id: 'love-handles', label: 'Любовни дръжки', value: 'love-handles', icon: 'target' },
-        { id: 'chest', label: 'Гърди', value: 'chest', icon: 'target' },
-        { id: 'back', label: 'Гръб', value: 'back', icon: 'user' },
-        { id: 'arms', label: 'Ръце', value: 'arms', icon: 'dumbbell' },
-        { id: 'whole-body', label: 'Цялото тяло', value: 'whole-body', icon: 'user' },
+        { id: 'belly', label: 'Корем', value: 'belly' },
+        { id: 'love-handles', label: 'Любовни дръжки', value: 'love-handles' },
+        { id: 'chest', label: 'Гърди', value: 'chest' },
+        { id: 'back', label: 'Гръб', value: 'back' },
+        { id: 'arms', label: 'Ръце', value: 'arms' },
+        { id: 'whole-body', label: 'Цялото тяло', value: 'whole-body' },
       ],
       female: [
-        { id: 'belly', label: 'Корем', value: 'belly', icon: 'target' },
-        { id: 'waist', label: 'Талия', value: 'waist', icon: 'target' },
-        { id: 'hips', label: 'Ханш', value: 'hips', icon: 'user' },
-        { id: 'thighs', label: 'Бедра', value: 'thighs', icon: 'user' },
-        { id: 'arms', label: 'Ръце', value: 'arms', icon: 'dumbbell' },
-        { id: 'whole-body', label: 'Цялото тяло', value: 'whole-body', icon: 'user' },
+        { id: 'belly', label: 'Корем', value: 'belly' },
+        { id: 'waist', label: 'Талия', value: 'waist' },
+        { id: 'hips', label: 'Ханш', value: 'hips' },
+        { id: 'thighs', label: 'Бедра', value: 'thighs' },
+        { id: 'arms', label: 'Ръце', value: 'arms' },
+        { id: 'whole-body', label: 'Цялото тяло', value: 'whole-body' },
       ],
     },
   },
@@ -349,10 +349,10 @@ export const STEPS: StepSpec[] = [
     cardVariant: 'icon-row',
     options: [
       { id: 'keto', label: 'Кето', sub: 'Високи мазнини, минимум въглехидрати', value: 'keto', icon: 'flame' },
-      { id: 'carnivore', label: 'Карнивор', sub: 'Само месо и животински продукти', value: 'carnivore', icon: 'sandwich' },
-      { id: 'low-carb', label: 'Без въглехидрати', sub: 'Изрязах хляба, ориза, тестото', value: 'low-carb', icon: 'utensils-crossed' },
+      { id: 'carnivore', label: 'Карнивор', sub: 'Само месо и животински продукти', value: 'carnivore', icon: 'drumstick' },
+      { id: 'low-carb', label: 'Без въглехидрати', sub: 'Изрязах хляба, ориза, тестото', value: 'low-carb', icon: 'wheat-off' },
       { id: 'intuitive', label: 'Интуитивно хранене', sub: 'Без правила, ям когато съм гладен/-а', value: 'intuitive', icon: 'heart' },
-      { id: 'macros', label: 'Броене на макроси', sub: 'IIFYM, премерям всичко', value: 'macros', icon: 'gauge' },
+      { id: 'macros', label: 'Броене на макроси', sub: 'IIFYM, премерям всичко', value: 'macros', icon: 'calculator' },
       { id: 'nothing', label: 'Нищо още', sub: 'Започвам отначало', value: 'nothing', icon: 'circle-slash' },
     ],
   },

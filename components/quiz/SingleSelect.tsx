@@ -66,7 +66,7 @@ export function SingleSelect({ options, selected, variant, splitPhotoSrc, onPick
   }
 
   const gridClassValue =
-    variant === 'icon-row'
+    variant === 'icon-row' || variant === 'text-row'
       ? 'flex flex-col gap-2.5'
       : variant === 'wide'
         ? 'grid grid-cols-1 gap-3'
@@ -76,9 +76,9 @@ export function SingleSelect({ options, selected, variant, splitPhotoSrc, onPick
     <motion.div className={gridClassValue} variants={container} initial="hidden" animate="show">
       {options.map((opt) => (
         <motion.div key={opt.id} variants={item}>
-          {variant === 'icon-row' ? (
+          {variant === 'icon-row' || variant === 'text-row' ? (
             <OptionRow
-              icon={resolveIcon(opt.icon)}
+              icon={variant === 'icon-row' ? resolveIcon(opt.icon) : undefined}
               label={opt.label}
               sub={opt.sub}
               tone={opt.tone}

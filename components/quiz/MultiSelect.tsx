@@ -19,7 +19,7 @@ interface Props {
 }
 
 function gridClass(variant: CardVariant): string {
-  if (variant === 'icon-row') return 'flex flex-col gap-2.5 mb-6';
+  if (variant === 'icon-row' || variant === 'text-row') return 'flex flex-col gap-2.5 mb-6';
   if (variant === 'wide') return 'grid grid-cols-1 gap-3 mb-6';
   // 2-col grids: when the option count is odd, the trailing single card centers
   // itself at the same width as a regular column.
@@ -82,9 +82,9 @@ export function MultiSelect({
           const disabled = atCap && !isOn;
           return (
             <motion.div key={opt.id} variants={item}>
-              {variant === 'icon-row' ? (
+              {variant === 'icon-row' || variant === 'text-row' ? (
                 <OptionRow
-                  icon={resolveIcon(opt.icon)}
+                  icon={variant === 'icon-row' ? resolveIcon(opt.icon) : undefined}
                   label={opt.label}
                   sub={opt.sub}
                   tone={opt.tone}

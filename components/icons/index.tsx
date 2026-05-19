@@ -218,6 +218,52 @@ export function CookieIcon(props: IconProps) {
   );
 }
 
+export function DrumstickIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      {props.title && <title>{props.title}</title>}
+      <path d="M15.45 15.4c-2.13.65-4.3.32-5.7-1.1-2.29-2.27-1.76-6.5 1.17-9.42 2.93-2.93 7.15-3.46 9.43-1.18 1.41 1.41 1.74 3.57 1.1 5.71-1.4-.51-3.26-.02-4.64 1.36-1.38 1.38-1.87 3.23-1.36 4.63z" />
+      <path d="m11.25 15.6-2.16 2.16a2.5 2.5 0 1 1-4.56 1.73 2.49 2.49 0 0 1-1.41-4.24 2.5 2.5 0 0 1 3.14-.32l2.16-2.16" />
+    </svg>
+  );
+}
+
+export function WheatOffIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      {props.title && <title>{props.title}</title>}
+      <path d="m2 22 10-10" />
+      <path d="m16 8-1.17 1.17" />
+      <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+      <path d="m8 8-.53.53a3.5 3.5 0 0 0 0 4.94L9 15l1.53-1.53c.55-.55.88-1.25.98-1.97" />
+      <path d="M10.91 5.26c.15-.26.34-.51.56-.73L13 3l1.53 1.53a3.49 3.49 0 0 1 .73 3.83" />
+      <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+      <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+      <path d="m16 16-.53.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.49 3.49 0 0 1 1.97-.98" />
+      <path d="M18.74 13.09c.26-.15.51-.34.73-.56L21 11l-1.53-1.53a3.49 3.49 0 0 0-3.83-.73" />
+      <line x1="2" x2="22" y1="2" y2="22" />
+    </svg>
+  );
+}
+
+export function CalculatorIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      {props.title && <title>{props.title}</title>}
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" />
+      <line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" />
+      <path d="M12 10h.01" />
+      <path d="M8 10h.01" />
+      <path d="M12 14h.01" />
+      <path d="M8 14h.01" />
+      <path d="M12 18h.01" />
+      <path d="M8 18h.01" />
+    </svg>
+  );
+}
+
 export function WheatIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
@@ -1025,6 +1071,9 @@ export const ICON_REGISTRY: Record<string, (p: IconProps) => ReactNode> = {
   target: TargetIcon,
   'circle-pause': CirclePauseIcon,
   shuffle: ShuffleIcon,
+  drumstick: DrumstickIcon,
+  'wheat-off': WheatOffIcon,
+  calculator: CalculatorIcon,
 };
 
 export function resolveIcon(name?: string): ReactNode {
