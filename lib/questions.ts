@@ -92,6 +92,11 @@ export interface StepSpec {
   /** Per-gender attribution caption, rendered on top of the interstitial photo
    *  (e.g. "Иван, 34 · март 2024"). Not shown when absent. */
   testimonialByGender?: { male: string; female: string };
+  /** Per-gender testimonial id from TESTIMONIALS. When set, the interstitial
+   *  renders the full before/after composite (not the single-photo imageUrl)
+   *  and auto-builds the caption from the testimonial's name + age + city.
+   *  Takes precedence over imageUrl and testimonialByGender. */
+  testimonialIdByGender?: { male: string; female: string };
   /** When true, renders the App Store + Google Play badges with a star rating
    *  underneath the body text. Use on social-proof interstitials. */
   showStoreBadges?: boolean;
@@ -239,11 +244,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Много хора идват при нас със същите зони като теб',
     bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{gender}-1.jpg',
-    testimonialByGender: {
-      male: 'Стоян, 28 · март 2024',
-      female: 'Мария, 35 · май 2025',
-    },
+    testimonialIdByGender: { male: 'boyan', female: 'magdalena' },
   },
   {
     step: 8,
@@ -291,11 +292,7 @@ export const STEPS: StepSpec[] = [
     headline: '„Спя по-малко, а имам повече енергия"',
     bodyBg: 'За 8 седмици с Dr.Fit метаболизмът, сънят и стресът се балансират. Затова те питаме точно за тях.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{gender}-5.jpg',
-    testimonialByGender: {
-      male: 'Калоян, 22 · ноември 2024',
-      female: 'Радина, 33 · ноември 2024',
-    },
+    testimonialIdByGender: { male: 'kaloyan', female: 'radina' },
   },
   {
     step: 10,
@@ -363,11 +360,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Над 50 000 души свалиха Dr.Fit от 2024',
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът. Сега го имаш в джоба си.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{gender}-2.jpg',
-    testimonialByGender: {
-      male: 'Иван, 34 · февруари 2024',
-      female: 'Петя, 42 · септември 2025',
-    },
+    testimonialIdByGender: { male: 'nikolay', female: 'viktoria' },
   },
   {
     step: 15,
@@ -451,11 +444,7 @@ export const STEPS: StepSpec[] = [
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{gender}-3.jpg',
-    testimonialByGender: {
-      male: 'Димитър, 31 · юни 2025',
-      female: 'Галина, 30 · октомври 2024',
-    },
+    testimonialIdByGender: { male: 'stefan', female: 'denitsa' },
   },
   {
     step: 21,
@@ -510,11 +499,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Виждаме точно къде си заседнал/-а. И как да продължиш',
     bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
     ctaBg: 'Продължи',
-    imageUrl: '/images/photo/testimonials/{gender}-4.jpg',
-    testimonialByGender: {
-      male: 'Александър, 38 · август 2024',
-      female: 'Светлана, 39 · януари 2025',
-    },
+    testimonialIdByGender: { male: 'boyan', female: 'elena' },
     showStoreBadges: true,
   },
   {

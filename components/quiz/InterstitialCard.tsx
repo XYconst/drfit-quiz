@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon } from '@/components/icons';
+import type { Testimonial } from '@/lib/testimonials';
 
 interface Props {
   headline: string;
@@ -11,6 +12,9 @@ interface Props {
   imageAlt?: string;
   /** Attribution caption rendered as an overlay at the bottom of the photo. */
   caption?: string;
+  /** When present, renders the testimonial's before+after composite (split halves
+   *  side-by-side, no labels) in place of the single imageSrc. Takes precedence. */
+  testimonial?: Testimonial;
   /** When true, renders App Store + Google Play badges and a star rating
    *  beneath the body copy. */
   showStoreBadges?: boolean;
@@ -24,9 +28,17 @@ export function InterstitialCard({
   imageSrc,
   imageAlt = '',
   caption,
+  testimonial,
   showStoreBadges = false,
   onContinue,
 }: Props) {
+  const hasBA = Boolean(testimonial?.beforeImg && testimonial?.afterImg);
+  const tCaption = testimonial
+    ? `${testimonial.name}, ${testimonial.age} · ${testimonial.city}`
+    : caption;
+  const kgLabel = testimonial
+    ? `${testimonial.kgChange < 0 ? '−' : '+'}${Math.abs(testimonial.kgChange)} кг · ${testimonial.days} дни`
+    : undefined;
   return (
     <div className="relative flex flex-col items-center text-center gap-7 py-2 px-1">
       {/* Atmospheric backdrop — soft warm wash behind the focal area */}
@@ -39,7 +51,48 @@ export function InterstitialCard({
         }}
       />
 
-      {imageSrc ? (
+      {hasBA && testimonial ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className="relative w-full -mb-2 rounded-3xl overflow-hidden shadow-[0_18px_40px_-18px_rgba(25,33,38,0.45)]"
+        >
+          <div className="grid grid-cols-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={testimonial.beforeImg}
+              alt={`${testimonial.name} преди`}
+              className="block w-full h-auto"
+              loading="lazy"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={testimonial.afterImg}
+              alt={`${testimonial.name} след`}
+              className="block w-full h-auto"
+              loading="lazy"
+            />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-black/65" />
+          <div className="absolute left-3 right-3 bottom-3 flex items-center justify-between gap-2 text-white pointer-events-none">
+            <span
+              className="text-[12px] font-semibold tracking-wide"
+              style={{ textShadow: '0 1px 6px rgba(0,0,0,0.55)' }}
+            >
+              {tCaption}
+            </span>
+            {kgLabel && (
+              <span
+                className="rounded-full bg-[var(--color-brand-red)] text-white px-2 py-0.5 text-[10px] font-extrabold uppercase shadow-brand-red"
+                style={{ letterSpacing: '0.16em' }}
+              >
+                {kgLabel}
+              </span>
+            )}
+          </div>
+        </motion.div>
+      ) : imageSrc ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}

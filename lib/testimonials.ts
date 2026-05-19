@@ -154,7 +154,7 @@ export const TESTIMONIALS: Testimonial[] = [
     id: 'elena',
     name: 'Елена',
     city: 'Русе',
-    age: 47,
+    age: 57,
     gender: 'female',
     bodyType: 'overweight',
     kgChange: -6,

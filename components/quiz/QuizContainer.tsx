@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { STEPS, getStep, resolveOptions, resolveCardVariant, TOTAL_STEPS } from '@/lib/questions';
+import { TESTIMONIALS } from '@/lib/testimonials';
 import {
   classifyAvatar,
   type Gender,
@@ -279,12 +280,18 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'interstitial') {
-    const imageSrc = step.imageUrl
+    const testimonialId = step.testimonialIdByGender
+      ? step.testimonialIdByGender[gender ?? 'male']
+      : undefined;
+    const testimonial = testimonialId
+      ? TESTIMONIALS.find((t) => t.id === testimonialId)
+      : undefined;
+    const imageSrc = !testimonial && step.imageUrl
       ? step.imageUrl.replace('{char}', character).replace('{gender}', gender ?? 'male')
-      : step.splitPhotoSlot
+      : !testimonial && step.splitPhotoSlot
         ? characterImagePath(character, step.splitPhotoSlot)
         : undefined;
-    const caption = step.testimonialByGender
+    const caption = !testimonial && step.testimonialByGender
       ? step.testimonialByGender[gender ?? 'male']
       : undefined;
     content = (
@@ -294,6 +301,7 @@ export function QuizContainer() {
         ctaLabel={step.ctaBg ?? 'Продължи'}
         imageSrc={imageSrc}
         caption={caption}
+        testimonial={testimonial}
         showStoreBadges={step.showStoreBadges}
         onContinue={onContinue}
       />
