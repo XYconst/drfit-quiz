@@ -25,9 +25,10 @@ export interface Testimonial {
   quote?: string;
 }
 
+const SPLIT = '/images/photo/testimonials/generated/split';
+
 export const TESTIMONIALS: Testimonial[] = [
-  // Real before/after pairs (priority — these have actual photos, not just an
-  // after shot) so the picker surfaces them first when gender + bodyType matches.
+  // Real photos from Dancho's shoots.
   {
     id: 'viktoria',
     name: 'Виктория',
@@ -58,91 +59,111 @@ export const TESTIMONIALS: Testimonial[] = [
     quote:
       'Цял живот съм бил по-пълен. Първата планина, на която се качих, беше след 4 месеца с Dr.Fit. Тогава осъзнах, че съм нов човек.',
   },
-  // Men
+  // New B/A pairs.
   {
-    id: 'andrey',
-    name: 'Андрей',
-    city: 'София',
-    age: 38,
-    gender: 'male',
-    bodyType: 'overweight',
-    kgChange: -14,
-    days: 90,
-    mechanism: 'AfterBurn',
-    afterImg: '/images/photo/testimonials/male-1.jpg',
-    quote:
-      'Първите две седмици бяха тежки. После тялото свикна и теглото просто си тръгна. Спя по-добре, дишам по-леко.',
-  },
-  {
-    id: 'gabriel',
-    name: 'Габриел',
+    id: 'magdalena',
+    name: 'Магдалена',
     city: 'Пловдив',
     age: 32,
-    gender: 'male',
-    bodyType: 'skinny-fat',
-    kgChange: -7,
-    days: 120,
-    mechanism: 'Въглехидратна ротация',
-    afterImg: '/images/photo/testimonials/male-3.jpg',
+    gender: 'female',
+    bodyType: 'overweight',
+    kgChange: -14,
+    days: 150,
+    mechanism: 'AfterBurn',
+    beforeImg: `${SPLIT}/magdalena_before.jpg`,
+    afterImg: `${SPLIT}/magdalena_after.jpg`,
     quote:
-      'Не съм гладувал нито ден. Научих кога да ям въглехидрати и кога не и това промени всичко за корема ми.',
+      'След второто дете не можех да позная себе си в огледалото. Пет месеца по-късно отново съм аз — със същите дрехи и същата усмивка отпреди.',
   },
   {
-    id: 'misho',
-    name: 'Мишо',
+    id: 'stefan',
+    name: 'Стефан',
+    city: 'Велико Търново',
+    age: 41,
+    gender: 'male',
+    bodyType: 'overweight',
+    kgChange: -11,
+    days: 120,
+    mechanism: 'AfterBurn',
+    beforeImg: `${SPLIT}/stefan_before.jpg`,
+    afterImg: `${SPLIT}/stefan_after.jpg`,
+    quote:
+      'Бях си казал, че на моята възраст вече не става. След четири месеца със сина ходим на планина, без да оставам назад.',
+  },
+  {
+    id: 'boyan',
+    name: 'Боян',
+    city: 'София',
+    age: 35,
+    gender: 'male',
+    bodyType: 'overweight',
+    kgChange: -10,
+    days: 100,
+    mechanism: 'Въглехидратна ротация',
+    beforeImg: `${SPLIT}/boyan_before.jpg`,
+    afterImg: `${SPLIT}/boyan_after.jpg`,
+    quote:
+      'Работя по цял ден на стола. Тук разбрах, че въпросът не е колко ям, а кога ям. За три месеца смъкнах 10 кг без диета.',
+  },
+  {
+    id: 'kaloyan',
+    name: 'Калоян',
     city: 'Варна',
     age: 28,
     gender: 'male',
     bodyType: 'skinny',
-    kgChange: 22,
-    days: 180,
+    kgChange: 7,
+    days: 100,
     mechanism: 'TUT',
-    afterImg: '/images/photo/testimonials/male-4.jpg',
+    beforeImg: `${SPLIT}/kaloyan_before.jpg`,
+    afterImg: `${SPLIT}/kaloyan_after.jpg`,
     quote:
-      'Цял живот бях кльощав. За 6 месеца качих 22 кг, без шкембе. Само чиста маса и сила.',
+      'Винаги бях най-слабият на компанията. След три месеца качих чисто, без шкембе. За първи път в живота си се събличам без да мисля.',
   },
-  // Women
   {
-    id: 'yoanna',
-    name: 'Йоанна',
+    id: 'radina',
+    name: 'Радина',
     city: 'София',
-    age: 41,
+    age: 32,
     gender: 'female',
     bodyType: 'overweight',
-    kgChange: -11,
+    kgChange: -7,
+    days: 92,
+    mechanism: 'AfterBurn',
+    beforeImg: `${SPLIT}/radina_before.jpg`,
+    afterImg: `${SPLIT}/radina_after.jpg`,
+    quote:
+      'Тренировките са по 25 минути, не повече. Не съм правила нищо радикално, а за три месеца дрехите от преди две години отново ми стоят.',
+  },
+  {
+    id: 'denitsa',
+    name: 'Деница',
+    city: 'Стара Загора',
+    age: 29,
+    gender: 'female',
+    bodyType: 'overweight',
+    kgChange: -4,
     days: 90,
     mechanism: 'AfterBurn',
-    afterImg: '/images/photo/testimonials/female-2.jpg',
+    beforeImg: `${SPLIT}/denitsa_before.jpg`,
+    afterImg: `${SPLIT}/denitsa_after.jpg`,
     quote:
-      'Имам две деца и време почти нямам. Тренировките са кратки, но след всяка усещам, че тялото работи още часове.',
+      'Не съм гладувала и един ден. Само следвах какво ям и кога. Талията ми се появи отново за по-малко от три месеца.',
   },
   {
-    id: 'ralitsa',
-    name: 'Ралица',
-    city: 'Бургас',
-    age: 34,
+    id: 'elena',
+    name: 'Елена',
+    city: 'Русе',
+    age: 47,
     gender: 'female',
-    bodyType: 'skinny-fat',
-    kgChange: -5,
-    days: 60,
-    mechanism: 'Въглехидратна ротация',
-    afterImg: '/images/photo/testimonials/female-3.jpg',
-    quote:
-      'Дрехите от миналото лято пак ми станаха. Не съм броила калории нито веднъж, просто следвах плана.',
-  },
-  {
-    id: 'katerina',
-    name: 'Катерина',
-    city: 'Стара Загора',
-    age: 36,
-    gender: 'female',
-    bodyType: 'skinny-fat',
+    bodyType: 'overweight',
     kgChange: -6,
     days: 90,
     mechanism: 'TUT',
-    afterImg: '/images/photo/testimonials/female-1.jpg',
+    beforeImg: `${SPLIT}/elena_before.jpg`,
+    afterImg: `${SPLIT}/elena_after.jpg`,
     quote:
-      'Видях разлика още на третата седмица. Талията ми се появи отново, а ръцете ми се стегнаха.',
+      'Мислех, че след 45 нищо повече не може да се направи. След три месеца съм по-силна, отколкото бях преди десет години.',
   },
 ];
 

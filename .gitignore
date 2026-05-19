@@ -15,3 +15,6 @@ __pycache__/
 .vercel
 # Local-only photo backups created before regen
 public/images/photo/**/.bak/
+# AI-gen testimonial work artifacts; only split/*.jpg is shipped
+public/images/photo/testimonials/generated/*
+!public/images/photo/testimonials/generated/split/
