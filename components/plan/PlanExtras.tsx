@@ -334,37 +334,21 @@ function TransformationStack({ testimonials }: { testimonials: Testimonial[] }) 
               className="rounded-2xl bg-white border border-[var(--color-line)] overflow-hidden"
             >
               {t.beforeImg && t.afterImg ? (
-                <div className="relative grid grid-cols-2 bg-[var(--color-graphite)]">
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={t.beforeImg}
-                      alt={`${t.name} преди`}
-                      className="block w-full h-auto"
-                      loading="lazy"
-                    />
-                    <span
-                      className="absolute top-2 left-2 rounded-full bg-black/55 text-white px-2 py-0.5 text-[10px] font-extrabold uppercase backdrop-blur"
-                      style={{ letterSpacing: '0.18em' }}
-                    >
-                      Преди
-                    </span>
-                  </div>
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={t.afterImg}
-                      alt={`${t.name} след`}
-                      className="block w-full h-auto"
-                      loading="lazy"
-                    />
-                    <span
-                      className="absolute top-2 right-2 rounded-full bg-[var(--color-brand-red)] text-white px-2 py-0.5 text-[10px] font-extrabold uppercase shadow-brand-red"
-                      style={{ letterSpacing: '0.18em' }}
-                    >
-                      След
-                    </span>
-                  </div>
+                <div className="grid grid-cols-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={t.beforeImg}
+                    alt={`${t.name} преди`}
+                    className="block w-full h-auto"
+                    loading="lazy"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={t.afterImg}
+                    alt={`${t.name} след`}
+                    className="block w-full h-auto"
+                    loading="lazy"
+                  />
                 </div>
               ) : t.afterImg ? (
                 <div className="relative w-full bg-[var(--color-graphite)]">
