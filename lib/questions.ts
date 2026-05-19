@@ -97,6 +97,12 @@ export interface StepSpec {
    *  and auto-builds the caption from the testimonial's name + age + city.
    *  Takes precedence over imageUrl and testimonialByGender. */
   testimonialIdByGender?: { male: string; female: string };
+  /** When set, the interstitial dynamically picks a testimonial that matches
+   *  the user's gender + goal direction + age, then takes the Nth best match.
+   *  Different ranks across sibling interstitials give variety. Falls back to
+   *  same-gender when no direction match exists. Takes precedence over
+   *  testimonialIdByGender. */
+  testimonialPick?: { rank: number };
   /** When true, renders the App Store + Google Play badges with a star rating
    *  underneath the body text. Use on social-proof interstitials. */
   showStoreBadges?: boolean;
@@ -244,7 +250,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Много хора идват при нас със същите зони като теб',
     bodyBg: 'Не е твоята вина. Просто грешният подход. Ще го променим.',
     ctaBg: 'Продължи',
-    testimonialIdByGender: { male: 'boyan', female: 'magdalena' },
+    testimonialPick: { rank: 0 },
   },
   {
     step: 8,
@@ -292,7 +298,7 @@ export const STEPS: StepSpec[] = [
     headline: '„Спя по-малко, а имам повече енергия"',
     bodyBg: 'За 8 седмици с Dr.Fit метаболизмът, сънят и стресът се балансират. Затова те питаме точно за тях.',
     ctaBg: 'Продължи',
-    testimonialIdByGender: { male: 'kaloyan', female: 'radina' },
+    testimonialPick: { rank: 1 },
   },
   {
     step: 10,
@@ -360,7 +366,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Над 50 000 души свалиха Dr.Fit от 2024',
     bodyBg: '98% казват, че проблемът не беше волята им. Беше планът. Сега го имаш в джоба си.',
     ctaBg: 'Продължи',
-    testimonialIdByGender: { male: 'nikolay', female: 'viktoria' },
+    testimonialPick: { rank: 2 },
   },
   {
     step: 15,
@@ -444,7 +450,7 @@ export const STEPS: StepSpec[] = [
     headline: '92% от хората с твоя профил виждат първи резултати в първите 30 дни',
     bodyBg: 'Това е силата на персонализацията. Ще ти покажем точно защо.',
     ctaBg: 'Продължи',
-    testimonialIdByGender: { male: 'stefan', female: 'denitsa' },
+    testimonialPick: { rank: 3 },
   },
   {
     step: 21,
@@ -499,7 +505,7 @@ export const STEPS: StepSpec[] = [
     headline: 'Виждаме точно къде си заседнал/-а. И как да продължиш',
     bodyBg: 'Остават малко въпроси. После сглобяваме плана, скроен само за теб.',
     ctaBg: 'Продължи',
-    testimonialIdByGender: { male: 'boyan', female: 'elena' },
+    testimonialPick: { rank: 4 },
     showStoreBadges: true,
   },
   {

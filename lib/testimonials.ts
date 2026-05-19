@@ -215,6 +215,27 @@ export function pickProjectionTestimonial(
 }
 
 /**
+ * Pick the testimonial that best matches the user for an in-funnel interstitial.
+ * Filters by gender (hard) + goal direction (hard when any match exists),
+ * then sorts by age proximity. `rankOffset` lets sibling interstitials show
+ * different testimonials by rotating through the ranked list.
+ */
+export function pickInterstitialTestimonial(opts: {
+  gender: TestimonialGender;
+  wantsLoss: boolean;
+  ageMid?: number;
+  rankOffset?: number;
+}): Testimonial | null {
+  const { gender, wantsLoss, ageMid = 35, rankOffset = 0 } = opts;
+  const sameGender = TESTIMONIALS.filter((t) => t.gender === gender);
+  if (sameGender.length === 0) return null;
+  const directionMatch = sameGender.filter((t) => (wantsLoss ? t.kgChange < 0 : t.kgChange > 0));
+  const pool = directionMatch.length > 0 ? directionMatch : sameGender;
+  const sorted = [...pool].sort((a, b) => Math.abs(a.age - ageMid) - Math.abs(b.age - ageMid));
+  return sorted[rankOffset % sorted.length] ?? sorted[0];
+}
+
+/**
  * Pick up to N testimonials matching the user's gender and the direction of
  * their goal (loss vs gain). Ordered by how closely their kgChange magnitude
  * matches the user's target — best match first, gentler matches after, so

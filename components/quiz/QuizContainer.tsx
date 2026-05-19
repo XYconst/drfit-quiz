@@ -3,7 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { STEPS, getStep, resolveOptions, resolveCardVariant, TOTAL_STEPS } from '@/lib/questions';
-import { TESTIMONIALS } from '@/lib/testimonials';
+import { TESTIMONIALS, pickInterstitialTestimonial } from '@/lib/testimonials';
 import {
   classifyAvatar,
   type Gender,
@@ -280,12 +280,32 @@ export function QuizContainer() {
       />
     );
   } else if (step.type === 'interstitial') {
-    const testimonialId = step.testimonialIdByGender
+    const ageRange = typeof state.answers.age === 'string' ? state.answers.age : undefined;
+    const ageMid =
+      ageRange === '18-29'
+        ? 24
+        : ageRange === '30-39'
+          ? 35
+          : ageRange === '40-49'
+            ? 45
+            : ageRange === '50+'
+              ? 55
+              : 35;
+    const goal = typeof state.answers.goal === 'string' ? state.answers.goal : undefined;
+    const wantsLoss = !goal || !goal.startsWith('gain');
+    const pickedTestimonial = step.testimonialPick
+      ? pickInterstitialTestimonial({
+          gender: gender ?? 'male',
+          wantsLoss,
+          ageMid,
+          rankOffset: step.testimonialPick.rank,
+        })
+      : undefined;
+    const testimonialId = !pickedTestimonial && step.testimonialIdByGender
       ? step.testimonialIdByGender[gender ?? 'male']
       : undefined;
-    const testimonial = testimonialId
-      ? TESTIMONIALS.find((t) => t.id === testimonialId)
-      : undefined;
+    const testimonial = pickedTestimonial
+      ?? (testimonialId ? TESTIMONIALS.find((t) => t.id === testimonialId) : undefined);
     const imageSrc = !testimonial && step.imageUrl
       ? step.imageUrl.replace('{char}', character).replace('{gender}', gender ?? 'male')
       : !testimonial && step.splitPhotoSlot
